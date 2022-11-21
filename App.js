@@ -31,9 +31,19 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+import {PersistGate} from 'redux-persist/integration/react';
+import {RootPersistor, RootStore} from './Screens/domain/store';
+import {Provider} from 'react-redux';
+import {LoginScreen} from './Screens/Screen/Login-Screen/login-screen';
 
 const App: () => Node = () => {
-  return <StackNavigator />;
+  return (
+    <Provider store={RootStore}>
+      <PersistGate persistor={RootPersistor}>
+        <StackNavigator />
+      </PersistGate>
+    </Provider>
+  );
 };
 
 export default App;

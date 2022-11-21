@@ -6,6 +6,7 @@ import {
   View,
   Image,
   ScrollView,
+  Button,
 } from 'react-native';
 import {useTranslation} from 'react-i18next';
 import {banner1} from '../../constants/assets.constants';
@@ -19,6 +20,8 @@ import {new1} from '../../constants/assets.constants';
 
 import Draggable from 'react-native-draggable';
 import {styles} from './home-screen.style';
+import {useRootSelector} from '../../domain/hooks';
+import {AuthenticationSelectors} from '../../state/authentication/authentication.selector';
 
 const HomeBanner = props => {
   return (

@@ -1,6 +1,8 @@
 import {useNavigation} from '@react-navigation/native';
 import React, {useState} from 'react';
 import {
+  Animated,
+  Dimensions,
   Image,
   ImageBackground,
   ScrollView,
@@ -9,7 +11,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
+
 import {
   backButtonIcon,
   banner1,
@@ -17,14 +19,155 @@ import {
   filterIcon,
   searchIcon,
 } from '../../constants/assets.constants';
+import {Colors} from '../../constants/color.constants';
 import {FontSize} from '../../constants/fontsize.constants';
+import {globalNavigate} from '../../utilities/navigator-utilities';
 import {styles} from './search-screen-style';
+
+const width = Dimensions.get('window').width;
+const bigger = new Animated.Value((width * 120) / 100);
+let isChooseFilter = true;
+
+const SORT_LIST = [
+  {
+    name: 'SORT BY',
+    type_list: [
+      {
+        id: 1,
+        name: 'Location',
+        isSelect: false,
+      },
+      {
+        id: 2,
+        name: 'Hot',
+        isSelect: false,
+      },
+      {
+        id: 3,
+        name: 'New',
+        isSelect: false,
+      },
+      {
+        id: 4,
+        name: 'Amount',
+        isSelect: false,
+      },
+    ],
+  },
+  {
+    name: 'THIS SEASON FRUITS',
+    type_list: [
+      {
+        id: 1,
+        name: 'Trái cây 1',
+        isSelect: false,
+      },
+      {
+        id: 2,
+        name: 'Trái cây 2',
+        isSelect: false,
+      },
+      {
+        id: 3,
+        name: 'Trái cây 3',
+        isSelect: false,
+      },
+      {
+        id: 4,
+        name: 'Trái cây 4',
+        isSelect: false,
+      },
+      {
+        id: 5,
+        name: 'Trái cây 5',
+        isSelect: false,
+      },
+    ],
+  },
+];
 
 export const SearchScreen = () => {
   const navigator = useNavigation();
   const [chooseNumber, setChooseNumber] = useState(0);
+  const [chooseList, setChooseList] = useState([]);
+
+  const addToFilter = selection => {
+    if (selection.isSelect) {
+      selection.isSelect = false;
+      setChooseNumber(chooseNumber - 1);
+      let newChooseList = chooseList;
+      newChooseList.forEach((element, index) => {
+        if (element === selection.name) {
+          newChooseList.splice(index, 1);
+          index--;
+        }
+      });
+      setChooseList(newChooseList.filter(item => item !== selection.name));
+    } else {
+      selection.isSelect = true;
+      setChooseNumber(chooseNumber + 1);
+      let newChooseList = chooseList;
+      newChooseList.push(selection.name);
+      setChooseList(newChooseList);
+    }
+  };
+
+  const click = () => {
+    isChooseFilter = !isChooseFilter;
+    return isChooseFilter
+      ? Animated.timing(bigger, {
+          toValue: (width * 120) / 100,
+          duration: 800,
+          useNativeDriver: false,
+        }).start()
+      : Animated.timing(bigger, {
+          toValue: (width * 20) / 100,
+          duration: 800,
+          useNativeDriver: false,
+        }).start();
+  };
+
   return (
     <View style={styles.container}>
+      <Animated.View
+        style={[
+          styles.filterContainer,
+          {
+            marginLeft: bigger,
+          },
+        ]}>
+        <View style={styles.filterHeaderContainer}>
+          <TouchableOpacity onPress={() => click()}>
+            <Image source={backButtonIcon} style={styles.backIcon} />
+          </TouchableOpacity>
+
+          <Text style={styles.filterTitle}>FILTER</Text>
+        </View>
+
+        <View style={styles.sortContainer}>
+          {SORT_LIST.map(sorttype => (
+            <View style={styles.sortContentContainer}>
+              <Text style={styles.sortByTitle}>{sorttype.name}</Text>
+              <View style={styles.sortTypesContainer}>
+                {sorttype.type_list.map(type => (
+                  <TouchableOpacity
+                    style={styles.typeContainer}
+                    onPress={() => addToFilter(type)}>
+                    <Text
+                      style={[
+                        styles.typeName,
+                        type.isSelect && styles.typeNameSelected,
+                      ]}>
+                      {type.name}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+              <View style={styles.line} />
+            </View>
+          ))}
+        </View>
+      </Animated.View>
       <View style={styles.searchContainer}>
         <View
           style={{
@@ -69,7 +212,7 @@ export const SearchScreen = () => {
               />
             </TouchableOpacity>
           </View>
-          <TouchableOpacity onPress={() => console.log('hello')}>
+          <TouchableOpacity onPress={() => click()}>
             <ImageBackground
               source={filterIcon}
               style={{
@@ -114,7 +257,9 @@ export const SearchScreen = () => {
 
 const ProductCard = () => {
   return (
-    <TouchableOpacity style={styles.productCardContainer}>
+    <TouchableOpacity
+      style={styles.productCardContainer}
+      onPress={() => globalNavigate('ProductDetailScreen')}>
       <View style={styles.borderCard}>
         <Text
           style={{

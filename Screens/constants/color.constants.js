@@ -19,4 +19,5 @@ export const Colors = {
   DarkFuelGreen80: '#82803280',
   FilterGreen: '#718840',
   LightFilterGreen: '#B6DA9A',
+  Seashell: '#F1F1F1',
 };
