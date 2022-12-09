@@ -50,7 +50,7 @@ export const navigationRef = createNavigationContainerRef();
 export const StackNavigator = ({navigation, route}) => {
   return (
     <NavigationContainer ref={navigationRef}>
-      <Stack.Navigator>
+      <Stack.Navigator initialRouteName={'LoginScreen'}>
         <Stack.Screen
           name="LoginScreen"
           component={LoginScreen}

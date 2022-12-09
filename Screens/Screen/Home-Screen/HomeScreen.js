@@ -22,6 +22,7 @@ import Draggable from 'react-native-draggable';
 import {styles} from './home-screen.style';
 import {useRootSelector} from '../../domain/hooks';
 import {AuthenticationSelectors} from '../../state/authentication/authentication.selector';
+import {CustomBottomSheet} from '../ui/bottom-sheet-component/bottom-sheet.component';
 
 const HomeBanner = props => {
   return (

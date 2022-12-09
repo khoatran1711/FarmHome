@@ -8,3 +8,15 @@ export const handleBackendError = (errors: Array<any>, startFrom?: string) => {
 
   console.log('ERROR', reasonMessage);
 };
+
+export interface ErrorHandler {
+  isError: boolean;
+  message: string;
+}
+
+export const setError = (check: boolean, mess: string): ErrorHandler => {
+  return {
+    isError: check,
+    message: mess,
+  };
+};

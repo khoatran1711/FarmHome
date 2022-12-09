@@ -15,7 +15,7 @@ export const styles = StyleSheet.create({
     paddingTop: 10,
   },
   imageContainer: {
-    marginLeft: '10%',
+    marginLeft: '8%',
     width: '80%',
     height: 200,
     marginTop: -120,
@@ -25,6 +25,9 @@ export const styles = StyleSheet.create({
     height: '100%',
     borderRadius: 30,
     overflow: 'hidden',
+    backgroundColor: 'transparent',
+    borderColor: 'white',
+    borderWidth: 1,
   },
   productInformation: {
     width: '50%',
@@ -36,8 +39,16 @@ export const styles = StyleSheet.create({
     fontWeight: '800',
   },
   productDescription: {
-    fontSize: FontSize.MediumSmall,
+    fontSize: FontSize.Large,
     fontWeight: '400',
+    marginLeft: '5%',
+    color: '#FFFFFF90',
+  },
+  productDate: {
+    fontWeight: '400',
+    fontSize: FontSize.Small,
+    marginLeft: '5%',
+    color: '#FFFFFF90',
   },
   farmerInformation: {
     marginTop: 20,
@@ -69,6 +80,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 2,
+    paddingVertical: 7,
   },
   inStockUpTitle: {
     fontSize: FontSize.NormalSmall,
@@ -105,4 +117,25 @@ export const styles = StyleSheet.create({
   headerContainer: {},
   imageProductContainer: {},
   iconImage: {},
+  bottomSheetContainer: {
+    paddingHorizontal: '5%',
+    paddingTop: 20,
+  },
+  bottomTitle: {
+    color: Colors.DarkGreen,
+    textAlign: 'center',
+    marginVertical: 10,
+  },
+  disable: {
+    color: Colors.DarkGreen50,
+    borderColor: Colors.DarkFuelGreen50,
+  },
+  submitButton: {
+    width: '30%',
+    borderWidth: 1,
+    borderColor: Colors.DarkGreen,
+    marginTop: 30,
+    borderRadius: 20,
+    alignSelf: 'center',
+  },
 });

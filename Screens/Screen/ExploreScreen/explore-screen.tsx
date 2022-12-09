@@ -1,6 +1,7 @@
+import {fontSize} from '@mui/system';
 import {useNavigation} from '@react-navigation/native';
 import {selection} from 'deprecated-react-native-prop-types/DeprecatedTextInputPropTypes';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Animated,
   Dimensions,
@@ -14,7 +15,12 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {backButtonIcon, banner} from '../../constants/assets.constants';
+import {
+  backButtonIcon,
+  banner,
+  banner1,
+  defaultFruit,
+} from '../../constants/assets.constants';
 import {
   categoryIcon,
   searchIcon,
@@ -27,6 +33,11 @@ import {
 } from '../../constants/assets.constants';
 import {Colors} from '../../constants/color.constants';
 import {FontSize} from '../../constants/fontsize.constants';
+import {getAllProduct} from '../../services/product.service';
+import {getImage} from '../../utilities/format-utilities';
+import {getFarmerLocation} from '../../utilities/help-utilities';
+import {globalNavigate} from '../../utilities/navigator-utilities';
+import {Product} from '../Models/product.model';
 import {styles} from './explore-screen.style';
 
 const filterList = [
@@ -52,178 +63,49 @@ const filterList = [
   },
 ];
 
-const width = Dimensions.get('window').width;
-
-const SORT_BY_TYPE = ['Location', 'Hot', 'New', 'Amount'];
-
-const SORT_LIST = [
-  {
-    name: 'SORT BY',
-    type_list: [
-      {
-        id: 1,
-        name: 'Location',
-        isSelect: false,
-      },
-      {
-        id: 2,
-        name: 'Hot',
-        isSelect: false,
-      },
-      {
-        id: 3,
-        name: 'New',
-        isSelect: false,
-      },
-      {
-        id: 4,
-        name: 'Amount',
-        isSelect: false,
-      },
-    ],
-  },
-  {
-    name: 'THIS SEASON FRUITS',
-    type_list: [
-      {
-        id: 1,
-        name: 'Trái cây 1',
-        isSelect: false,
-      },
-      {
-        id: 2,
-        name: 'Trái cây 2',
-        isSelect: false,
-      },
-      {
-        id: 3,
-        name: 'Trái cây 3',
-        isSelect: false,
-      },
-      {
-        id: 4,
-        name: 'Trái cây 4',
-        isSelect: false,
-      },
-      {
-        id: 5,
-        name: 'Trái cây 5',
-        isSelect: false,
-      },
-    ],
-  },
-];
-
-const bigger = new Animated.Value((width * 120) / 100);
-let isChooseFilter = true;
-
 export const ExploreScreen = ({navigation}) => {
   const navigator = useNavigation();
   const [selectList, setSelectList] = useState(filterList[0].id);
+  const [productLis, setProductList] = useState();
+  const [searchText, setSearchText] = useState('');
 
-  const click = () => {
-    isChooseFilter = !isChooseFilter;
-    return isChooseFilter
-      ? Animated.timing(bigger, {
-          toValue: (width * 120) / 100,
-          duration: 800,
-          useNativeDriver: false,
-        }).start()
-      : Animated.timing(bigger, {
-          toValue: (width * 20) / 100,
-          duration: 800,
-          useNativeDriver: false,
-        }).start();
+  const getData = async () => {
+    const response = await getAllProduct();
+    const {contents} = response?.data;
+    console.log(response);
+    setProductList(contents);
   };
 
-  const [chooseNumber, setChooseNumber] = useState(0);
-
-  const [chooseList, setChooseList] = useState([]);
-
-  const addToFilter = selection => {
-    if (selection.isSelect) {
-      selection.isSelect = false;
-      setChooseNumber(chooseNumber - 1);
-      let newChooseList = chooseList;
-      newChooseList.forEach((element, index) => {
-        if (element === selection.name) {
-          newChooseList.splice(index, 1);
-          index--;
-        }
-      });
-      setChooseList(newChooseList.filter(item => item !== selection.name));
-    } else {
-      selection.isSelect = true;
-      setChooseNumber(chooseNumber + 1);
-      let newChooseList = chooseList;
-      newChooseList.push(selection.name);
-      setChooseList(newChooseList);
-    }
-  };
+  useEffect(() => {
+    getData();
+  }, []);
 
   return (
     <View style={{flex: 1}}>
-      <Animated.View
-        style={[
-          styles.filterContainer,
-          {
-            marginLeft: bigger,
-          },
-        ]}>
-        <View style={styles.filterHeaderContainer}>
-          <TouchableOpacity onPress={() => click()}>
-            <Image source={backButtonIcon} style={styles.backIcon} />
-          </TouchableOpacity>
-
-          <Text style={styles.filterTitle}>FILTER</Text>
-        </View>
-
-        <View style={styles.sortContainer}>
-          {SORT_LIST.map(sorttype => (
-            <View style={styles.sortContentContainer}>
-              <Text style={styles.sortByTitle}>{sorttype.name}</Text>
-              <View style={styles.sortTypesContainer}>
-                {sorttype.type_list.map(type => (
-                  <TouchableOpacity
-                    style={styles.typeContainer}
-                    onPress={() => addToFilter(type)}>
-                    <Text
-                      style={[
-                        styles.typeName,
-                        type.isSelect && styles.typeNameSelected,
-                      ]}>
-                      {type.name}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-              <View style={styles.line} />
-            </View>
-          ))}
-        </View>
-      </Animated.View>
-
-      <View>
+      <ScrollView>
         <ImageBackground
           borderBottomRightRadius={80}
           style={styles.bannerBackground}
           source={exploreBanner3}>
           <View style={styles.exploreHeaderContainer}>
             <View style={styles.searchContainer}>
-              <TextInput style={styles.searchInput} placeholder="Explore..." />
+              <TextInput
+                style={styles.searchInput}
+                placeholder="Explore..."
+                onChangeText={value => setSearchText(value)}
+              />
               <TouchableOpacity
-                onPress={() => navigator.navigate('SearchScreen')}>
+                onPress={() =>
+                  navigator.navigate('SearchScreen', {
+                    searchText: searchText,
+                  })
+                }>
                 <Image source={searchIcon} style={styles.icon} />
               </TouchableOpacity>
             </View>
-            <TouchableOpacity>
+            {/* <TouchableOpacity>
               <Image source={cartIcon} style={styles.icon} />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => click()}>
-              <ImageBackground source={filterIcon} style={styles.icon}>
-                <Text style={styles.numberTypeChosen}>{chooseNumber}</Text>
-              </ImageBackground>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
         </ImageBackground>
 
@@ -268,7 +150,40 @@ export const ExploreScreen = ({navigation}) => {
             </View>
           </TouchableOpacity>
         </View>
-      </View>
+
+        <View style={{flexDirection: 'row', flexWrap: 'wrap', width: '100%'}}>
+          {productLis?.map(product => (
+            <ProductCard product={product} />
+          ))}
+        </View>
+      </ScrollView>
     </View>
+  );
+};
+
+const ProductCard = ({product}: {product: Product}) => {
+  return (
+    <TouchableOpacity
+      style={styles.cardContainer}
+      onPress={() =>
+        globalNavigate('ProductDetailScreen', {
+          productId: product.id,
+        })
+      }>
+      <View style={styles.imageContainer}>
+        <Image style={styles.image} source={getImage(product?.image)} />
+      </View>
+      <Text style={styles.productCardName}>{product?.name}</Text>
+      <Text style={styles.farmerCardName}>
+        {product?.farmer?.firstName + ' ' + product?.farmer?.lastName}
+      </Text>
+      <Text numberOfLines={2} style={styles.farmerCardAddress}>
+        {getFarmerLocation(product?.farmer?.location)}
+      </Text>
+
+      <Text numberOfLines={2} style={styles.seeMore}>
+        Xem chi tiết {'>>'}
+      </Text>
+    </TouchableOpacity>
   );
 };

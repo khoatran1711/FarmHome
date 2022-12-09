@@ -47,3 +47,5 @@ export const seasonSummerIcon = require('../assets/icons/season-02.png');
 export const seasonFallIcon = require('../assets/icons/season-03.png');
 export const seasonWinterIcon = require('../assets/icons/season-04.png');
 export const backgroundComing = require('../assets/backgrounds/background_coming.png');
+export const defaultFruit = require('../assets/images/default-fruit.png');
+export const defaultFarmer = require('../assets/images/default-farmer.png');

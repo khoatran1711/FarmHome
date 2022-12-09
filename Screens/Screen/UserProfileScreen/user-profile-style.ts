@@ -91,4 +91,14 @@ export const styles = StyleSheet.create({
   headerContainer: {
     flexDirection: 'row',
   },
+  addressInput: {
+    width: '100%',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: Colors.DarkGreen,
+    height: 48,
+    justifyContent: 'center',
+    paddingLeft: 10,
+    marginTop: 10,
+  },
 });

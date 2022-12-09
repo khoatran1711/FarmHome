@@ -1,5 +1,5 @@
 import {useNavigation} from '@react-navigation/native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Animated,
   Dimensions,
@@ -21,7 +21,11 @@ import {
 } from '../../constants/assets.constants';
 import {Colors} from '../../constants/color.constants';
 import {FontSize} from '../../constants/fontsize.constants';
+import {searchProduct} from '../../services/product.service';
+import {getImage} from '../../utilities/format-utilities';
+import {getFarmerLocation} from '../../utilities/help-utilities';
 import {globalNavigate} from '../../utilities/navigator-utilities';
+import {Product} from '../Models/product.model';
 import {styles} from './search-screen-style';
 
 const width = Dimensions.get('window').width;
@@ -86,10 +90,14 @@ const SORT_LIST = [
   },
 ];
 
-export const SearchScreen = () => {
+export const SearchScreen = ({route}) => {
   const navigator = useNavigation();
   const [chooseNumber, setChooseNumber] = useState(0);
   const [chooseList, setChooseList] = useState([]);
+  const search = route?.params?.searchText;
+  const [searchText, setSearchText] = useState(search);
+  const [productList, setProductList] = useState();
+  console.log(searchText);
 
   const addToFilter = selection => {
     if (selection.isSelect) {
@@ -126,6 +134,17 @@ export const SearchScreen = () => {
           useNativeDriver: false,
         }).start();
   };
+
+  const getData = async () => {
+    const response = await searchProduct(searchText, 0);
+    const {contents} = response?.data;
+
+    setProductList(contents);
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -241,13 +260,9 @@ export const SearchScreen = () => {
         <Text style={styles.resultNumber}>50 results are found</Text>
         <ScrollView>
           <View style={styles.allResultContainer}>
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
+            {productList?.map(item => (
+              <ProductCard product={item} />
+            ))}
           </View>
         </ScrollView>
       </View>
@@ -255,11 +270,15 @@ export const SearchScreen = () => {
   );
 };
 
-const ProductCard = () => {
+const ProductCard = ({product}: {product: Product}) => {
   return (
     <TouchableOpacity
       style={styles.productCardContainer}
-      onPress={() => globalNavigate('ProductDetailScreen')}>
+      onPress={() =>
+        globalNavigate('ProductDetailScreen', {
+          productId: product?.id,
+        })
+      }>
       <View style={styles.borderCard}>
         <Text
           style={{
@@ -269,19 +288,19 @@ const ProductCard = () => {
             paddingTop: '5%',
             // backgroundColor: 'red',
           }}>
-          500 kg
+          {product?.weight + ' ' + product?.unit}
         </Text>
       </View>
       <View style={styles.productContainer}>
-        <Image style={styles.productImage} source={banner1} />
+        <Image style={styles.productImage} source={getImage(product?.image)} />
         <Text numberOfLines={2} style={styles.productName}>
-          ONION HAHAHAHH ufiysiyauyd asd asdde dawd
+          {product?.name}
         </Text>
         <Text numberOfLines={1} style={styles.productFarmName}>
-          MyFarm
+          {product?.farmer?.firstName + ' ' + product?.farmer?.lastName}
         </Text>
         <Text numberOfLines={2} style={styles.productLocation}>
-          Dĩ An, Bình Dương
+          {getFarmerLocation(product?.farmer?.location)}
         </Text>
       </View>
     </TouchableOpacity>
