@@ -17,21 +17,27 @@ import * as ImagePicker from 'react-native-image-picker';
 import ImgToBase64 from 'react-native-image-base64';
 import {SelectingScreenComponent} from '../ui/selecting-screen-component/selecting-screen.component';
 import {places} from '../../utilities/constant-utilities';
-import {getProfile, updateProfile} from '../../services/user.service';
+import {UserService} from '../../services/user.service';
 import {User, UserUpdateInfoRequest} from '../Models/user.model';
 import DatePicker from 'react-native-date-picker';
 import {getImage} from '../../utilities/format-utilities';
 import {globalGoBack} from '../../utilities/navigator-utilities';
 import {WaitingComponent} from '../ui/waiting-component/waiting.component';
 import {ToastAndroid} from 'react-native';
+import {AuthenticationSelectors} from '../../state/authentication/authentication.selector';
+import {useRootSelector} from '../../domain/hooks';
+import {I18n} from '../../translation';
 
 export const UserProfileScreen = () => {
+  const userService = new UserService();
+  const token = useRootSelector(AuthenticationSelectors.tokenSelector);
   const [user, setUser] = useState<User>();
   const [filePath, setFilePath] = useState<any | undefined>();
   const [choosingImage, setChoosingImage] = useState<any>();
   const [city, setCity] = useState('');
   const [province, setProvince] = useState('');
   const [wards, setWard] = useState('');
+  const [wardsCode, setWardCode] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [opening, setOpening] = useState('');
   const [data, setData] = useState<any[]>();
@@ -43,6 +49,7 @@ export const UserProfileScreen = () => {
   const [address, setAddress] = useState('');
   const [openDate, setOpenDate] = useState(false);
   const [birthDate, setBirthDate] = useState<Date>(new Date());
+  const [loading, setLoading] = useState(false);
 
   const openCitySelect = () => {
     const cities = places?.map(item => {
@@ -74,7 +81,7 @@ export const UserProfileScreen = () => {
     const districts = cities?.find(item => item?.district === province)?.wards;
     const wards = districts?.map(item => {
       return {
-        value: item?.ward,
+        value: item?.ward_code,
         name: item?.ward,
       };
     });
@@ -137,36 +144,36 @@ export const UserProfileScreen = () => {
       location: {
         address: address,
         ward: {
-          id: 1,
+          id: Number(wardsCode),
         },
       },
     };
 
-    console.log(user);
+    console.log('======== REQUEST ', requestSending);
 
-    const res = await updateProfile(requestSending, choosingImage);
-
-    useEffect(() => {
-      getData();
-    }, []);
+    setLoading(true);
+    const res = await userService.updateProfile(requestSending, choosingImage);
+    setLoading(false);
+    getData();
   };
 
   const getData = async () => {
-    const response = await getProfile();
-    // const request = await updateProfile();
+    const response = await userService.getProfile();
     const data = response?.data;
+    console.log(data);
 
     setUser(data);
     setFilePath({uri: data?.avatar});
-    setFirstName(user?.firstName || '');
-    setLastName(user?.lastName || '');
-    setPhone(user?.phone || '');
-    setEmail(user?.email || '');
-    setCity(user?.location?.ward?.district?.province?.name || '');
-    setProvince(user?.location?.ward?.district?.name || '');
-    setAddress(user?.location?.address || '');
-    setId(user?.id || 0);
+    setFirstName(data?.firstName || '');
+    setLastName(data?.lastName || '');
+    setPhone(data?.phone || '');
+    setEmail(data?.email || '');
+    setCity(data?.location?.ward?.district?.province?.name || '');
+    setProvince(data?.location?.ward?.district?.name || '');
+    setAddress(data?.location?.address || '');
+    setId(data?.id || 0);
     setBirthDate(new Date(response?.data?.birthDay));
+    setWardCode(data?.location?.ward?.id);
   };
 
   useEffect(() => {
@@ -175,7 +182,7 @@ export const UserProfileScreen = () => {
 
   return (
     <View style={styles.container}>
-      {user ? (
+      {user && !loading ? (
         <ScrollView>
           <ImageBackground
             source={filePath || defaultFarmer}
@@ -184,7 +191,7 @@ export const UserProfileScreen = () => {
               <GoBackButton />
               <View style={styles.headerContainer}>
                 <View style={styles.titleContainer}>
-                  <Text style={styles.welcomeTitle}>Welcome,</Text>
+                  <Text style={styles.welcomeTitle}>{I18n.welcome},</Text>
                   <Text style={styles.welcomeName}>
                     {user?.firstName + ' ' + user?.lastName}
                   </Text>
@@ -205,16 +212,18 @@ export const UserProfileScreen = () => {
           </ImageBackground>
           <View style={styles.infoContainer}>
             <View style={styles.infoInputContainer}>
-              <Text style={styles.inputTitle}>First Name</Text>
+              <Text style={styles.inputTitle}>{I18n.firstName}</Text>
               <TextInput
                 defaultValue={user?.firstName}
                 style={styles.inputText}
-                onChangeText={e => setFirstName(e)}
+                onChangeText={e => {
+                  setFirstName(e);
+                }}
               />
             </View>
 
             <View style={styles.infoInputContainer}>
-              <Text style={styles.inputTitle}>Last Name</Text>
+              <Text style={styles.inputTitle}>{I18n.lastName}</Text>
               <TextInput
                 defaultValue={user?.lastName}
                 style={styles.inputText}
@@ -223,7 +232,7 @@ export const UserProfileScreen = () => {
             </View>
 
             <View style={styles.infoInputContainer}>
-              <Text style={styles.inputTitle}>Phone</Text>
+              <Text style={styles.inputTitle}>{I18n.phoneNumber}</Text>
               <TextInput
                 defaultValue={user?.phone}
                 style={styles.inputText}
@@ -232,7 +241,7 @@ export const UserProfileScreen = () => {
             </View>
 
             <View style={styles.infoInputContainer}>
-              <Text style={styles.inputTitle}>Email</Text>
+              <Text style={styles.inputTitle}>{I18n.email}</Text>
               <TextInput
                 defaultValue={user?.email}
                 style={styles.inputText}
@@ -241,7 +250,7 @@ export const UserProfileScreen = () => {
             </View>
 
             <View style={styles.infoInputContainer}>
-              <Text style={styles.inputTitle}>Birth Date</Text>
+              <Text style={styles.inputTitle}>{I18n.birthdate}</Text>
               <TouchableOpacity
                 style={styles.addressInput}
                 onPress={() => setOpenDate(true)}>
@@ -252,44 +261,44 @@ export const UserProfileScreen = () => {
             </View>
 
             <View style={styles.infoInputContainer}>
-              <Text style={styles.inputTitle}>Thành phố</Text>
+              <Text style={styles.inputTitle}>{I18n.city}</Text>
               <TouchableOpacity
                 style={styles.addressInput}
                 onPress={() => openCitySelect()}>
                 <Text style={styles.inputTitle}>
                   {city ||
                     user?.location?.ward?.district?.province?.name ||
-                    'Thành phố'}
+                    I18n.city}
                 </Text>
               </TouchableOpacity>
             </View>
 
             <View style={styles.infoInputContainer}>
-              <Text style={styles.inputTitle}>Quận / Tỉnh</Text>
+              <Text style={styles.inputTitle}>{I18n.district}</Text>
               <TouchableOpacity
                 style={styles.addressInput}
                 onPress={() => openProvinceSelect()}>
                 <Text style={styles.inputTitle}>
                   {province ||
                     user?.location?.ward?.district?.name ||
-                    'Quận / Tỉnh'}
+                    I18n.district}
                 </Text>
               </TouchableOpacity>
             </View>
 
             <View style={styles.infoInputContainer}>
-              <Text style={styles.inputTitle}>Phường</Text>
+              <Text style={styles.inputTitle}>{I18n.ward}</Text>
               <TouchableOpacity
                 style={styles.addressInput}
                 onPress={() => openWardSelect()}>
                 <Text style={styles.inputTitle}>
-                  {wards || user?.location?.ward?.name || 'Phường'}
+                  {wards || user?.location?.ward?.name || I18n.ward}
                 </Text>
               </TouchableOpacity>
             </View>
 
             <View style={styles.infoInputContainer}>
-              <Text style={styles.inputTitle}>Địa chỉ</Text>
+              <Text style={styles.inputTitle}>{I18n.address}</Text>
               <TextInput
                 style={styles.inputText}
                 defaultValue={user?.location?.address}
@@ -302,13 +311,13 @@ export const UserProfileScreen = () => {
               <TouchableOpacity
                 style={styles.confirmBtn}
                 onPress={() => globalGoBack()}>
-                <Text style={styles.confirmTitle}>Cancel</Text>
+                <Text style={styles.confirmTitle}>{I18n.cancel}</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
                 style={styles.confirmBtn}
                 onPress={() => submitChange()}>
-                <Text style={styles.confirmTitle}>Confirm</Text>
+                <Text style={styles.confirmTitle}>{I18n.confirm}</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -341,6 +350,7 @@ export const UserProfileScreen = () => {
             setIsOpen(false);
             setProvince('');
             setWard('');
+            setWardCode('');
           }
           if (opening === 'districts') {
             setProvince(e?.name);
@@ -348,15 +358,17 @@ export const UserProfileScreen = () => {
             setOpening('');
             setIsOpen(false);
             setWard('');
+            setWardCode('');
           }
           if (opening === 'wards') {
             setWard(e?.name);
+            setWardCode(e?.value);
             setData([]);
             setOpening('');
             setIsOpen(false);
           }
         }}
-        title="Thành phố"
+        title=""
         onClose={() => {
           setIsOpen(false);
         }}

@@ -6,7 +6,9 @@ import {backgroundLine, banner1} from '../../constants/assets.constants';
 import {Colors} from '../../constants/color.constants';
 import {FontSize} from '../../constants/fontsize.constants';
 import {getProductByFarmerId} from '../../services/product.service';
-import {getUserById} from '../../services/user.service';
+import {UserService} from '../../services/user.service';
+import {I18n} from '../../translation';
+
 import {getImage} from '../../utilities/format-utilities';
 import {
   getFarmerLocation,
@@ -16,16 +18,18 @@ import {globalNavigate} from '../../utilities/navigator-utilities';
 import {Product} from '../Models/product.model';
 import {User} from '../Models/user.model';
 import {GoBackButton} from '../ui/goBack-button-component/goback-button.component';
+import {ProductCardHorizontal} from '../ui/product-card-horizontal/product-card-horizontal.component';
 import {WaitingComponent} from '../ui/waiting-component/waiting.component';
 import {styles} from './store-detail.style';
 
 export const StoreDetailScreen = ({route}) => {
+  const userService = new UserService();
   const userId = route?.params?.userId;
   const [userInformation, setUserInformation] = useState<User>();
   const [productList, setProductList] = useState<Product[]>();
 
   const getData = async () => {
-    const response = await getUserById(userId);
+    const response = await userService.getUserById(userId);
     const data = response?.data;
 
     const responseProduct = await getProductByFarmerId(userId);
@@ -73,7 +77,9 @@ export const StoreDetailScreen = ({route}) => {
           </Text>
 
           <View style={styles.storeInfoContainer}>
-            <Text style={styles.contactInfoTitle}>Contact Info</Text>
+            <Text style={styles.contactInfoTitle}>
+              {I18n.contactInformation}
+            </Text>
 
             <Text style={styles.contactInfo}>
               {getFarmerLocation(userInformation?.location)}
@@ -82,11 +88,26 @@ export const StoreDetailScreen = ({route}) => {
 
           {/** Products Area */}
           <View style={styles.productAreaContainer}>
-            <Text style={styles.productsTitle}>Products:</Text>
+            <Text style={styles.productsTitle}>{I18n.products}:</Text>
 
             {/** products Container */}
-            {productList?.map(product => (
-              <ProductCard product={product} />
+            {productList?.map(item => (
+              <ProductCardHorizontal
+                fruitImage={getImage(item?.images[0]?.url)}
+                name={item?.name}
+                weight={item?.weight}
+                unit={item?.unit}
+                storeImage={getImageFarmer(item?.farmer?.avatar)}
+                storeName={
+                  item?.farmer?.firstName + ' ' + item?.farmer?.lastName
+                }
+                address={getFarmerLocation(item?.farmer?.location)}
+                onPress={() =>
+                  globalNavigate('ProductDetailScreen', {
+                    productId: item?.id,
+                  })
+                }
+              />
             ))}
           </View>
         </ScrollView>
@@ -97,33 +118,33 @@ export const StoreDetailScreen = ({route}) => {
   );
 };
 
-const ProductCard = ({product}: {product?: Product}) => {
-  return (
-    <View style={styles.productContainer}>
-      <TouchableOpacity
-        style={styles.productBackground}
-        onPress={() =>
-          globalNavigate('ProductDetailScreen', {productId: product?.id})
-        }>
-        <View style={styles.productImageBackground}>
-          <Image
-            source={getImage(product?.image)}
-            style={styles.productImage}
-          />
-        </View>
+// const ProductCard = ({product}: {product?: Product}) => {
+//   return (
+//     <View style={styles.productContainer}>
+//       <TouchableOpacity
+//         style={styles.productBackground}
+//         onPress={() =>
+//           globalNavigate('ProductDetailScreen', {productId: product?.id})
+//         }>
+//         <View style={styles.productImageBackground}>
+//           <Image
+//             source={getImage(product?.images[0]?.url)}
+//             style={styles.productImage}
+//           />
+//         </View>
 
-        <View style={styles.productInfoContainer}>
-          <Text style={styles.productName}>{product?.name}</Text>
+//         <View style={styles.productInfoContainer}>
+//           <Text style={styles.productName}>{product?.name}</Text>
 
-          <Text style={styles.productAmount}>
-            {product?.weight} {product?.unit}
-          </Text>
+//           <Text style={styles.productAmount}>
+//             {product?.weight} {product?.unit}
+//           </Text>
 
-          <Text style={styles.productPublishDate}>
-            Published at {product?.date}
-          </Text>
-        </View>
-      </TouchableOpacity>
-    </View>
-  );
-};
+//           <Text style={styles.productPublishDate}>
+//             Published at {product?.date}
+//           </Text>
+//         </View>
+//       </TouchableOpacity>
+//     </View>
+//   );
+// };

@@ -1,13 +1,24 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Image, ScrollView, Text, TouchableOpacity, View} from 'react-native';
 import {banner1, exploreBanner2} from '../../constants/assets.constants';
 import {Colors} from '../../constants/color.constants';
 import {FontSize} from '../../constants/fontsize.constants';
+import {useRootSelector} from '../../domain/hooks';
+import {getOrdersHistory} from '../../services/orders.service';
+import {AuthenticationSelectors} from '../../state/authentication/authentication.selector';
+import {getImage} from '../../utilities/format-utilities';
+import {getImageFarmer} from '../../utilities/help-utilities';
 import {globalNavigate} from '../../utilities/navigator-utilities';
+import {OrderHistory} from '../Models/order.model';
 import {GoBackButton} from '../ui/goBack-button-component/goback-button.component';
+import {WaitingComponent} from '../ui/waiting-component/waiting.component';
 import {styles} from './history-style';
 
 export const HistoryScreen = () => {
+  const userId = useRootSelector(AuthenticationSelectors.idSelector);
+
+  const [loading, setLoading] = useState(false);
+  const [historyOrders, setHistoryOrders] = useState<OrderHistory[]>();
   const [currentTime, setCurrentTime] = useState<string | undefined>(
     new Date().toLocaleTimeString(),
   );
@@ -35,59 +46,88 @@ export const HistoryScreen = () => {
     return 'Good Evening';
   };
 
+  const getData = async Id => {
+    setLoading(true);
+    const response = await getOrdersHistory(Id);
+    const data = response?.data;
+    setHistoryOrders(data?.contents);
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    getData(userId);
+  }, [userId]);
+
   return (
     <View style={styles.container}>
-      <GoBackButton />
-      <ScrollView>
-        <View style={styles.wishContainer}>
-          <Text style={styles.wishTitle}>{getWish()}</Text>
-          <View style={{flexDirection: 'row'}}>
-            <Text style={styles.dateTitle}>{getTime()}</Text>
+      {!loading ? (
+        <ScrollView>
+          <GoBackButton />
+          <View style={styles.wishContainer}>
+            <Text style={styles.wishTitle}>{getWish()}</Text>
+            <View style={{flexDirection: 'row'}}>
+              <Text style={styles.dateTitle}>{getTime()}</Text>
 
-            <Text style={styles.timeTitle}>{currentTime}</Text>
+              <Text style={styles.timeTitle}>{currentTime}</Text>
+            </View>
           </View>
-        </View>
-
-        <View style={styles.productContainer}>
-          <Text
-            style={{
-              textAlign: 'center',
-              color: Colors.DarkGreen,
-              fontSize: FontSize.MediumSmall,
-              fontWeight: '800',
-              marginBottom: 10,
-            }}>
-            19/2/2022
-          </Text>
-          <ProductCard />
-        </View>
-      </ScrollView>
+          {historyOrders?.map(item => (
+            <View style={styles.productContainer}>
+              <Text
+                style={{
+                  textAlign: 'center',
+                  color: Colors.DarkGreen,
+                  fontSize: FontSize.MediumSmall,
+                  fontWeight: '800',
+                  marginBottom: 10,
+                }}>
+                {item?.date}
+              </Text>
+              <ProductCard order={item} />
+            </View>
+          ))}
+        </ScrollView>
+      ) : (
+        <WaitingComponent />
+      )}
     </View>
   );
 };
 
-const ProductCard = () => {
+const ProductCard = ({order}: {order: OrderHistory}) => {
   return (
     <TouchableOpacity
       style={styles.productCardContainer}
-      onPress={() => globalNavigate('ProductHistoryScreen')}>
+      onPress={() => globalNavigate('ProductHistoryScreen', order?.id)}>
       <View style={styles.productInfoContainer}>
-        <Text style={styles.productName}>Dâu Tây Đà Lạt</Text>
+        <Text style={styles.productName}>{order?.fruit?.name}</Text>
 
         <View style={styles.productInfo}>
-          <Text style={styles.info}>Amount:10</Text>
-          <Text style={styles.info}>Amount:10</Text>
-          <Text style={styles.info}>Amount:10</Text>
+          <Text style={styles.info}>
+            Số lượng: {order?.amount} {order?.fruit?.unit}
+          </Text>
+          <Text style={[styles.info, {flexBasis: '80%'}]}>
+            Giá thành: {order?.price}.000đ/{order?.fruit?.unit}
+          </Text>
+          <Text style={[styles.info, {flexBasis: '90%'}]}>
+            {order?.transport ? 'Hỗ trợ Vận chuyển' : 'Không hỗ trợ vận chuyển'}
+          </Text>
         </View>
       </View>
 
       <View style={styles.productImage}>
         <View style={styles.imageWrapper}>
-          <Image source={banner1} style={styles.image} />
+          <Image
+            source={getImage(order?.fruit?.images[0]?.url)}
+            style={styles.image}
+          />
         </View>
 
         <TouchableOpacity style={styles.imageWrapper}>
-          <Image source={exploreBanner2} style={styles.image} />
+          <Image
+            source={getImageFarmer(order?.farmer?.avatar)}
+            style={styles.image}
+          />
         </TouchableOpacity>
       </View>
     </TouchableOpacity>

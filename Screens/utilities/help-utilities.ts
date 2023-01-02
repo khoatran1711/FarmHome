@@ -25,9 +25,12 @@ export const getFarmerLocation = (location: Location | undefined) => {
     return (
       location?.address +
       ' ' +
-      location?.district?.name +
+      location?.ward?.name +
       ' ' +
-      location?.district?.province?.name
+      ', ' +
+      location?.ward?.district?.name +
+      ', ' +
+      location?.ward?.district?.province?.name
     );
   }
   return '';
@@ -35,4 +38,25 @@ export const getFarmerLocation = (location: Location | undefined) => {
 
 export const getImageFarmer = (imageUrl?: string | null) => {
   return imageUrl ? {uri: imageUrl} : defaultFarmer;
+};
+
+export const getFormatDateTime = (num: number) => {
+  return num < 10 ? `0${num}` : num.toString();
+};
+
+export const convertDateToString = (date: Date | string) => {
+  if (!date || date === '') {
+    return;
+  } else {
+    if (typeof date === 'string') {
+      date = new Date(date);
+    }
+    return (
+      date?.getFullYear() +
+      '-' +
+      getFormatDateTime(date?.getMonth() + 1) +
+      '-' +
+      getFormatDateTime(date?.getUTCDate())
+    );
+  }
 };

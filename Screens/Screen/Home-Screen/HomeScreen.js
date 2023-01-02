@@ -9,20 +9,23 @@ import {
   Button,
 } from 'react-native';
 import {useTranslation} from 'react-i18next';
-import {banner1} from '../../constants/assets.constants';
+import {
+  autumnIcon,
+  banner1,
+  popularIcon,
+  springIcon,
+  summerIcon,
+  winterIcon,
+} from '../../constants/assets.constants';
 import {cubeOne1} from '../../constants/assets.constants';
 import {cubeTwo} from '../../constants/assets.constants';
 import {Colors} from '../../constants/color.constants';
 import {FontSize} from '../../constants/fontsize.constants';
 import {logowithouttext} from '../../constants/assets.constants';
-import {orangeIcon} from '../../constants/assets.constants';
-import {new1} from '../../constants/assets.constants';
-
-import Draggable from 'react-native-draggable';
 import {styles} from './home-screen.style';
-import {useRootSelector} from '../../domain/hooks';
-import {AuthenticationSelectors} from '../../state/authentication/authentication.selector';
-import {CustomBottomSheet} from '../ui/bottom-sheet-component/bottom-sheet.component';
+import {globalNavigate} from '../../utilities/navigator-utilities';
+import {SEASON_ENUM} from '../Models/product.model';
+import {I18n} from '../../translation';
 
 const HomeBanner = props => {
   return (
@@ -43,8 +46,6 @@ const HomeBanner = props => {
 };
 
 export const HomeScreen = ({navigation}) => {
-  const {t} = useTranslation();
-
   return (
     <View style={styles.container}>
       <ScrollView>
@@ -52,7 +53,7 @@ export const HomeScreen = ({navigation}) => {
         <View style={styles.sloganContainer}>
           <Text style={styles.sloganTitle}>FarmHome</Text>
           <Text style={{color: Colors.White, fontSize: FontSize.MediumLarge}}>
-            {t('common:farmhomeslogan')}
+            {I18n.farmhomeslogan}
           </Text>
           <View style={styles.lineWithLogo}>
             <View style={styles.oneLine} />
@@ -63,21 +64,57 @@ export const HomeScreen = ({navigation}) => {
 
         {/** season fruits */}
         <View style={styles.seasonFruitContainer}>
-          <Text style={styles.seasonFruitTitle}>
-            {t('common:seasonfruits')}
-          </Text>
+          <Text style={styles.seasonFruitTitle}>{I18n.seasonfruits}</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            <TouchableOpacity style={[styles.fruitCard]}>
-              <Image source={orangeIcon} style={styles.fruitLogo} />
+            <TouchableOpacity
+              style={[styles.fruitCard]}
+              onPress={() =>
+                globalNavigate('SearchScreen', {
+                  popular: true,
+                })
+              }>
+              <Image source={popularIcon} style={styles.fruitLogo} />
             </TouchableOpacity>
 
-            <TouchableOpacity style={[styles.fruitCard]} />
+            <TouchableOpacity
+              style={[styles.fruitCard]}
+              onPress={() =>
+                globalNavigate('SearchScreen', {
+                  seasonList: SEASON_ENUM.Spring,
+                })
+              }>
+              <Image source={springIcon} style={styles.fruitLogo} />
+            </TouchableOpacity>
 
-            <TouchableOpacity style={[styles.fruitCard]} />
+            <TouchableOpacity
+              style={[styles.fruitCard]}
+              onPress={() =>
+                globalNavigate('SearchScreen', {
+                  seasonList: SEASON_ENUM.Summer,
+                })
+              }>
+              <Image source={summerIcon} style={styles.fruitLogo} />
+            </TouchableOpacity>
 
-            <TouchableOpacity style={[styles.fruitCard]} />
+            <TouchableOpacity
+              style={[styles.fruitCard]}
+              onPress={() =>
+                globalNavigate('SearchScreen', {
+                  seasonList: SEASON_ENUM.Autumn,
+                })
+              }>
+              <Image source={autumnIcon} style={styles.fruitLogo} />
+            </TouchableOpacity>
 
-            <TouchableOpacity style={[styles.fruitCard]} />
+            <TouchableOpacity
+              style={[styles.fruitCard]}
+              onPress={() =>
+                globalNavigate('SearchScreen', {
+                  seasonList: SEASON_ENUM.Winter,
+                })
+              }>
+              <Image source={winterIcon} style={styles.fruitLogo} />
+            </TouchableOpacity>
           </ScrollView>
         </View>
         {/** Line */}

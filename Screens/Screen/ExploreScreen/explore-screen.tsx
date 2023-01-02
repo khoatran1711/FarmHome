@@ -34,10 +34,13 @@ import {
 import {Colors} from '../../constants/color.constants';
 import {FontSize} from '../../constants/fontsize.constants';
 import {getAllProduct} from '../../services/product.service';
+import {I18n} from '../../translation';
 import {getImage} from '../../utilities/format-utilities';
 import {getFarmerLocation} from '../../utilities/help-utilities';
 import {globalNavigate} from '../../utilities/navigator-utilities';
 import {Product} from '../Models/product.model';
+import {ProductCardMini} from '../ui/product-card-mini/product-card-mini.component';
+import {ProductCard} from '../ui/product-card/product-card.component';
 import {styles} from './explore-screen.style';
 
 const filterList = [
@@ -63,7 +66,7 @@ const filterList = [
   },
 ];
 
-export const ExploreScreen = ({navigation}) => {
+export const ExploreScreen = () => {
   const navigator = useNavigation();
   const [selectList, setSelectList] = useState(filterList[0].id);
   const [productLis, setProductList] = useState();
@@ -91,12 +94,12 @@ export const ExploreScreen = ({navigation}) => {
             <View style={styles.searchContainer}>
               <TextInput
                 style={styles.searchInput}
-                placeholder="Explore..."
+                placeholder={`${I18n.explore}...`}
                 onChangeText={value => setSearchText(value)}
               />
               <TouchableOpacity
                 onPress={() =>
-                  navigator.navigate('SearchScreen', {
+                  globalNavigate('SearchScreen', {
                     searchText: searchText,
                   })
                 }>
@@ -152,8 +155,20 @@ export const ExploreScreen = ({navigation}) => {
         </View>
 
         <View style={{flexDirection: 'row', flexWrap: 'wrap', width: '100%'}}>
-          {productLis?.map(product => (
-            <ProductCard product={product} />
+          {productLis?.map(item => (
+            <ProductCardMini
+              image={getImage(item?.images[0]?.url)}
+              name={item?.name}
+              weight={item?.weight}
+              unit={item?.unit}
+              storeName={item?.farmer?.firstName + ' ' + item?.farmer?.lastName}
+              address={getFarmerLocation(item?.farmer?.location)}
+              onPress={() =>
+                globalNavigate('ProductDetailScreen', {
+                  productId: item?.id,
+                })
+              }
+            />
           ))}
         </View>
       </ScrollView>
@@ -161,29 +176,32 @@ export const ExploreScreen = ({navigation}) => {
   );
 };
 
-const ProductCard = ({product}: {product: Product}) => {
-  return (
-    <TouchableOpacity
-      style={styles.cardContainer}
-      onPress={() =>
-        globalNavigate('ProductDetailScreen', {
-          productId: product.id,
-        })
-      }>
-      <View style={styles.imageContainer}>
-        <Image style={styles.image} source={getImage(product?.image)} />
-      </View>
-      <Text style={styles.productCardName}>{product?.name}</Text>
-      <Text style={styles.farmerCardName}>
-        {product?.farmer?.firstName + ' ' + product?.farmer?.lastName}
-      </Text>
-      <Text numberOfLines={2} style={styles.farmerCardAddress}>
-        {getFarmerLocation(product?.farmer?.location)}
-      </Text>
+// const ProductCard = ({product}: {product: Product}) => {
+//   return (
+//     <TouchableOpacity
+//       style={styles.cardContainer}
+//       onPress={() =>
+//         globalNavigate('ProductDetailScreen', {
+//           productId: product.id,
+//         })
+//       }>
+//       <View style={styles.imageContainer}>
+//         <Image
+//           style={styles.image}
+//           source={getImage(product?.images[0]?.url)}
+//         />
+//       </View>
+//       <Text style={styles.productCardName}>{product?.name}</Text>
+//       <Text style={styles.farmerCardName}>
+//         {product?.farmer?.firstName + ' ' + product?.farmer?.lastName}
+//       </Text>
+//       <Text numberOfLines={2} style={styles.farmerCardAddress}>
+//         {getFarmerLocation(product?.farmer?.location)}
+//       </Text>
 
-      <Text numberOfLines={2} style={styles.seeMore}>
-        Xem chi tiết {'>>'}
-      </Text>
-    </TouchableOpacity>
-  );
-};
+//       <Text numberOfLines={2} style={styles.seeMore}>
+//         Xem chi tiết {'>>'}
+//       </Text>
+//     </TouchableOpacity>
+//   );
+// };

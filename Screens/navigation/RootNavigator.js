@@ -1,5 +1,5 @@
-import React, {useLayoutEffect} from 'react';
-import {Image, Text, View} from 'react-native';
+import React, {useEffect, useLayoutEffect, useState} from 'react';
+import {Image, Text, TouchableOpacity, View} from 'react-native';
 import {
   NavigationContainer,
   getFocusedRouteNameFromRoute,
@@ -27,10 +27,15 @@ import {
 import {
   backButtonIcon,
   exploreTabIcon,
+  exploreTabIconSelected,
   homeTabIcon,
+  homeTabIconSelected,
   messageTabIcon,
+  messageTabIconSelected,
   meTabIcon,
+  meTabIconSelected,
   newTabIcon,
+  newTabIconSelected,
 } from '../constants/assets.constants';
 import {styles} from './root-style';
 import {NewDetailScreen} from '../Screen/NewDetail-Screen/new-detail-screen';
@@ -43,6 +48,9 @@ import {HistoryScreen} from '../Screen/HistoryScreen/history-screen';
 import {ProductHistoryDetail} from '../Screen/HistoryScreen/ProductScreen/product-screen';
 import {UserProfileScreen} from '../Screen/UserProfileScreen/user-profile-screen';
 import {ChangePasswordScreen} from '../Screen/ChangePasswordScreen/change-password-screen';
+import {Colors} from '../constants/color.constants';
+import {SignUpScreenComponent} from '../Screen/SignupScreen/signup-screen.component';
+import {I18n} from '../translation';
 
 const Tab = createBottomTabNavigator();
 export const navigationRef = createNavigationContainerRef();
@@ -68,7 +76,7 @@ export const StackNavigator = ({navigation, route}) => {
         />
         <Stack.Screen
           name="Signup"
-          component={UserProfileScreen}
+          component={SignUpScreenComponent}
           options={{headerShown: false}}
         />
         <Stack.Screen
@@ -129,20 +137,24 @@ export const StackNavigator = ({navigation, route}) => {
 };
 
 export const TabNavigator = () => {
-  const {t} = useTranslation();
-
   return (
-    <Tab.Navigator>
+    <Tab.Navigator
+      screenOptions={{
+        tabBarActiveTintColor: Colors.DarkGreen,
+      }}>
       <Tab.Screen
         name="Home"
         component={HomeScreen}
         options={{
-          tabBarLabel: t('common:home'),
+          tabBarLabel: I18n.home,
           headerShown: false,
-          tabBarIcon: () => {
+          tabBarIcon: ({focused}) => {
             return (
               <View>
-                <Image style={styles.tabIcon} source={homeTabIcon} />
+                <Image
+                  style={styles.tabIcon}
+                  source={focused ? homeTabIconSelected : homeTabIcon}
+                />
               </View>
             );
           },
@@ -152,12 +164,15 @@ export const TabNavigator = () => {
         name="Explore"
         component={ExploreScreen}
         options={{
-          tabBarLabel: t('common:explore'),
+          tabBarLabel: I18n.explore,
           headerShown: false,
-          tabBarIcon: () => {
+          tabBarIcon: ({focused}) => {
             return (
               <View>
-                <Image style={styles.tabIcon} source={exploreTabIcon} />
+                <Image
+                  style={styles.tabIcon}
+                  source={focused ? exploreTabIconSelected : exploreTabIcon}
+                />
               </View>
             );
           },
@@ -167,12 +182,15 @@ export const TabNavigator = () => {
         name="Me"
         component={SettingScreen}
         options={{
-          tabBarLabel: t('common:me'),
+          tabBarLabel: I18n.me,
           headerShown: false,
-          tabBarIcon: () => {
+          tabBarIcon: ({focused}) => {
             return (
               <View>
-                <Image style={styles.tabIcon} source={meTabIcon} />
+                <Image
+                  style={styles.tabIcon}
+                  source={focused ? meTabIconSelected : meTabIcon}
+                />
               </View>
             );
           },
@@ -182,12 +200,15 @@ export const TabNavigator = () => {
         name="Message"
         component={MessageScreen}
         options={{
-          tabBarLabel: t('common:message'),
+          tabBarLabel: I18n.message,
           headerShown: false,
-          tabBarIcon: () => {
+          tabBarIcon: ({focused}) => {
             return (
               <View>
-                <Image style={styles.tabIcon} source={messageTabIcon} />
+                <Image
+                  style={styles.tabIcon}
+                  source={focused ? messageTabIconSelected : messageTabIcon}
+                />
               </View>
             );
           },
@@ -197,12 +218,15 @@ export const TabNavigator = () => {
         name="News"
         component={NewsScreen}
         options={{
-          tabBarLabel: t('common:news'),
+          tabBarLabel: I18n.news,
           headerShown: false,
-          tabBarIcon: () => {
+          tabBarIcon: ({focused}) => {
             return (
               <View>
-                <Image style={styles.tabIcon} source={newTabIcon} />
+                <Image
+                  style={styles.tabIcon}
+                  source={focused ? newTabIconSelected : newTabIcon}
+                />
               </View>
             );
           },

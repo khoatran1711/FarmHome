@@ -21,11 +21,18 @@ import {
 } from '../../constants/assets.constants';
 import {Colors} from '../../constants/color.constants';
 import {FontSize} from '../../constants/fontsize.constants';
-import {searchProduct} from '../../services/product.service';
+import {filterProduct, searchProduct} from '../../services/product.service';
+import {I18n} from '../../translation';
 import {getImage} from '../../utilities/format-utilities';
 import {getFarmerLocation} from '../../utilities/help-utilities';
 import {globalNavigate} from '../../utilities/navigator-utilities';
-import {Product} from '../Models/product.model';
+import {
+  FilterProductRequest,
+  Product,
+  SEASON_ENUM,
+} from '../Models/product.model';
+import {ProductCard} from '../ui/product-card/product-card.component';
+import {WaitingComponent} from '../ui/waiting-component/waiting.component';
 import {styles} from './search-screen-style';
 
 const width = Dimensions.get('window').width;
@@ -38,24 +45,24 @@ const SORT_LIST = [
     type_list: [
       {
         id: 1,
-        name: 'Location',
+        name: 'Popular',
         isSelect: false,
       },
-      {
-        id: 2,
-        name: 'Hot',
-        isSelect: false,
-      },
-      {
-        id: 3,
-        name: 'New',
-        isSelect: false,
-      },
-      {
-        id: 4,
-        name: 'Amount',
-        isSelect: false,
-      },
+      // {
+      //   id: 2,
+      //   name: 'Hot',
+      //   isSelect: false,
+      // },
+      // {
+      //   id: 3,
+      //   name: 'New',
+      //   isSelect: false,
+      // },
+      // {
+      //   id: 4,
+      //   name: 'Amount',
+      //   isSelect: false,
+      // },
     ],
   },
   {
@@ -63,27 +70,22 @@ const SORT_LIST = [
     type_list: [
       {
         id: 1,
-        name: 'Trái cây 1',
+        name: SEASON_ENUM.Spring,
         isSelect: false,
       },
       {
         id: 2,
-        name: 'Trái cây 2',
+        name: SEASON_ENUM.Summer,
         isSelect: false,
       },
       {
         id: 3,
-        name: 'Trái cây 3',
+        name: SEASON_ENUM.Autumn,
         isSelect: false,
       },
       {
         id: 4,
-        name: 'Trái cây 4',
-        isSelect: false,
-      },
-      {
-        id: 5,
-        name: 'Trái cây 5',
+        name: SEASON_ENUM.Winter,
         isSelect: false,
       },
     ],
@@ -94,10 +96,21 @@ export const SearchScreen = ({route}) => {
   const navigator = useNavigation();
   const [chooseNumber, setChooseNumber] = useState(0);
   const [chooseList, setChooseList] = useState([]);
-  const search = route?.params?.searchText;
-  const [searchText, setSearchText] = useState(search);
+  const search = route?.params?.searchText || '';
+  const [searchText, setSearchText] = useState();
   const [productList, setProductList] = useState();
-  console.log(searchText);
+  const [loading, setLoading] = useState(false);
+
+  const [isPopular, setIsPopular] = useState(false);
+  const [season, setSeason] = useState('');
+
+  const req: FilterProductRequest = {
+    no: 0,
+    popular: route?.params?.popular,
+    limit: 30,
+    seasonList: route?.params?.seasonList || '',
+    name: searchText || search,
+  };
 
   const addToFilter = selection => {
     if (selection.isSelect) {
@@ -135,15 +148,17 @@ export const SearchScreen = ({route}) => {
         }).start();
   };
 
-  const getData = async () => {
-    const response = await searchProduct(searchText, 0);
+  const getData = async req => {
+    console.log(req);
+    setLoading(true);
+    const response = await filterProduct(req);
     const {contents} = response?.data;
-
+    setLoading(false);
     setProductList(contents);
   };
 
   useEffect(() => {
-    getData();
+    getData(req);
   }, []);
 
   return (
@@ -160,7 +175,7 @@ export const SearchScreen = ({route}) => {
             <Image source={backButtonIcon} style={styles.backIcon} />
           </TouchableOpacity>
 
-          <Text style={styles.filterTitle}>FILTER</Text>
+          <Text style={styles.filterTitle}>{I18n.filter}</Text>
         </View>
 
         <View style={styles.sortContainer}>
@@ -171,11 +186,19 @@ export const SearchScreen = ({route}) => {
                 {sorttype.type_list.map(type => (
                   <TouchableOpacity
                     style={styles.typeContainer}
-                    onPress={() => addToFilter(type)}>
+                    onPress={() =>
+                      type?.name === 'Popular'
+                        ? setIsPopular(!isPopular)
+                        : setSeason(type?.name)
+                    }>
+                    {/*onPress={() => addToFilter(type)}>*/}
                     <Text
                       style={[
                         styles.typeName,
-                        type.isSelect && styles.typeNameSelected,
+                        type.name === season && styles.typeNameSelected,
+                        type.name === 'Popular' && isPopular
+                          ? styles.typeNameSelected
+                          : null,
                       ]}>
                       {type.name}
                     </Text>
@@ -185,8 +208,34 @@ export const SearchScreen = ({route}) => {
               <View style={styles.line} />
             </View>
           ))}
+          <TouchableOpacity
+            style={{
+              alignSelf: 'center',
+              position: 'absolute',
+              bottom: 50,
+              width: 100,
+              height: 40,
+              backgroundColor: Colors.DarkGreen,
+              justifyContent: 'center',
+              alignItems: 'center',
+              borderRadius: 20,
+            }}
+            onPress={() => {
+              click();
+              const filReq = {
+                no: 0,
+                popular: isPopular ? true : '',
+                limit: 30,
+                seasonList: season,
+                name: searchText,
+              };
+              getData(filReq);
+            }}>
+            <Text>{I18n.apply}</Text>
+          </TouchableOpacity>
         </View>
       </Animated.View>
+
       <View style={styles.searchContainer}>
         <View
           style={{
@@ -218,10 +267,10 @@ export const SearchScreen = ({route}) => {
             }}>
             <TextInput
               style={{width: '80%', fontSize: FontSize.MediumSmall}}
-              placeholder="Explore..."
+              placeholder={`${I18n.explore}...`}
+              onChangeText={e => setSearchText(e)}
             />
-            <TouchableOpacity
-              onPress={() => navigator.navigate('SearchScreen')}>
+            <TouchableOpacity onPress={() => getData(req)}>
               <Image
                 source={searchIcon}
                 style={{
@@ -257,52 +306,77 @@ export const SearchScreen = ({route}) => {
       </View>
 
       <View style={styles.resultContainer}>
-        <Text style={styles.resultNumber}>50 results are found</Text>
-        <ScrollView>
-          <View style={styles.allResultContainer}>
-            {productList?.map(item => (
-              <ProductCard product={item} />
-            ))}
-          </View>
-        </ScrollView>
+        {!loading ? (
+          <>
+            <Text style={styles.resultNumber}>
+              {I18n.nResultsFound.replace('{n}', productList?.length)}
+            </Text>
+            <ScrollView>
+              <View style={styles.allResultContainer}>
+                {productList?.map(item => (
+                  <ProductCard
+                    image={getImage(item?.images[0]?.url)}
+                    name={item?.name}
+                    weight={item?.weight}
+                    unit={item?.unit}
+                    storeName={
+                      item?.farmer?.firstName + ' ' + item?.farmer?.lastName
+                    }
+                    address={getFarmerLocation(item?.farmer?.location)}
+                    onPress={() =>
+                      globalNavigate('ProductDetailScreen', {
+                        productId: item?.id,
+                      })
+                    }
+                  />
+                ))}
+              </View>
+            </ScrollView>
+          </>
+        ) : (
+          <WaitingComponent />
+        )}
       </View>
     </View>
   );
 };
 
-const ProductCard = ({product}: {product: Product}) => {
-  return (
-    <TouchableOpacity
-      style={styles.productCardContainer}
-      onPress={() =>
-        globalNavigate('ProductDetailScreen', {
-          productId: product?.id,
-        })
-      }>
-      <View style={styles.borderCard}>
-        <Text
-          style={{
-            fontSize: 11,
-            width: '80%',
-            textAlign: 'center',
-            paddingTop: '5%',
-            // backgroundColor: 'red',
-          }}>
-          {product?.weight + ' ' + product?.unit}
-        </Text>
-      </View>
-      <View style={styles.productContainer}>
-        <Image style={styles.productImage} source={getImage(product?.image)} />
-        <Text numberOfLines={2} style={styles.productName}>
-          {product?.name}
-        </Text>
-        <Text numberOfLines={1} style={styles.productFarmName}>
-          {product?.farmer?.firstName + ' ' + product?.farmer?.lastName}
-        </Text>
-        <Text numberOfLines={2} style={styles.productLocation}>
-          {getFarmerLocation(product?.farmer?.location)}
-        </Text>
-      </View>
-    </TouchableOpacity>
-  );
-};
+// const ProductCard = ({product}: {product: Product}) => {
+//   return (
+//     <TouchableOpacity
+//       style={styles.productCardContainer}
+//       onPress={() =>
+//         globalNavigate('ProductDetailScreen', {
+//           productId: product?.id,
+//         })
+//       }>
+//       <View style={styles.borderCard}>
+//         <Text
+//           style={{
+//             fontSize: 11,
+//             width: '80%',
+//             textAlign: 'center',
+//             paddingTop: '5%',
+//             // backgroundColor: 'red',
+//           }}>
+//           {product?.weight + ' ' + product?.unit}
+//         </Text>
+//       </View>
+//       <View style={styles.productContainer}>
+//         <Image
+//           style={styles.productImage}
+//           source={getImage(product?.images[0]?.url)}
+//         />
+//         <Text numberOfLines={2} style={styles.productName}>
+//           {product?.name}
+//         </Text>
+//         <Text numberOfLines={1} style={styles.productFarmName}>
+//           {product?.farmer?.firstName + ' ' + product?.farmer?.lastName}
+//         </Text>
+//         <Text numberOfLines={2} style={styles.productLocation}>
+//           {getFarmerLocation(product?.farmer?.location)}
+//         </Text>
+//       </View>
+//     </TouchableOpacity>
+//   );
+// };

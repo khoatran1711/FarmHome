@@ -138,4 +138,40 @@ export const styles = StyleSheet.create({
     borderRadius: 20,
     alignSelf: 'center',
   },
+  inputTitle: {
+    fontSize: FontSize.Normal,
+    color: Colors.DarkGreen,
+  },
+  inputText: {
+    borderBottomWidth: 1,
+    borderColor: Colors.DarkGreen,
+    color: Colors.DarkGreen,
+  },
+  infoInputContainer: {
+    marginVertical: 10,
+  },
+  addressInput: {
+    width: '100%',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: Colors.DarkGreen,
+    height: 48,
+    justifyContent: 'center',
+    paddingLeft: 10,
+    marginTop: 10,
+  },
+  inputAddressInformationContainer: {
+    marginTop: 5,
+  },
+  addressButton: {
+    marginTop: 20,
+  },
+  defaultAddressContainer: {
+    borderColor: Colors.DarkGreen,
+    borderWidth: 1,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    marginTop: 5,
+    borderRadius: 10,
+  },
 });

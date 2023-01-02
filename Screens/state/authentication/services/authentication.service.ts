@@ -1,3 +1,4 @@
+import {useTranslation} from 'react-i18next';
 import {ToastAndroid} from 'react-native';
 import {HttpStatusCode} from '../../../../Services/http-status-code';
 import {HttpService} from '../../../../Services/http.services';
@@ -9,6 +10,7 @@ import {
   LoginResponse,
   URL_SIGN_IN,
 } from '../../../Screen/Login-Screen/login.model';
+import {I18n} from '../../../translation';
 import {handleBackendError} from '../../../utilities/handdle-error';
 import {globalNavigate} from '../../../utilities/navigator-utilities';
 import {AuthenticationSelectors} from '../authentication.selector';
@@ -16,6 +18,7 @@ import {AuthenticationActions} from '../authentication.state';
 
 export class AuthenticationService {
   private httpService: HttpService;
+
   constructor(private store: RootStoreType = RootStore) {
     this.httpService = new HttpService();
   }
@@ -26,6 +29,7 @@ export class AuthenticationService {
       username: username,
       password: password,
     };
+
     this.store.dispatch(AuthenticationActions.setLoading(true));
     return this.httpService
       .post<LoginRequest, LoginResponse>(urlRequest, loginRequest)
@@ -39,24 +43,27 @@ export class AuthenticationService {
 
         if (status === HttpStatusCode.Unauthorized) {
           ToastAndroid.show(
-            'Vui lòng kiểm tra tài khoản hoặc mật khẩu!',
+            I18n.checkAgainYourAccountAndPassword,
             ToastAndroid.SHORT,
           );
         }
 
         if (status === HttpStatusCode.Created) {
-          ToastAndroid.show('Đăng nhập thành công!', ToastAndroid.SHORT);
+          this.store.dispatch(
+            AuthenticationActions.setId(httpResult.data.idUser),
+          );
+          ToastAndroid.show(I18n.loggedInSuccessfully, ToastAndroid.SHORT);
           globalNavigate('HomeScreen');
         }
 
         if (status === HttpStatusCode.NetWorkFail) {
-          ToastAndroid.show(
-            'Vui lòng kiểm tra lại kết nối!',
-            ToastAndroid.SHORT,
-          );
+          ToastAndroid.show(I18n.checkYourNetwork, ToastAndroid.SHORT);
         }
 
         return {status};
       });
+  }
+  LogOut() {
+    this.store.dispatch(AuthenticationActions.logOut());
   }
 }

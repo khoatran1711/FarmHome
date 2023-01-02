@@ -59,7 +59,7 @@ export const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   contactInfoTitle: {
-    width: '40%',
+    width: '60%',
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'center',
@@ -73,7 +73,7 @@ export const styles = StyleSheet.create({
     marginBottom: 20,
   },
   contactInfo: {
-    width: '100%',
+    width: '90%',
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'center',

@@ -17,7 +17,10 @@ const isLoadingSelector = createSelector(
   state => state.isLoading,
 );
 
+const idSelector = createSelector(authenticateStateSelector, state => state.id);
+
 export const AuthenticationSelectors = {
   tokenSelector,
   isLoadingSelector,
+  idSelector,
 };

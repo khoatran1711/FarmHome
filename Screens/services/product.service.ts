@@ -2,9 +2,13 @@ import {HttpResult, HttpService} from '../../Services/http.services';
 import {URL_BASE} from '../../Services/url.constant';
 import {LoginResponse} from '../Screen/Login-Screen/login.model';
 import {
+  FilterProductRequest,
+  OrderRequest,
   Product,
   URL_GET_ALL_PRODUCT,
+  URL_GET_FILTER_PRODUCT,
   URL_GET_FRUIT_BY_FARMER,
+  URL_ORDER_FRUIT,
   URL_SEARCH_PRODUCT,
 } from '../Screen/Models/product.model';
 
@@ -45,7 +49,19 @@ export const getProductByFarmerId = (
   farmerId: number,
 ): Promise<HttpResult<Product[]>> => {
   const url = URL_BASE + URL_GET_FRUIT_BY_FARMER + farmerId;
-  console.log(url);
 
   return httpService.get<Product[]>(url);
+};
+
+export const orderProduct = (req: OrderRequest) => {
+  const url = URL_BASE + URL_ORDER_FRUIT;
+  console.log('================= SENT REQUEST =================', req);
+
+  return httpService.post<OrderRequest, any>(url, req);
+};
+
+export const filterProduct = (req: FilterProductRequest) => {
+  const url = URL_BASE + URL_GET_FILTER_PRODUCT;
+
+  return httpService.get<any>(url, {params: req});
 };

@@ -26,12 +26,11 @@ export const style = StyleSheet.create({
     fontWeight: '800',
   },
   input: {
-    flexDirection: 'row',
     alignItems: 'center',
     marginVertical: 10,
   },
   inputTitle: {
-    width: '30%',
+    width: '100%',
     color: Colors.DarkGreen,
     fontSize: FontSize.Normal,
   },
@@ -41,7 +40,7 @@ export const style = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: Colors.DarkGreen,
     paddingVertical: 0,
-    width: '70%',
+    width: '100%',
   },
   imageSignup: {
     width: '50%',
@@ -66,8 +65,10 @@ export const style = StyleSheet.create({
     textAlign: 'center',
   },
   header: {
+    position: 'absolute',
+    alignSelf: 'center',
     alignItems: 'center',
-    marginBottom: 10,
+    bottom: 10,
   },
   headerContainer: {
     flexDirection: 'row',
@@ -95,7 +96,7 @@ export const style = StyleSheet.create({
     color: Colors.DarkGreen,
   },
   componentContainer: {
-    width: '50%',
+    width: '100%',
     height: '100%',
   },
   tabContainer: {
@@ -103,4 +104,15 @@ export const style = StyleSheet.create({
     overflow: 'visible',
     flexDirection: 'row',
   },
+  addressInput: {
+    width: '100%',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: Colors.DarkGreen,
+    height: 48,
+    justifyContent: 'center',
+    paddingLeft: 10,
+    marginTop: 10,
+  },
+  infoInputContainer: {},
 });

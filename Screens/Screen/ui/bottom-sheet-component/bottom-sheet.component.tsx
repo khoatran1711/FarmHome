@@ -36,7 +36,7 @@ export const CustomBottomSheet = (props: CustomBottomSheetProps) => {
       backdropComponent={renderBackdrop}
       onClose={() => props.onClose()}
       enableOverDrag
-      snapPoints={['50%']}>
+      snapPoints={['80%']}>
       <View style={styles.container}>{props.children}</View>
     </BottomSheet>
   ) : (

@@ -1,21 +1,30 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, Pressable, Image} from 'react-native';
 import Ionicons from 'react-native-vector-icons/dist/Ionicons';
 import {useTranslation} from 'react-i18next';
 
 import {engIcon} from '../../constants/assets.constants';
 import {vieIcon} from '../../constants/assets.constants';
+import {I18n} from '../../translation';
+import {resetNavigation} from '../../utilities/navigator-utilities';
 
 const Selector = () => {
   const {t, i18n} = useTranslation();
-  const selectedLanguageCode = i18n.language;
+  const [selectedLanguageCode, setSelectedLanguageCode] = useState(
+    I18n._language,
+  );
+
+  useEffect(() => {
+    selectedLanguageCode && I18n.setLanguage(selectedLanguageCode);
+  }, [selectedLanguageCode]);
+
   const LANGUAGES = [
-    {code: 'en', label: t('common:english'), flat: engIcon},
-    {code: 'vi', label: t('common:vietnam'), flat: vieIcon},
-    ,
+    {code: 'en', label: I18n.english, flat: engIcon},
+    {code: 'vi', label: I18n.vietnam, flat: vieIcon},
   ];
   const setLanguage = code => {
-    return i18n.changeLanguage(code);
+    I18n.setLanguage(code);
+    resetNavigation('HomeScreen');
   };
 
   return (
@@ -30,8 +39,11 @@ const Selector = () => {
             <Pressable
               key={language.code}
               style={styles.buttonContainer}
-              disabled={selectedLanguage}
-              onPress={() => setLanguage(language.code)}>
+              // disabled={selectedLanguage}
+              onPress={() => {
+                setSelectedLanguageCode(language.code);
+                setLanguage(language.code);
+              }}>
               <View style={styles.flatContainer}>
                 <Image
                   source={language.flat}

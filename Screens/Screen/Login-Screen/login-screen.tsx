@@ -1,5 +1,6 @@
 import React, {useMemo} from 'react';
 import {useState} from 'react';
+import {useTranslation} from 'react-i18next';
 import {
   ActivityIndicator,
   Alert,
@@ -7,6 +8,7 @@ import {
   Button,
   Dimensions,
   Image,
+  KeyboardAvoidingView,
   ScrollView,
   ToastAndroid,
 } from 'react-native';
@@ -17,6 +19,7 @@ import {
   TouchableOpacity,
   ImageBackground,
 } from 'react-native';
+import DatePicker from 'react-native-date-picker';
 import {HttpStatusCode} from '../../../Services/http-status-code';
 import {
   backgroundLogin,
@@ -26,10 +29,16 @@ import {Colors} from '../../constants/color.constants';
 import {FontSize} from '../../constants/fontsize.constants';
 import {useRootSelector} from '../../domain/hooks';
 import {RootStore, RootStoreType} from '../../domain/store';
+import {signUp} from '../../services/user.service';
 import {AuthenticationSelectors} from '../../state/authentication/authentication.selector';
 import {AuthenticationActions} from '../../state/authentication/authentication.state';
 import {AuthenticationService} from '../../state/authentication/services/authentication.service';
+import {I18n} from '../../translation';
+import {places} from '../../utilities/constant-utilities';
+import {convertDateToString} from '../../utilities/help-utilities';
 import {globalNavigate} from '../../utilities/navigator-utilities';
+import {SignUpRequest} from '../Models/user.model';
+import {SelectingScreenComponent} from '../ui/selecting-screen-component/selecting-screen.component';
 import {WaitingComponent} from '../ui/waiting-component/waiting.component';
 import {style} from './login-style';
 import {LoginRequest} from './login.model';
@@ -46,129 +55,6 @@ const status = switchTab.interpolate({
 });
 
 export const LoginScreen = ({navigation}) => {
-  const [isChooseLogin, setIsChooseLogin] = useState(true);
-
-  const click = () => {
-    isLogin = !isLogin;
-    setIsChooseLogin(!isChooseLogin);
-    return !isLogin
-      ? Animated.timing(switchTab, {
-          toValue: -width,
-          duration: 800,
-          useNativeDriver: false,
-        }).start()
-      : Animated.timing(switchTab, {
-          toValue: 0,
-          duration: 800,
-          useNativeDriver: false,
-        }).start();
-  };
-
-  return (
-    <View style={style.container}>
-      <Animated.View
-        style={[style.tabContainer, {width: width * 2, marginLeft: switchTab}]}>
-        <LoginComponent navigation={navigation} />
-        <SignUpComponent />
-      </Animated.View>
-
-      {/* <LoginComponent /> */}
-      {/** Move to Sign up screen */}
-      <View style={style.header}>
-        <View style={style.headerContainer}>
-          <View
-            style={isChooseLogin ? style.signinStatus : style.signupStatus}
-          />
-          <View
-            style={isChooseLogin ? style.signupStatus : style.signinStatus}
-          />
-        </View>
-        <TouchableOpacity onPress={() => click()}>
-          <Text style={style.switchTitle}>
-            {isChooseLogin
-              ? 'You dont have an account? Create now?'
-              : 'You have an account already? Login now? '}
-          </Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
-};
-
-const SignUpComponent = () => {
-  return (
-    <View style={style.componentContainer}>
-      <Image
-        source={backgroundSignup}
-        style={style.imageSignup}
-        resizeMode={'contain'}
-      />
-      <ScrollView>
-        <View style={style.inputContainer}>
-          <Text style={style.loginTitle}>Create your new account</Text>
-          <View style={style.input}>
-            <Text style={style.inputTitle}>Username:</Text>
-            <TextInput
-              style={style.inputPlace}
-              placeholderTextColor={Colors.DarkGreen80}
-              placeholder="Username"
-            />
-          </View>
-
-          <View style={style.input}>
-            <Text style={style.inputTitle}>Username:</Text>
-            <TextInput
-              style={style.inputPlace}
-              placeholderTextColor={Colors.DarkGreen80}
-              placeholder="Username"
-            />
-          </View>
-
-          <View style={style.input}>
-            <Text style={style.inputTitle}>Username:</Text>
-            <TextInput
-              style={style.inputPlace}
-              placeholderTextColor={Colors.DarkGreen80}
-              placeholder="Username"
-            />
-          </View>
-
-          <View style={style.input}>
-            <Text style={style.inputTitle}>Username:</Text>
-            <TextInput
-              style={style.inputPlace}
-              placeholderTextColor={Colors.DarkGreen80}
-              placeholder="Username"
-            />
-          </View>
-
-          <View style={style.input}>
-            <Text style={style.inputTitle}>Username:</Text>
-            <TextInput
-              style={style.inputPlace}
-              placeholderTextColor={Colors.DarkGreen80}
-              placeholder="Username"
-            />
-          </View>
-
-          {/** Login button */}
-          <View style={style.button}>
-            <TouchableOpacity style={style.buttonContainer}>
-              <Text style={style.buttonTitle}>Login</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </ScrollView>
-    </View>
-  );
-};
-
-interface ValidateData {
-  isError: boolean;
-  error: string;
-}
-
-const LoginComponent = ({navigation}) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
@@ -180,17 +66,17 @@ const LoginComponent = ({navigation}) => {
 
     if (username.length === 0 || password.length === 0) {
       validate.isError = true;
-      validate.error = 'Vui lòng điền đủ thông tin';
+      validate.error = I18n.pleaseFillAllInformation;
       return validate;
     }
     if (username.includes(' ') || password.includes(' ')) {
       validate.isError = true;
-      validate.error = 'Mật khẩu hoặc tài khoản không được chứa dấu cách';
+      validate.error = I18n.passwordDoesNotContainSpace;
       return validate;
     }
     if (username.length < 6 || password.length < 6) {
       validate.isError = true;
-      validate.error = 'Mật khẩu hoặc tài khoản không hợp lệ';
+      validate.error = I18n.passwordOrUsernameIsNotValid;
       return validate;
     }
     validate.isError = false;
@@ -218,27 +104,28 @@ const LoginComponent = ({navigation}) => {
         resizeMode={'contain'}
       />
       <View style={style.inputContainer}>
-        <Text style={style.loginTitle}>Login</Text>
+        <Text style={style.loginTitle}>{I18n.login}</Text>
 
         {/** Input username */}
         <View style={style.input}>
-          <Text style={style.inputTitle}>Username:</Text>
+          <Text style={style.inputTitle}>{I18n.username}</Text>
           <TextInput
             style={style.inputPlace}
             onChangeText={value => setUsername(value)}
             placeholderTextColor={Colors.DarkGreen80}
-            placeholder="Username"
+            placeholder={I18n.username}
           />
         </View>
 
         {/** Input password */}
         <View style={style.input}>
-          <Text style={style.inputTitle}>Password:</Text>
+          <Text style={style.inputTitle}>{I18n.password}:</Text>
           <TextInput
             style={style.inputPlace}
+            secureTextEntry={true}
             onChangeText={value => setPassword(value)}
             placeholderTextColor={Colors.DarkGreen80}
-            placeholder="Password"
+            placeholder={I18n.password}
           />
         </View>
 
@@ -252,10 +139,23 @@ const LoginComponent = ({navigation}) => {
           <TouchableOpacity
             style={style.buttonContainer}
             onPress={() => loadData()}>
-            <Text style={style.buttonTitle}>Login</Text>
+            <Text style={style.buttonTitle}>{I18n.login}</Text>
           </TouchableOpacity>
         </View>
+
+        <TouchableOpacity
+          style={{marginTop: 20}}
+          onPress={() => globalNavigate('Signup')}>
+          <Text style={[style.switchTitle, {textAlign: 'center'}]}>
+            {I18n.dontHaveAccountCreateNow}
+          </Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
 };
+
+export interface ValidateData {
+  isError: boolean;
+  error: string;
+}

@@ -8,6 +8,7 @@ import {
 const initialState: AuthenticationState = {
   token: '',
   isLoading: false,
+  id: 0,
 };
 
 export const AuthenticationSlice = createSlice({
@@ -24,6 +25,9 @@ export const AuthenticationSlice = createSlice({
     },
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload;
+    },
+    setId: (state, action: PayloadAction<number>) => {
+      state.id = action.payload;
     },
   },
 });
