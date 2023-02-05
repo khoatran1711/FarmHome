@@ -317,7 +317,7 @@ export const SearchScreen = ({route}) => {
                   <ProductCard
                     image={getImage(item?.images[0]?.url)}
                     name={item?.name}
-                    weight={item?.weight}
+                    weight={item?.remainingWeight}
                     unit={item?.unit}
                     storeName={
                       item?.farmer?.firstName + ' ' + item?.farmer?.lastName

@@ -38,7 +38,6 @@ export const styles = StyleSheet.create({
     width: 90,
     height: 90,
     borderRadius: 10,
-    backgroundColor: 'blue',
   },
   changeImageBtn: {
     width: 30,

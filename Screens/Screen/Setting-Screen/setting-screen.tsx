@@ -13,7 +13,7 @@ export const SettingScreen = ({navigation, route}) => {
   return (
     <View style={styles.container}>
       <View style={styles.groupContainer}>
-        <Text style={styles.nameOfGroup}>Thanh toán</Text>
+        <Text style={styles.nameOfGroup}>{I18n.payment}</Text>
         <View style={styles.settingContainer}>
           <TouchableOpacity
             style={styles.settingButton}

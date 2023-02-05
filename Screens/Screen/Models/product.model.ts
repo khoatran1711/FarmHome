@@ -10,6 +10,7 @@ export interface Product {
   id: number;
   name: string;
   weight: number;
+  remainingWeight: number;
   unit: string;
   imageFile: string;
   images: Image[];

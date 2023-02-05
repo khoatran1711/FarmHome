@@ -1,7 +1,9 @@
+import {Dimensions} from 'react-native';
 import {StyleSheet} from 'react-native';
 import {Colors} from '../../constants/color.constants';
 import {FontSize} from '../../constants/fontsize.constants';
 
+const width = Dimensions.get('screen').width;
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -19,8 +21,8 @@ export const styles = StyleSheet.create({
     marginBottom: 10,
   },
   allResultContainer: {
-    width: '90%',
-    //backgroundColor:'red',
+    width: width,
+    backgroundColor: 'red',
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-around',

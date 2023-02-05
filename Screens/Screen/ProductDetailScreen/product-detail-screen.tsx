@@ -62,7 +62,6 @@ const loadImage = ({item}) => {
 
 export const ProductDetailScreen = ({route}) => {
   const [show, setShow] = useState(false);
-
   const productId = route?.params?.productId;
   const [productInformation, setProductInformation] = useState<Product>();
   const productImage = productInformation?.images?.map((item, index) => {
@@ -78,7 +77,7 @@ export const ProductDetailScreen = ({route}) => {
   const userService = new UserService();
 
   const Test = () => {
-    const maximum = productInformation?.weight || 0;
+    const maximum = productInformation?.remainingWeight || 0;
     const [value, setValue] = useState('');
     const [isTransport, setIsTransport] = useState(false);
     const [money, setMoney] = useState('');
@@ -487,12 +486,13 @@ export const ProductDetailScreen = ({route}) => {
                   {productInformation?.date}
                 </Text>
                 <Text style={styles.productName}>
-                  {' '}
-                  {productInformation?.name}{' '}
+                  {productInformation?.name}
                 </Text>
 
                 <Text style={styles.productDescription}>
-                  {productInformation?.weight + ' ' + productInformation?.unit}
+                  {productInformation?.remainingWeight +
+                    ' ' +
+                    productInformation?.unit}
                 </Text>
 
                 <View style={styles.farmerInformation}>

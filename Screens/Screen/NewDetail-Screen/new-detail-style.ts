@@ -77,6 +77,7 @@ export const styles = StyleSheet.create({
   newDescription: {
     color: Colors.DarkGreen,
     fontSize: FontSize.MediumSmall,
+    marginBottom: 20,
   },
   newDate: {
     //color:Colors.DarkGreen,
@@ -92,6 +93,13 @@ export const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   imageInContent: {
+    width: '100%',
+    height: 200,
+    resizeMode: 'contain',
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  imageNew: {
     width: '100%',
     height: 200,
     resizeMode: 'contain',

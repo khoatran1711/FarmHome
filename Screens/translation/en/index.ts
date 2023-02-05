@@ -12,7 +12,7 @@ export const EN = {
   and: 'and',
   security: 'Security',
   english: 'English',
-  vietnam: 'Viet Nam',
+  vietnam: 'Vietnamese',
   language: 'Language',
   home: 'Home',
   settings: 'Settings',
@@ -113,6 +113,12 @@ export const EN = {
   defaultAddress: 'Default Address',
   newAddress: 'Choose a new address',
   pleaseChooseAddress: 'Please fill in your address',
+  agricultureNew: 'AGRICULTURE NEWS',
+  getAllYourNewsAboutAgricultureProduct:
+    'Find all your news about agriculture products from here',
+  latestNews: 'LATEST NEWS',
+  getAllLatestNews:
+    'Find the latest news about products and agriculture information',
 };
 
 export type I18nDictionary = typeof EN;

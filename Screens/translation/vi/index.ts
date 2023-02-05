@@ -114,6 +114,12 @@ export const VI = {
   defaultAddress: 'Địa chỉ mặc định',
   newAddress: 'Chọn địa chỉ mới',
   pleaseChooseAddress: 'Vui lòng nhập địa chỉ',
+  agricultureNew: 'TIN NÔNG SẢN',
+  getAllYourNewsAboutAgricultureProduct:
+    'Những thông tin về sản phẩm nông sản hữu ích có thể giúp ích cho bạn.',
+  latestNews: 'TIN TỨC MỚI',
+  getAllLatestNews:
+    'Xem những tin tức mới về sản phẩm nông sản và thay đổi thị trường',
 };
 
 export type I18nDictionary = typeof VI;

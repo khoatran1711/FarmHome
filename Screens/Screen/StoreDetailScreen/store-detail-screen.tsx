@@ -95,7 +95,7 @@ export const StoreDetailScreen = ({route}) => {
               <ProductCardHorizontal
                 fruitImage={getImage(item?.images[0]?.url)}
                 name={item?.name}
-                weight={item?.weight}
+                weight={item?.remainingWeight}
                 unit={item?.unit}
                 storeImage={getImageFarmer(item?.farmer?.avatar)}
                 storeName={

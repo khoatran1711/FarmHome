@@ -12,7 +12,7 @@ import {FontSize} from '../../constants/fontsize.constants';
 
 export const MessageScreen = () => {
   return (
-    <View style={{flex: 1, backgroundColor: 'blue'}}>
+    <View style={{flex: 1}}>
       <ImageBackground
         source={backgroundComing}
         style={{width: '100%', height: '100%'}}>

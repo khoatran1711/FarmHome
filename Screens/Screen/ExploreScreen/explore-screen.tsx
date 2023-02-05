@@ -112,7 +112,7 @@ export const ExploreScreen = () => {
           </View>
         </ImageBackground>
 
-        <ScrollView
+        {/* <ScrollView
           style={styles.categoryList}
           horizontal
           showsHorizontalScrollIndicator={false}>
@@ -141,8 +141,8 @@ export const ExploreScreen = () => {
               )}
             </View>
           ))}
-        </ScrollView>
-        <View style={styles.categoryProductContainer}>
+        </ScrollView> */}
+        {/* <View style={styles.categoryProductContainer}>
           <TouchableOpacity>
             <View style={styles.productContainer}>
               <ImageBackground source={banner} style={styles.productBackground}>
@@ -152,14 +152,14 @@ export const ExploreScreen = () => {
               </ImageBackground>
             </View>
           </TouchableOpacity>
-        </View>
+        </View> */}
 
         <View style={{flexDirection: 'row', flexWrap: 'wrap', width: '100%'}}>
           {productLis?.map(item => (
             <ProductCardMini
               image={getImage(item?.images[0]?.url)}
               name={item?.name}
-              weight={item?.weight}
+              weight={item?.remainingWeight}
               unit={item?.unit}
               storeName={item?.farmer?.firstName + ' ' + item?.farmer?.lastName}
               address={getFarmerLocation(item?.farmer?.location)}

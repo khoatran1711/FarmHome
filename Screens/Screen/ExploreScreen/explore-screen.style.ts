@@ -72,7 +72,6 @@ export const styles = StyleSheet.create({
   },
   bannerBackground: {
     height: 250,
-    backgroundColor: Colors.DarkGreen,
   },
   exploreHeaderContainer: {
     paddingTop: 10,
@@ -122,7 +121,6 @@ export const styles = StyleSheet.create({
   productContainer: {
     width: 80,
     height: 80,
-    backgroundColor: 'blue',
     borderBottomRightRadius: 20,
     overflow: 'hidden',
   },
