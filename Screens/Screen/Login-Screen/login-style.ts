@@ -1,118 +1,36 @@
 import {StyleSheet} from 'react-native';
 import {Colors} from '../../constants/color.constants';
+import {DEVICE} from '../../constants/devices.constant';
 import {FontSize} from '../../constants/fontsize.constants';
 
-export const style = StyleSheet.create({
+export const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'space-between',
-    backgroundColor: Colors.White,
+    backgroundColor: Colors.TimberGreen,
   },
-  imageLogin: {
-    width: '70%',
-    height: '50%',
-    justifyContent: 'flex-end',
-    alignSelf: 'center',
+  banner: {
+    width: '100%',
+    height: DEVICE.HEIGHT * 0.4,
   },
-  inputContainer: {
-    marginTop: 30,
-    paddingHorizontal: '5%',
-  },
-  loginTitle: {
-    alignItems: 'center',
-    fontSize: FontSize.ExtraLarge,
-    color: Colors.DarkGreen,
+  farmhomeTitle: {
+    color: '#FEF4E3',
+    fontSize: FontSize.Large,
     textAlign: 'center',
-    fontWeight: '800',
-  },
-  input: {
-    alignItems: 'center',
-    marginVertical: 10,
-  },
-  inputTitle: {
-    width: '100%',
-    color: Colors.DarkGreen,
-    fontSize: FontSize.Normal,
-  },
-  inputPlace: {
-    color: Colors.DarkGreen,
-    fontSize: FontSize.MediumSmall,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.DarkGreen,
-    paddingVertical: 0,
-    width: '100%',
-  },
-  imageSignup: {
-    width: '50%',
-    height: '30%',
-    justifyContent: 'flex-end',
-    alignSelf: 'center',
-  },
-  button: {
-    width: '100%',
-  },
-  buttonContainer: {
-    width: '30%',
-    backgroundColor: Colors.DarkGreen,
-    borderRadius: 30,
-    paddingVertical: 10,
-    alignSelf: 'center',
-    marginTop: 30,
-  },
-  buttonTitle: {
-    color: Colors.White,
-    fontSize: FontSize.MediumSmall,
-    textAlign: 'center',
-  },
-  header: {
-    position: 'absolute',
-    alignSelf: 'center',
-    alignItems: 'center',
-    bottom: 10,
-  },
-  headerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
     marginTop: 10,
   },
-  signinStatus: {
-    width: 8,
-    height: 20,
-    backgroundColor: Colors.DarkGreen,
-    borderRadius: 10,
-    marginRight: 10,
-  },
-  signupStatus: {
-    width: 6,
-    height: 14,
-    backgroundColor: Colors.DarkGreen,
-    borderRadius: 10,
-    marginRight: 10,
-  },
-  switchTitle: {
-    width: '100%',
-    fontSize: FontSize.MediumSmall,
-    color: Colors.DarkGreen,
-  },
-  componentContainer: {
-    width: '100%',
-    height: '100%',
-  },
-  tabContainer: {
-    height: '90%',
-    overflow: 'visible',
-    flexDirection: 'row',
-  },
-  addressInput: {
-    width: '100%',
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: Colors.DarkGreen,
-    height: 48,
-    justifyContent: 'center',
-    paddingLeft: 10,
+  inputWrapper: {
     marginTop: 10,
   },
-  infoInputContainer: {},
+  loginButton: {
+    width: '45%',
+    alignSelf: 'center',
+    marginTop: 50,
+    backgroundColor: Colors.Solitaire,
+  },
+  signupButton: {
+    width: '45%',
+    alignSelf: 'center',
+    marginTop: 20,
+  },
 });

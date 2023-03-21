@@ -5,6 +5,7 @@ import {
   FilterProductRequest,
   OrderRequest,
   Product,
+  ProductResponse,
   URL_GET_ALL_PRODUCT,
   URL_GET_FILTER_PRODUCT,
   URL_GET_FRUIT_BY_FARMER,
@@ -14,13 +15,13 @@ import {
 
 var httpService = new HttpService();
 
-export const getAllProduct = (): Promise<HttpResult<Product[]>> => {
+export const getAllProduct = (): Promise<HttpResult<ProductResponse>> => {
   const url = URL_BASE + URL_GET_ALL_PRODUCT;
 
-  return httpService.get<Product[]>(url, {
+  return httpService.get<ProductResponse>(url, {
     params: {
       no: 0,
-      limit: 12,
+      limit: 50,
     },
   });
 };
@@ -47,15 +48,14 @@ export const searchProduct = (
 
 export const getProductByFarmerId = (
   farmerId: number,
-): Promise<HttpResult<Product[]>> => {
+): Promise<HttpResult<ProductResponse>> => {
   const url = URL_BASE + URL_GET_FRUIT_BY_FARMER + farmerId;
 
-  return httpService.get<Product[]>(url);
+  return httpService.get<ProductResponse>(url);
 };
 
 export const orderProduct = (req: OrderRequest) => {
   const url = URL_BASE + URL_ORDER_FRUIT;
-  console.log('================= SENT REQUEST =================', req);
 
   return httpService.post<OrderRequest, any>(url, req);
 };

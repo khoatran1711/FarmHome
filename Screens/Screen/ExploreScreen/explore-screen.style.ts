@@ -3,6 +3,10 @@ import {Colors} from '../../constants/color.constants';
 import {FontSize} from '../../constants/fontsize.constants';
 
 export const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: Colors.TimberGreen,
+  },
   filterTitle: {
     color: Colors.White,
     fontSize: FontSize.Large,
@@ -109,7 +113,11 @@ export const styles = StyleSheet.create({
     marginTop: 20,
   },
   categoryContainer: {
-    marginHorizontal: 10,
+    flexDirection: 'row',
+    paddingHorizontal: 10,
+    justifyContent: 'space-between',
+    marginVertical: 10,
+    alignItems: 'center',
   },
   categoryProductContainer: {
     backgroundColor: Colors.LightYellowGreen,
@@ -206,5 +214,19 @@ export const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     marginTop: 10,
     marginRight: 5,
+  },
+  categoryTitle: {
+    color: Colors.Solitaire,
+    fontWeight: '600',
+    fontSize: FontSize.Normal,
+  },
+  categoryAllTitle: {
+    color: Colors.Solitaire,
+    fontWeight: '400',
+    fontSize: FontSize.Small,
+  },
+  categoryCardContainer: {
+    width: '100%',
+    marginBottom: 15,
   },
 });

@@ -10,3 +10,6 @@ export interface NewsDetail {
   imageContent: string;
   category: string;
 }
+export interface GetNewsResponse {
+  contents: NewsDetail[];
+}

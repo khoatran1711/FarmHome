@@ -4,6 +4,7 @@ import BottomSheet, {
 } from '@gorhom/bottom-sheet';
 import React, {useCallback, useMemo, useRef} from 'react';
 import {Text, View} from 'react-native';
+import {Colors} from '../../../constants/color.constants';
 import {styles} from './bottom-sheet.style';
 
 export interface CustomBottomSheetProps {
@@ -36,6 +37,7 @@ export const CustomBottomSheet = (props: CustomBottomSheetProps) => {
       backdropComponent={renderBackdrop}
       onClose={() => props.onClose()}
       enableOverDrag
+      backgroundStyle={{backgroundColor: Colors.TimberGreen}}
       snapPoints={['80%']}>
       <View style={styles.container}>{props.children}</View>
     </BottomSheet>

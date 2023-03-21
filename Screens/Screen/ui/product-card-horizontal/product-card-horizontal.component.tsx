@@ -19,9 +19,10 @@ interface ProductCardHorizontalProps {
   weight: number;
   unit: string;
   address: string;
-  storeImage: ImageSourcePropType;
+  storeImage?: ImageSourcePropType;
   storeName: string;
   onPress: () => void;
+  description?: string;
 }
 
 export const ProductCardHorizontal = (props: ProductCardHorizontalProps) => {
@@ -40,8 +41,14 @@ export const ProductCardHorizontal = (props: ProductCardHorizontalProps) => {
         </Text>
         <View style={styles.content}>
           <Text style={styles.titleName}>{props?.name}</Text>
-          <Image source={props?.storeImage} style={styles.storeImage} />
+          <Text style={styles.titleDescription} numberOfLines={2}>
+            {props?.description}
+          </Text>
+
           <Text style={styles.title}>{props?.storeName}</Text>
+          <Text style={styles.titleDescription} numberOfLines={2}>
+            {props?.address}
+          </Text>
         </View>
       </ImageBackground>
     </TouchableOpacity>

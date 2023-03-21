@@ -18,12 +18,13 @@ import {SettingScreen} from '../Screen/Setting-Screen/setting-screen';
 import {useTranslation} from 'react-i18next';
 import {LoginScreen} from '../Screen/Login-Screen/login-screen';
 //import {SignupScreen} from '../Screen/Signup-Screen/signup-screen';
-import {ExploreScreen} from '../Screen/ExploreScreen/explore-screen';
-import {NewsScreen} from '../Screen/NewsScreen/news-screen';
+import {ExploreScreen} from '../Screen/ExploreScreen/explore-screen.component';
+import {NewsScreen} from '../Screen/NewsScreen/news-screen.component';
 import {
   FadeInView,
+  MessageDetailScreen,
   MessageScreen,
-} from '../Screen/MessageScreen/message-screen';
+} from '../Screen/MessageDetailScreen/message-detail-screen.component';
 import {
   backButtonIcon,
   exploreTabIcon,
@@ -38,19 +39,22 @@ import {
   newTabIconSelected,
 } from '../constants/assets.constants';
 import {styles} from './root-style';
-import {NewDetailScreen} from '../Screen/NewDetail-Screen/new-detail-screen';
-import {SearchScreen} from '../Screen/SearchScreen/search-screen';
-import {ProductDetailScreen} from '../Screen/ProductDetailScreen/product-detail-screen';
-import {StoreDetailScreen} from '../Screen/StoreDetailScreen/store-detail-screen';
-import {WaitingScreen} from '../Screen/WaitingScreen/waiting-screen';
-import {ProductWaitingDetail} from '../Screen/WaitingScreen/ProductScreen/product-screen';
-import {HistoryScreen} from '../Screen/HistoryScreen/history-screen';
-import {ProductHistoryDetail} from '../Screen/HistoryScreen/ProductScreen/product-screen';
-import {UserProfileScreen} from '../Screen/UserProfileScreen/user-profile-screen';
-import {ChangePasswordScreen} from '../Screen/ChangePasswordScreen/change-password-screen';
+import {NewDetailScreen} from '../Screen/NewDetail-Screen/new-detail-screen.component';
+import {SearchScreen} from '../Screen/SearchScreen/search-screen.component';
+import {ProductDetailScreen} from '../Screen/ProductDetailScreen/product-detail-screen.component';
+import {StoreDetailScreen} from '../Screen/StoreDetailScreen/store-detail-screen.component';
+import {WaitingScreen} from '../Screen/WaitingScreen/waiting-screen.component';
+import {ProductWaitingDetail} from '../Screen/WaitingScreen/ProductScreen/product-screen.component';
+import {HistoryScreen} from '../Screen/HistoryScreen/history-screen.component';
+import {ProductHistoryDetail} from '../Screen/HistoryScreen/ProductScreen/product-screen.component';
+import {UserProfileScreen} from '../Screen/UserProfileScreen/user-profile-screen.component';
+import {ChangePasswordScreen} from '../Screen/ChangePasswordScreen/change-password-screen.component';
 import {Colors} from '../constants/color.constants';
 import {SignUpScreenComponent} from '../Screen/SignupScreen/signup-screen.component';
 import {I18n} from '../translation';
+import {ScreenName} from '../constants/screen-name.constant';
+import {CategoryScreen} from '../Screen/CategoryScreen';
+import {MessageList} from '../Screen/MessageList/message-lisf.component';
 
 const Tab = createBottomTabNavigator();
 export const navigationRef = createNavigationContainerRef();
@@ -60,7 +64,7 @@ export const StackNavigator = ({navigation, route}) => {
     <NavigationContainer ref={navigationRef}>
       <Stack.Navigator initialRouteName={'LoginScreen'}>
         <Stack.Screen
-          name="LoginScreen"
+          name={ScreenName.LoginScreen}
           component={LoginScreen}
           options={{headerShown: false}}
         />
@@ -69,18 +73,14 @@ export const StackNavigator = ({navigation, route}) => {
           component={TabNavigator}
           options={{headerShown: false}}
         />
+
         <Stack.Screen
-          name="Login"
-          component={LoginScreen}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="Signup"
+          name={ScreenName.SignUpScreen}
           component={SignUpScreenComponent}
           options={{headerShown: false}}
         />
         <Stack.Screen
-          name="SearchScreen"
+          name={ScreenName.SearchScreen}
           component={SearchScreen}
           options={{headerShown: false}}
         />
@@ -120,7 +120,7 @@ export const StackNavigator = ({navigation, route}) => {
           options={{headerShown: false}}
         />
         <Stack.Screen
-          name="ProductDetailScreen"
+          name={ScreenName.ProductDetailScreen}
           component={ProductDetailScreen}
           options={{headerShown: false}}
         />
@@ -129,8 +129,17 @@ export const StackNavigator = ({navigation, route}) => {
           component={StoreDetailScreen}
           options={{headerShown: false}}
         />
-
+        <Stack.Screen
+          name={ScreenName.CategoryScreen}
+          component={CategoryScreen}
+          options={{headerShown: false}}
+        />
         <Stack.Screen name="Language" component={SettingsLanguageScreen} />
+        <Stack.Screen
+          name={ScreenName.MessageDetailScreen}
+          component={MessageDetailScreen}
+          options={{headerShown: false}}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -198,7 +207,7 @@ export const TabNavigator = () => {
       />
       <Tab.Screen
         name="Message"
-        component={MessageScreen}
+        component={MessageList}
         options={{
           tabBarLabel: I18n.message,
           headerShown: false,

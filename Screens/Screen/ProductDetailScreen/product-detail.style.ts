@@ -1,11 +1,12 @@
 import {StyleSheet} from 'react-native';
 import {Colors} from '../../constants/color.constants';
+import {DEVICE} from '../../constants/devices.constant';
 import {FontSize} from '../../constants/fontsize.constants';
 
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.DarkGreen,
+    backgroundColor: Colors.Solitaire,
   },
   imageProductBackground: {
     backgroundColor: Colors.Black,
@@ -33,10 +34,6 @@ export const styles = StyleSheet.create({
     width: '50%',
     marginTop: 20,
     marginLeft: '10%',
-  },
-  productName: {
-    fontSize: FontSize.Large,
-    fontWeight: '800',
   },
   productDescription: {
     fontSize: FontSize.Large,
@@ -115,14 +112,15 @@ export const styles = StyleSheet.create({
     marginBottom: 10,
   },
   headerContainer: {},
-  imageProductContainer: {},
   iconImage: {},
   bottomSheetContainer: {
     paddingHorizontal: '5%',
     paddingTop: 20,
+    backgroundColor: Colors.TimberGreen,
   },
   bottomTitle: {
-    color: Colors.DarkGreen,
+    color: Colors.Solitaire,
+    fontSize: FontSize.Normal,
     textAlign: 'center',
     marginVertical: 10,
   },
@@ -131,21 +129,23 @@ export const styles = StyleSheet.create({
     borderColor: Colors.DarkFuelGreen50,
   },
   submitButton: {
-    width: '30%',
-    borderWidth: 1,
-    borderColor: Colors.DarkGreen,
-    marginTop: 30,
-    borderRadius: 20,
-    alignSelf: 'center',
+    backgroundColor: Colors.Solitaire,
+    marginVertical: 20,
+    borderRadius: 5,
+  },
+  submitTitle: {
+    color: Colors.TimberGreen,
+    fontSize: FontSize.MediumSmall,
+    fontWeight: '600',
   },
   inputTitle: {
     fontSize: FontSize.Normal,
-    color: Colors.DarkGreen,
+    color: Colors.Solitaire,
   },
   inputText: {
     borderBottomWidth: 1,
-    borderColor: Colors.DarkGreen,
-    color: Colors.DarkGreen,
+    borderColor: Colors.Solitaire90,
+    color: Colors.Solitaire,
   },
   infoInputContainer: {
     marginVertical: 10,
@@ -173,5 +173,163 @@ export const styles = StyleSheet.create({
     paddingVertical: 5,
     marginTop: 5,
     borderRadius: 10,
+  },
+
+  imageBackground: {
+    width: DEVICE.WIDTH,
+    height: 350,
+    paddingHorizontal: 10,
+    paddingTop: 10,
+  },
+  productImageMiniContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    width: '90%',
+    alignSelf: 'center',
+    padding: 10,
+    justifyContent: 'center',
+  },
+  productImageMini: {
+    width: 30,
+    height: 30,
+    borderRadius: 30,
+    marginHorizontal: 7,
+    overflow: 'hidden',
+  },
+  productMini: {
+    width: 30,
+    height: 30,
+    resizeMode: 'stretch',
+  },
+  productName: {
+    color: Colors.TimberGreen,
+    fontSize: FontSize.Large,
+    fontWeight: '800',
+    textAlign: 'center',
+    marginVertical: 10,
+  },
+  generalInfoContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    marginVertical: 10,
+  },
+  longLine: {
+    width: '80%',
+    height: 1,
+    backgroundColor: Colors.TimberGreen,
+    alignSelf: 'center',
+  },
+  shortLine: {
+    width: '60%',
+    height: 1,
+    backgroundColor: Colors.TimberGreen,
+    alignSelf: 'center',
+  },
+  descriptionTitle: {
+    color: Colors.TimberGreen,
+    fontSize: FontSize.Large,
+    fontWeight: '600',
+    textAlign: 'center',
+    marginVertical: 10,
+  },
+  description: {
+    width: '80%',
+    color: Colors.TimberGreen,
+    fontSize: FontSize.SemiSmall,
+    fontWeight: '400',
+    textAlign: 'center',
+    alignSelf: 'center',
+    marginBottom: 20,
+  },
+  orderButton: {
+    width: '60%',
+    height: 40,
+    borderColor: Colors.TimberGreen,
+    borderWidth: 1,
+    borderRadius: 0,
+    alignSelf: 'center',
+    marginVertical: 20,
+  },
+  buttonTitle: {
+    color: Colors.TimberGreen,
+  },
+  imageProductContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    paddingTop: 60,
+  },
+  productImage: {
+    width: 200,
+    height: 200,
+    borderRadius: 150,
+    overflow: 'hidden',
+  },
+  pImage: {
+    width: 200,
+    height: 200,
+    resizeMode: 'stretch',
+  },
+  farmerCard: {
+    flexDirection: 'row',
+    width: '80%',
+    alignItems: 'center',
+    marginLeft: '5%',
+    marginVertical: 10,
+  },
+  farmerImageContainer: {
+    width: 40,
+    height: 40,
+    overflow: 'hidden',
+    borderRadius: 40,
+  },
+  farmerImage: {
+    width: 40,
+    height: 40,
+    resizeMode: 'stretch',
+  },
+  farmerInformationContainer: {
+    width: '60%',
+    paddingLeft: '2%',
+  },
+  farmerName: {
+    color: Colors.TimberGreen,
+    fontWeight: '600',
+    fontSize: FontSize.Normal,
+    width: '100%',
+  },
+  farmerLocation: {
+    color: Colors.TimberGreen,
+    fontWeight: '400',
+    fontSize: FontSize.SemiSmall,
+    width: '95%',
+  },
+  contactButton: {
+    width: '18%',
+    borderRadius: 10,
+    backgroundColor: Colors.Sidecar,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: '2%',
+  },
+  contactIcon: {
+    width: 20,
+    height: 20,
+    resizeMode: 'stretch',
+  },
+  wrapperStyle: {
+    marginVertical: 10,
+    paddingHorizontal: 0,
+  },
+  smallRadioButton: {
+    width: 20,
+    height: 20,
+    overflow: 'hidden',
+    marginVertical: 5,
+  },
+  marginTop10: {
+    marginTop: 10,
   },
 });

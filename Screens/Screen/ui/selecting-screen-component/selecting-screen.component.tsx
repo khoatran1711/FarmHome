@@ -1,6 +1,7 @@
 import {style} from '@mui/system';
 import React, {useState} from 'react';
 import {Modal, Text, View, TouchableOpacity, ScrollView} from 'react-native';
+import {I18n} from '../../../translation';
 import {GoBackButton} from '../goBack-button-component/goback-button.component';
 import {styles} from './selecting-screen.style';
 
@@ -22,11 +23,11 @@ export const SelectingScreenComponent = props => {
         <TouchableOpacity
           style={styles.closeButtonContainer}
           onPress={() => props?.onClose()}>
-          <Text style={styles.closeText}> Đóng </Text>
+          <Text style={styles.closeText}> {I18n.cancel} </Text>
         </TouchableOpacity>
         <ScrollView>
           <View style={styles.contentContainer}>
-            <Text style={styles.title}>{props?.title}</Text>
+            <Text style={styles.title}>{props?.title || I18n.chooseOne}</Text>
 
             {props?.data?.map(item => (
               <TouchableOpacity

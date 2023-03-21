@@ -1,26 +1,12 @@
 import React, {useState} from 'react';
 import {useTranslation} from 'react-i18next';
-import {
-  Alert,
-  Image,
-  ScrollView,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {Alert, Image, ScrollView, View} from 'react-native';
 import DatePicker from 'react-native-date-picker';
-import {
-  backgroundLogin,
-  backgroundSignup,
-} from '../../constants/assets.constants';
+import {backgroundSignup} from '../../constants/assets.constants';
 import {Colors} from '../../constants/color.constants';
-import {useRootSelector} from '../../domain/hooks';
+import {ScreenName} from '../../constants/screen-name.constant';
 import {UserService} from '../../services/user.service';
-import {AuthenticationSelectors} from '../../state/authentication/authentication.selector';
-import {AuthenticationService} from '../../state/authentication/services/authentication.service';
 import {I18n} from '../../translation';
-import common from '../../translation/en/common';
 import {places} from '../../utilities/constant-utilities';
 import {convertDateToString} from '../../utilities/help-utilities';
 import {
@@ -28,12 +14,14 @@ import {
   resetNavigation,
 } from '../../utilities/navigator-utilities';
 import {SignUpRequest} from '../Models/user.model';
+import {Button} from '../ui/button';
+import {InputButtonWrapper} from '../ui/input-button-wrapper/input-button-wrapper.component';
+import {InputWrapper} from '../ui/input-wrapper';
 import {SelectingScreenComponent} from '../ui/selecting-screen-component/selecting-screen.component';
 import {WaitingComponent} from '../ui/waiting-component/waiting.component';
-import {style} from './signup-screen.style';
+import {styles} from './signup-screen.style';
 
 export const SignUpScreenComponent = () => {
-  const {t} = useTranslation();
   const userService = new UserService();
   const [openDate, setOpenDate] = useState(false);
   const [birthDate, setBirthDate] = useState<Date>(new Date());
@@ -126,7 +114,7 @@ export const SignUpScreenComponent = () => {
         confirmPassword: confirmPassword,
         firstName: firstName,
         lastName: lastName,
-        birthDay: convertDateToString(birthDate),
+        birthDay: convertDateToString(birthDate) || '',
         email: email,
         phone: phone,
         status: {
@@ -157,158 +145,95 @@ export const SignUpScreenComponent = () => {
   };
 
   return (
-    <View style={style.componentContainer}>
-      {loading ? (
-        <WaitingComponent />
-      ) : (
-        <ScrollView contentContainerStyle={{paddingBottom: 20}}>
-          <Image
-            source={backgroundSignup}
-            style={style.imageSignup}
-            resizeMode={'contain'}
-          />
-          <View style={style.inputContainer}>
-            <Text style={style.loginTitle}>{I18n.createNewAccount}</Text>
-            <View style={style.input}>
-              <Text style={style.inputTitle}>{I18n.username}:</Text>
-              <TextInput
-                style={style.inputPlace}
-                placeholderTextColor={Colors.DarkGreen80}
-                placeholder={I18n.username}
-                onChangeText={e => setUsername(e)}
-              />
-            </View>
+    <View style={styles.container}>
+      {loading ? <WaitingComponent /> : <></>}
+      <ScrollView>
+        <Image
+          source={backgroundSignup}
+          resizeMode={'contain'}
+          style={styles.imageSignup}
+        />
 
-            <View style={style.input}>
-              <Text style={style.inputTitle}>{I18n.password}:</Text>
-              <TextInput
-                style={style.inputPlace}
-                placeholderTextColor={Colors.DarkGreen80}
-                placeholder={I18n.password}
-                onChangeText={e => setPassword(e)}
-              />
-            </View>
+        <InputWrapper
+          label={I18n.firstName}
+          wrapperStyle={styles.wrapperContainer}
+          onTextChange={e => setFirstName(e)}
+        />
+        <InputWrapper
+          label={I18n.lastName}
+          wrapperStyle={styles.wrapperContainer}
+          onTextChange={e => setLastName(e)}
+        />
+        <InputWrapper
+          label={I18n.username}
+          wrapperStyle={styles.wrapperContainer}
+          onTextChange={e => setUsername(e)}
+        />
+        <InputWrapper
+          label={I18n.password}
+          wrapperStyle={styles.wrapperContainer}
+          isHidden={true}
+          onTextChange={e => setPassword(e)}
+        />
+        <InputWrapper
+          label={I18n.confirmPassword}
+          wrapperStyle={styles.wrapperContainer}
+          isHidden={true}
+          onTextChange={e => setConfirmPassword(e)}
+        />
+        <InputWrapper
+          label={I18n.email}
+          wrapperStyle={styles.wrapperContainer}
+          onTextChange={e => setEmail(e)}
+        />
+        <InputWrapper
+          label={I18n.phoneNumber}
+          wrapperStyle={styles.wrapperContainer}
+          onTextChange={e => setPhone(e)}
+          numberOnly={true}
+        />
+        <InputButtonWrapper
+          label={I18n.birthdate}
+          wrapperStyle={styles.wrapperContainer}
+          content={birthDate.toDateString()}
+          onPress={() => setOpenDate(true)}
+        />
+        <InputButtonWrapper
+          label={I18n.city}
+          wrapperStyle={styles.wrapperContainer}
+          content={city}
+          onPress={() => openCitySelect()}
+        />
+        <InputButtonWrapper
+          label={I18n.district}
+          wrapperStyle={styles.wrapperContainer}
+          content={province}
+          onPress={() => openProvinceSelect()}
+        />
+        <InputButtonWrapper
+          label={I18n.ward}
+          wrapperStyle={styles.wrapperContainer}
+          content={wards}
+          onPress={() => openWardSelect()}
+        />
+        <InputWrapper
+          label={I18n.address}
+          wrapperStyle={styles.wrapperContainer}
+          onTextChange={e => setAddress(e)}
+        />
 
-            <View style={style.input}>
-              <Text style={style.inputTitle}>{I18n.confirmPassword}:</Text>
-              <TextInput
-                style={style.inputPlace}
-                placeholderTextColor={Colors.DarkGreen80}
-                placeholder={I18n.confirmPassword}
-                onChangeText={e => setConfirmPassword(e)}
-              />
-            </View>
-
-            <View style={style.input}>
-              <Text style={style.inputTitle}>{I18n.firstName}:</Text>
-              <TextInput
-                style={style.inputPlace}
-                placeholderTextColor={Colors.DarkGreen80}
-                placeholder={I18n.firstName}
-                onChangeText={e => setFirstName(e)}
-              />
-            </View>
-
-            <View style={style.input}>
-              <Text style={style.inputTitle}>{I18n.lastName}:</Text>
-              <TextInput
-                style={style.inputPlace}
-                placeholderTextColor={Colors.DarkGreen80}
-                placeholder={I18n.lastName}
-                onChangeText={e => setLastName(e)}
-              />
-            </View>
-
-            <View style={style.input}>
-              <Text style={style.inputTitle}>{I18n.email}:</Text>
-              <TextInput
-                style={style.inputPlace}
-                placeholderTextColor={Colors.DarkGreen80}
-                placeholder={I18n.email}
-                onChangeText={e => setEmail(e)}
-              />
-            </View>
-
-            <View style={style.input}>
-              <Text style={style.inputTitle}>{I18n.phoneNumber}:</Text>
-              <TextInput
-                style={style.inputPlace}
-                placeholderTextColor={Colors.DarkGreen80}
-                placeholder={I18n.phoneNumber}
-                onChangeText={e => setPhone(e)}
-              />
-            </View>
-
-            <View style={style.infoInputContainer}>
-              <Text style={style.inputTitle}>{I18n.birthdate}</Text>
-              <TouchableOpacity
-                style={style.addressInput}
-                onPress={() => setOpenDate(true)}>
-                <Text style={style.switchTitle}>
-                  {birthDate?.toDateString() || ''}
-                </Text>
-              </TouchableOpacity>
-            </View>
-
-            <View style={style.infoInputContainer}>
-              <Text style={style.inputTitle}>{I18n.city}</Text>
-              <TouchableOpacity
-                style={style.addressInput}
-                onPress={() => openCitySelect()}>
-                <Text style={style.switchTitle}>{city || I18n.city}</Text>
-              </TouchableOpacity>
-            </View>
-
-            <View style={style.infoInputContainer}>
-              <Text style={style.inputTitle}>{I18n.district}</Text>
-              <TouchableOpacity
-                style={style.addressInput}
-                onPress={() => openProvinceSelect()}>
-                <Text style={style.switchTitle}>
-                  {province || I18n.district}
-                </Text>
-              </TouchableOpacity>
-            </View>
-
-            <View style={style.infoInputContainer}>
-              <Text style={style.inputTitle}>{I18n.ward}</Text>
-              <TouchableOpacity
-                style={style.addressInput}
-                onPress={() => openWardSelect()}>
-                <Text style={style.switchTitle}>{wards || I18n.ward}</Text>
-              </TouchableOpacity>
-            </View>
-
-            <View style={style.input}>
-              <Text style={style.inputTitle}>{I18n.address}</Text>
-              <TextInput
-                style={style.inputPlace}
-                placeholderTextColor={Colors.DarkGreen80}
-                placeholder={I18n.address}
-                onChangeText={e => setAddress(e)}
-              />
-            </View>
-
-            {/** Login button */}
-            <View style={style.button}>
-              <TouchableOpacity
-                style={style.buttonContainer}
-                onPress={() => Submit()}>
-                <Text style={style.buttonTitle}>{I18n.signUp}</Text>
-              </TouchableOpacity>
-            </View>
-
-            <TouchableOpacity
-              style={style.switchButton}
-              onPress={() => resetNavigation('LoginScreen')}>
-              <Text style={[style.switchTitle, {textAlign: 'center'}]}>
-                {I18n.alreadyHaveAccountLoginNow}
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </ScrollView>
-      )}
-
+        <Button
+          buttonStyle={styles.signupButton}
+          titleStyle={{color: Colors.TimberGreen}}
+          title={I18n.signUp}
+          onPress={() => Submit()}
+        />
+        <Button
+          buttonStyle={styles.loginButton}
+          title={I18n.login}
+          onPress={() => resetNavigation(ScreenName.LoginScreen)}
+        />
+      </ScrollView>
       <DatePicker
         modal
         mode={'date'}
@@ -351,7 +276,13 @@ export const SignUpScreenComponent = () => {
             setIsOpen(false);
           }
         }}
-        title="Thành phố"
+        title={
+          opening === 'city'
+            ? I18n.city
+            : opening === 'districts'
+            ? I18n.district
+            : I18n.ward
+        }
         onClose={() => {
           setIsOpen(false);
         }}

@@ -1,5 +1,6 @@
 import {StyleSheet} from 'react-native';
 import {Colors} from '../../constants/color.constants';
+import {DEVICE} from '../../constants/devices.constant';
 import {FontSize} from '../../constants/fontsize.constants';
 
 export const styles = StyleSheet.create({
@@ -22,33 +23,20 @@ export const styles = StyleSheet.create({
     left: -60,
     zIndex: 50,
   },
-  storeImage: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'stretch',
-  },
+
   backgroundLine: {
     width: '120%',
     height: 200,
     resizeMode: 'stretch',
     zIndex: 0,
   },
-  storeName: {
-    color: Colors.White,
-    fontSize: FontSize.Large,
-    alignSelf: 'flex-end',
-    marginTop: 30,
-    width: '43%',
-    paddingRight: '2%',
-    textAlign: 'center',
-  },
+
   storeDescription: {
-    color: Colors.White,
+    color: Colors.Solitaire,
     fontSize: FontSize.Small,
-    alignSelf: 'flex-end',
-    marginTop: 40,
-    width: '100%',
-    paddingHorizontal: '2%',
+    alignSelf: 'center',
+    marginTop: 10,
+    width: '90%',
     textAlign: 'center',
   },
   storeInfoContainer: {
@@ -72,16 +60,7 @@ export const styles = StyleSheet.create({
     paddingVertical: 3,
     marginBottom: 20,
   },
-  contactInfo: {
-    width: '90%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    alignSelf: 'center',
-    textAlign: 'center',
-    color: Colors.White,
-    fontSize: FontSize.Small,
-    marginTop: 8,
-  },
+
   productAreaContainer: {
     width: '100%',
     paddingHorizontal: '5%',
@@ -145,5 +124,85 @@ export const styles = StyleSheet.create({
   productDescription: {
     color: Colors.White,
     fontSize: FontSize.Small,
+  },
+
+  imageBackground: {
+    width: DEVICE.WIDTH,
+    height: 340,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+  },
+  imageFarmerContainer: {
+    width: 200,
+    height: 200,
+    borderRadius: 200,
+    overflow: 'hidden',
+    alignSelf: 'center',
+    marginTop: 80,
+  },
+  storeImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'stretch',
+  },
+  storeName: {
+    textAlign: 'center',
+    color: Colors.Solitaire,
+    fontSize: FontSize.Large,
+  },
+  mediumLine: {
+    width: '60%',
+    alignSelf: 'center',
+    backgroundColor: Colors.Solitaire,
+    height: 1,
+    marginTop: 20,
+  },
+  line: {
+    width: '90%',
+    alignSelf: 'center',
+    backgroundColor: Colors.Solitaire,
+    height: 1,
+    marginTop: 20,
+  },
+  contactInfo: {
+    marginVertical: 10,
+    width: '90%',
+    alignSelf: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+  },
+  phoneNumber: {
+    color: Colors.Solitaire,
+    fontSize: FontSize.Normal,
+    fontWeight: '600',
+  },
+  contactContent: {
+    color: Colors.Solitaire,
+    fontSize: FontSize.Small,
+    width: '100%',
+  },
+  verticalLine: {
+    width: 1,
+    backgroundColor: Colors.Solitaire,
+    height: '100%',
+  },
+  buttonContainer: {
+    width: '20%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  button: {
+    width: 35,
+    height: 35,
+    backgroundColor: Colors.Solitaire,
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginVertical: 5,
+  },
+  buttonImage: {
+    width: 20,
+    height: 20,
+    resizeMode: 'stretch',
   },
 });

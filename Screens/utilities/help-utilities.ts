@@ -36,6 +36,17 @@ export const getFarmerLocation = (location: Location | undefined) => {
   return '';
 };
 
+export const getFarmerShortLocation = (location: Location | undefined) => {
+  if (location) {
+    return (
+      location?.ward?.district?.name +
+      ', ' +
+      location?.ward?.district?.province?.name
+    );
+  }
+  return '';
+};
+
 export const getImageFarmer = (imageUrl?: string | null) => {
   return imageUrl ? {uri: imageUrl} : defaultFarmer;
 };
@@ -58,5 +69,38 @@ export const convertDateToString = (date: Date | string) => {
       '-' +
       getFormatDateTime(date?.getUTCDate())
     );
+  }
+};
+
+export const convertDateJsonToDate = (date?: string) => {
+  if (!date || date === '') return;
+  else {
+    const list = date.split('-');
+    if (list?.length === 3) {
+      return `${list[2]}-${list[1]}-${list[0]}`;
+    }
+    return;
+  }
+};
+
+export const convertDateJsonToDateMonth = (date?: string) => {
+  if (!date || date === '') return;
+  else {
+    const list = date.split('-');
+    if (list?.length === 3) {
+      return `${list[2]}/${list[1]}`;
+    }
+    return;
+  }
+};
+
+export const convertDateJsonToYear = (date?: string) => {
+  if (!date || date === '') return;
+  else {
+    const list = date.split('-');
+    if (list?.length === 3) {
+      return `${list[0]}`;
+    }
+    return;
   }
 };

@@ -10,9 +10,7 @@ export interface HttpResult<T> {
   isSuccess: boolean;
   status: HttpStatusCode;
   statusText: string;
-  data: {
-    data: T;
-  };
+  data: T;
   headers: {[key: string]: string};
   config: AxiosRequestConfig;
   error?: any;
@@ -61,9 +59,7 @@ export class HttpService {
         status: error.response.status,
         statusText: error.response.statusText,
         headers: error.response.headers,
-        data: {
-          data: null,
-        },
+        data: null,
         config: error.response.config,
         error: error.response.data,
         errorCode: HttpServiceError.ApiError,
@@ -81,9 +77,7 @@ export class HttpService {
       status: 0,
       statusText: '',
       headers: {},
-      data: {
-        data: null,
-      },
+      data: null,
       config: {},
     };
   };
@@ -156,11 +150,6 @@ export class HttpService {
     const promise = this.client.put(url, data, configs) as Promise<
       HttpResult<TResponse>
     >;
-
-    console.log(
-      '==================== ERROR ============',
-      JSON.stringify(this.client),
-    );
 
     return promise;
   }

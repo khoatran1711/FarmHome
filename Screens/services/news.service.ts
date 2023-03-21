@@ -12,7 +12,7 @@ import {
 } from '../../Services/url.constant';
 import {useRootSelector} from '../domain/hooks';
 import {RootStore, RootStoreType} from '../domain/store';
-import {URL_GET_NEWS} from '../Screen/Models/news.model';
+import {GetNewsResponse, URL_GET_NEWS} from '../Screen/Models/news.model';
 import {User} from '../Screen/Models/user.model';
 import {AuthenticationSelectors} from '../state/authentication/authentication.selector';
 import {globalGoBack} from '../utilities/navigator-utilities';
@@ -34,7 +34,7 @@ export class NewsService {
     }
   }
 
-  getAllNews(): Promise<HttpResult<User>> {
+  getAllNews(): Promise<HttpResult<GetNewsResponse>> {
     const url = URL_BASE + URL_GET_NEWS;
 
     return this.httpService.get<any>(url);

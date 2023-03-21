@@ -1,5 +1,6 @@
 import {StyleSheet} from 'react-native';
 import {Colors} from '../../../constants/color.constants';
+import {FontSize} from '../../../constants/fontsize.constants';
 
 export const styles = StyleSheet.create({
   background: {
@@ -9,14 +10,14 @@ export const styles = StyleSheet.create({
   },
   imageFruit: {
     width: 80,
-    height: 90,
+    height: 80,
     marginTop: 10,
-    marginLeft: 15,
+    marginLeft: 10,
     resizeMode: 'stretch',
   },
   container: {
-    width: 110,
-    height: 170,
+    width: 100,
+    height: 150,
     opacity: 1,
     marginVertical: 5,
     marginHorizontal: 4,
@@ -27,8 +28,8 @@ export const styles = StyleSheet.create({
   title: {
     width: '80%',
     alignSelf: 'center',
-    fontSize: 11,
-    color: Colors.White,
+    fontSize: FontSize.Small,
+    color: Colors.TimberGreen,
     textAlign: 'center',
   },
 });

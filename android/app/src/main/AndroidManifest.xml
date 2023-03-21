@@ -34,7 +34,7 @@
     android:resource="@android:color/white"/>
     <meta-data
         android:name="com.google.firebase.messaging.default_notification_icon"
-        android:resource="@mipmap/ic_launcher_adaptive_back" />
+        android:resource="@drawable/ic_notification" />
     <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationPublisher"   />
     <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationBootEventReceiver" android:exported="false">
     <intent-filter>

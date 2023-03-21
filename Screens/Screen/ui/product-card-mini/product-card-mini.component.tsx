@@ -17,7 +17,7 @@ import {styles} from './product-card-mini.styles';
 interface ProductCardProps {
   image: ImageSourcePropType;
   name: string;
-  weight: string;
+  weight: number;
   unit: string;
   storeName: string;
   address: string;
@@ -41,10 +41,6 @@ export const ProductCardMini = (props: ProductCardProps) => {
           </Text>
           <Text numberOfLines={1} style={styles.title}>
             {props?.weight} {props?.unit}
-          </Text>
-
-          <Text numberOfLines={2} style={styles.title}>
-            {props?.address}
           </Text>
         </View>
       </ImageBackground>

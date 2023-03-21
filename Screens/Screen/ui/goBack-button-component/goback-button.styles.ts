@@ -3,8 +3,8 @@ import {Colors} from '../../../constants/color.constants';
 
 export const styles = StyleSheet.create({
   imageHeaderContainer: {
-    width: 40,
-    height: 40,
+    width: 30,
+    height: 30,
     borderRadius: 30,
     backgroundColor: Colors.White,
     justifyContent: 'center',

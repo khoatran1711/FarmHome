@@ -1,3 +1,4 @@
+import {Location} from './farmer.model';
 import {Product} from './product.model';
 import {User} from './user.model';
 
@@ -23,6 +24,7 @@ export interface Order {
     id: number;
     name: string;
   };
+  deliveryLocation?: Location;
 }
 
 export interface GetAllOrderResponse {
@@ -46,6 +48,7 @@ export interface OrderHistory {
   dealAmount?: number | null;
   dealPrice?: number | null;
   amount: number;
+  deliveryLocation?: Location;
 }
 
 export enum STATUS_CODE_ORDER {

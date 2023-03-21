@@ -45,6 +45,7 @@ export const EN = {
   confirmPassword: 'Confirm Password',
   changePassword: 'Change Password',
   passwordChangeCondition: 'Password must be at least 6 characters',
+  incorrectOldPassword: 'Incorrect Old Password',
   welcome: 'Welcome',
   firstName: 'First Name',
   lastName: 'Last Name',
@@ -68,7 +69,7 @@ export const EN = {
   checkYourNetwork: 'Please check your network again',
   apply: 'Apply',
   nResultsFound: '{n} results are found',
-  getNow: 'Get Now',
+  getNow: 'Get this product now',
   viewFarm: 'View Store',
   phoneNow: 'Phone Now',
   updateSuccessfully: 'Update Successfully',
@@ -94,12 +95,15 @@ export const EN = {
   notTransportSupport: 'Not support for transport',
   thankYouForBuying:
     'Thank you for your booking!Please keep on contact with us to know when our product is ready',
+  ifYouHaveAnyProblem:
+    'If there is anything that affected to your experience, please let us know - 0908851760',
   doYouWantToDeleteThisOrder: 'Do you want to delete this order?',
   youCanNotRecover: 'After agree, you can not recover again.',
   yes: 'Yes',
   no: 'No',
   deleteSuccessfully: 'Delete Successfully!',
   newAmount: 'New Amount',
+  newPrice: 'New Price',
   orderInfoChange:
     'We would like to have our product order changed a little bit, can we make a deal ?',
   agreeOrderChange: 'Fine, I would agree with this price.',
@@ -119,6 +123,28 @@ export const EN = {
   latestNews: 'LATEST NEWS',
   getAllLatestNews:
     'Find the latest news about products and agriculture information',
+  fruit: 'Fruits',
+  green: 'Greens',
+  tuber: 'Tubers',
+  pea: 'Peas',
+  spice: 'Spices',
+  category: 'Category',
+  all: 'All',
+  allCategory: 'All category',
+  description: 'Description',
+  chooseOne: 'Choose one item',
+  note: 'Note',
+  changePasswordNote: `Note: 
+    • After your change your password, you will need to login again with your new password.
+    • Your password should be strong enough to make it more secured.
+  `,
+  waitingForAccept: 'Your order is waiting for the farmer’s accept.',
+  orContactToFarmer: 'Or you can directly contact to the farmer',
+  history: 'History',
+  createAt: 'Create at ',
+  day: 'Day',
+  author: 'Author',
+  chat: 'Chat',
 };
 
 export type I18nDictionary = typeof EN;

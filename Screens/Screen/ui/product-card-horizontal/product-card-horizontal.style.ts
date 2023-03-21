@@ -1,5 +1,6 @@
 import {StyleSheet} from 'react-native';
 import {Colors} from '../../../constants/color.constants';
+import {FontSize} from '../../../constants/fontsize.constants';
 
 export const styles = StyleSheet.create({
   background: {
@@ -9,43 +10,54 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   imageFruit: {
-    width: 120,
-    height: 110,
+    width: 90,
+    height: 90,
     marginTop: 5,
     marginLeft: '5%',
     resizeMode: 'stretch',
   },
   container: {
     width: '94%',
-    height: 130,
+    height: 100,
     opacity: 1,
     alignSelf: 'center',
     marginVertical: 5,
   },
   priceTitle: {
-    fontSize: 11,
-    color: Colors.Black,
-    marginLeft: '28%',
-    marginTop: 93,
+    fontSize: FontSize.Small,
+    color: Colors.Solitaire,
+    marginLeft: '2%',
+    borderRadius: 5,
+    marginTop: 75,
     fontWeight: '600',
-    width: '21%',
+    width: '18%',
     height: 23,
     textAlign: 'center',
     textAlignVertical: 'center',
+    backgroundColor: Colors.Finlandia,
   },
   title: {
     width: '100%',
     alignSelf: 'center',
-    fontSize: 11,
-    color: Colors.White,
+    fontSize: FontSize.Small,
+    color: Colors.TimberGreen,
     textAlign: 'right',
+    fontWeight: '400',
   },
   titleName: {
     width: '100%',
     alignSelf: 'center',
-    fontSize: 14,
+    fontSize: FontSize.Small,
     fontWeight: '600',
-    color: Colors.White,
+    color: Colors.TimberGreen,
+    textAlign: 'right',
+  },
+  titleDescription: {
+    width: '100%',
+    alignSelf: 'center',
+    fontSize: FontSize.SemiSmall,
+    fontWeight: '400',
+    color: Colors.TimberGreen,
     textAlign: 'right',
   },
   storeImage: {
@@ -57,8 +69,8 @@ export const styles = StyleSheet.create({
     marginVertical: 5,
   },
   content: {
-    width: '40%',
+    width: '60%',
     alignSelf: 'center',
-    marginLeft: '5%',
+    marginLeft: '15%',
   },
 });

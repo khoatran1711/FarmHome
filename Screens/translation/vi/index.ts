@@ -45,6 +45,7 @@ export const VI = {
   confirmPassword: 'Xác nhận mật khẩu',
   changePassword: 'Đổi mật khẩu',
   passwordChangeCondition: 'Mật khẩu phải chứa ít nhất 6 ký tự',
+  incorrectOldPassword: 'Vui lòng nhập lại mật khẩu cũ',
   welcome: 'Chào mừng',
   firstName: 'Tên',
   lastName: 'Họ',
@@ -68,7 +69,7 @@ export const VI = {
   checkYourNetwork: 'Vui lòng kiểm tra lại kết nối của bạn',
   apply: 'Áp dụng',
   nResultsFound: '{n} kết quả được tìm thấy',
-  getNow: 'Đặt ngay',
+  getNow: 'Đặt sản phẩm này',
   viewFarm: 'Xem Shop',
   phoneNow: 'Gọi ngay',
   updateSuccessfully: 'Cập nhật thành công',
@@ -94,12 +95,15 @@ export const VI = {
   notTransportSupport: 'Không hỗ trợ vận chuyển',
   thankYouForBuying:
     'Cảm ơn sự ủng hộ của bạn!Hãy giữ liên hệ với cửa hàng để biết trạng thái đơn hàng của bạn.',
+  ifYouHaveAnyProblem:
+    'Nếu bạn có vấn đề nào khi đang trải nghiệm, hãy liên hệ với chúng tôi - 0908851760',
   doYouWantToDeleteThisOrder: 'Bạn có muốn hủy đơn này?',
   youCanNotRecover: 'Sau khi đồng ý, bạn sẽ không thể hoàn tác lại.',
   yes: 'Có',
   no: 'Không',
   deleteSuccessfully: 'Xóa thành công!',
-  newAmount: 'Giá thành mới',
+  newAmount: 'Số lượng mới',
+  newPrice: 'Giá thành mới',
   orderInfoChange:
     'Có một vài sự thay đổi về đơn hàng, bạn có đồng ý với sự thay đổi?',
   agreeOrderChange: 'Tôi đồng ý với sự thay đổi này.',
@@ -120,6 +124,26 @@ export const VI = {
   latestNews: 'TIN TỨC MỚI',
   getAllLatestNews:
     'Xem những tin tức mới về sản phẩm nông sản và thay đổi thị trường',
+  fruit: 'Trái cây',
+  green: 'Rau Xanh',
+  tuber: 'Rau Củ',
+  pea: 'Đậu',
+  spice: 'Gia Vị',
+  category: 'Phân loại',
+  all: 'Tất cả',
+  allCategory: 'Tất cả sản phẩm',
+  description: 'Mô tả sản phẩm',
+  chooseOne: 'Chọn một mục',
+  note: 'Lưu ý',
+  changePasswordNote:
+    '• Sau khi đổi mật khẩu mới, bạn cần đăng nhập lại tài khoản. \n• Hãy đảm bảo rằng mật khẩu của bạn đủ mạnh để tăng cường bảo mật.',
+  waitingForAccept: 'Đơn hàng của bạn đang chờ được xác nhận',
+  orContactToFarmer: 'Hoặc bạn có thể trực tiếp liên hệ đến nông trại',
+  history: 'Lịch sử mua hàng',
+  createAt: 'Xuất đơn ngày ',
+  day: 'Ngày',
+  author: 'Tác giả',
+  chat: 'Trò chuyện',
 };
 
 export type I18nDictionary = typeof VI;

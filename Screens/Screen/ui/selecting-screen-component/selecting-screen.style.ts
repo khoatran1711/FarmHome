@@ -5,7 +5,7 @@ import {FontSize} from '../../../constants/fontsize.constants';
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.White,
+    backgroundColor: Colors.TimberGreen,
   },
   closeButtonContainer: {
     alignSelf: 'flex-end',
@@ -13,7 +13,7 @@ export const styles = StyleSheet.create({
     marginTop: 10,
   },
   closeText: {
-    color: Colors.DarkGreen,
+    color: Colors.Solitaire,
     fontSize: FontSize.MediumSmall,
   },
   contentContainer: {
@@ -23,7 +23,7 @@ export const styles = StyleSheet.create({
   },
   title: {
     fontWeight: '800',
-    color: Colors.DarkGreen,
+    color: Colors.Solitaire,
     fontSize: FontSize.MediumSmall,
     marginBottom: 10,
   },
@@ -32,12 +32,11 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 10,
     borderRadius: 10,
-    borderWidth: 1,
-    backgroundColor: Colors.DarkGreen,
+    backgroundColor: Colors.Finlandia,
     marginVertical: 5,
   },
   itemText: {
-    color: Colors.White,
+    color: Colors.Solitaire,
     fontSize: FontSize.MediumSmall,
   },
 });
