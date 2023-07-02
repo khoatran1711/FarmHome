@@ -4,6 +4,7 @@ import {Image, Text, View} from 'react-native';
 import {validAmountIcon} from '../../../constants/assets.constants';
 import {Colors} from '../../../constants/color.constants';
 import {FontSize} from '../../../constants/fontsize.constants';
+import {I18n} from '../../../translation';
 
 interface IconWithLabel {
   icon?: ImageSourcePropType;
@@ -25,7 +26,7 @@ export const IconWithLabel = (props?: IconWithLabel) => {
           fontWeight: '600',
           textAlignVertical: 'center',
         }}>
-        {props?.label}
+        {props?.label?.includes('no data') ? I18n.updating : props?.label}
       </Text>
 
       <Text

@@ -3,6 +3,7 @@ import {ImageSourcePropType, Text, View} from 'react-native';
 import {Image, TouchableOpacity} from 'react-native';
 import {hourglassIcon} from '../../../constants/assets.constants';
 import {Colors} from '../../../constants/color.constants';
+import {OrderStatus} from '../../../constants/status.constant';
 import {I18n} from '../../../translation';
 import {styles} from './waiting-card.style';
 
@@ -13,6 +14,7 @@ interface WaitingCardProps {
   productImage: ImageSourcePropType;
   productPrice: number;
   productAmount: number;
+  status?: string;
   isTransport: boolean;
   date?: string;
   unit: string;
@@ -68,10 +70,25 @@ export const WaitingCard = (props?: WaitingCardProps) => {
             </View>
             {!props?.date && (
               <View style={styles.waitingContainer}>
-                <View style={styles.hourglassImage}>
-                  <Image source={hourglassIcon} style={styles.image} />
-                </View>
-                <Text style={styles.waitingTitle}>{I18n.waitingForAccept}</Text>
+                {props?.status !== OrderStatus.Cancel ? (
+                  <View style={styles.hourglassImage}>
+                    <Image source={hourglassIcon} style={styles.image} />
+                  </View>
+                ) : (
+                  <TouchableOpacity
+                    style={[styles.button, styles.disagreeButton]}>
+                    <Text style={styles.disagree}>✕</Text>
+                  </TouchableOpacity>
+                )}
+                {props?.status !== OrderStatus.Cancel ? (
+                  <Text style={styles.waitingTitle}>
+                    {I18n.waitingForAccept}
+                  </Text>
+                ) : (
+                  <Text style={styles.waitingTitle}>
+                    {I18n.yourOrderHasBeenCanceled}
+                  </Text>
+                )}
               </View>
             )}
           </View>

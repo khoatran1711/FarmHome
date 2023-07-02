@@ -1,13 +1,10 @@
-import {types} from '@babel/core';
 import React, {useEffect, useRef, useState} from 'react';
 import {
   Dimensions,
   Image,
   ImageBackground,
-  Platform,
   RefreshControl,
   ScrollView,
-  StyleSheet,
   Text,
   TouchableOpacity,
   View,
@@ -23,9 +20,8 @@ import {
 } from '../../constants/assets.constants';
 import {Colors} from '../../constants/color.constants';
 import {FontSize} from '../../constants/fontsize.constants';
-import {ViewPropTypes} from 'deprecated-react-native-prop-types';
 import Carousel from 'react-native-snap-carousel';
-import LinearGradient from 'react-native-linear-gradient';
+
 import {globalNavigate} from '../../utilities/navigator-utilities';
 import {NewsDetail} from '../Models/news.model';
 import {NewsService} from '../../services/news.service';

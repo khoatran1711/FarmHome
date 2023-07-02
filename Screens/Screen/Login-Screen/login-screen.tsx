@@ -9,6 +9,7 @@ import {useRootSelector} from '../../domain/hooks';
 import {AuthenticationSelectors} from '../../state/authentication/authentication.selector';
 import {AuthenticationService} from '../../state/authentication/services/authentication.service';
 import {I18n} from '../../translation';
+import {PopupShow} from '../../utilities/help-utilities';
 import {globalNavigate} from '../../utilities/navigator-utilities';
 import {Button} from '../ui/button';
 import {InputWrapper} from '../ui/input-wrapper';
@@ -18,6 +19,9 @@ import {styles} from './login-style';
 export const LoginScreen = ({navigation}) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+
+  const loading = useRootSelector(AuthenticationSelectors.isLoadingSelector);
+  const deviceId = useRootSelector(AuthenticationSelectors.deviceTokenSelector);
 
   const checkValidateLogin = () => {
     let validate: ValidateData = {
@@ -44,13 +48,11 @@ export const LoginScreen = ({navigation}) => {
   const loadData = () => {
     const validate: ValidateData = checkValidateLogin();
     if (validate.isError) {
-      Alert.alert(validate.error);
+      PopupShow(I18n.fail, validate.error);
     } else {
-      new AuthenticationService().LogIn(username, password);
+      new AuthenticationService().LogIn(username, password, deviceId);
     }
   };
-
-  const loading = useRootSelector(AuthenticationSelectors.isLoadingSelector);
 
   return (
     <>

@@ -5,6 +5,7 @@ import {
   Dimensions,
   Image,
   ImageBackground,
+  RefreshControl,
   ScrollView,
   Text,
   TextInput,
@@ -14,18 +15,22 @@ import {
 
 import {
   backButtonIcon,
-  banner1,
-  cartIcon,
   filterIcon,
   searchIcon,
 } from '../../constants/assets.constants';
 import {Colors} from '../../constants/color.constants';
+import {DEVICE} from '../../constants/devices.constant';
 import {FontSize} from '../../constants/fontsize.constants';
 import {ScreenName} from '../../constants/screen-name.constant';
-import {filterProduct, searchProduct} from '../../services/product.service';
+import {useRootSelector} from '../../domain/hooks';
+import {
+  filterProduct,
+  ProductService,
+  searchProduct,
+} from '../../services/product.service';
+import {ProductListSelectors} from '../../state/product-list/product-list.selector';
 import {I18n} from '../../translation';
-import {getImage} from '../../utilities/format-utilities';
-import {getFarmerLocation} from '../../utilities/help-utilities';
+
 import {globalNavigate} from '../../utilities/navigator-utilities';
 import {
   FilterProductRequest,
@@ -94,22 +99,33 @@ const SORT_LIST = [
   },
 ];
 
-export const SearchScreen = ({route}) => {
+export interface SearchRequest {
+  params: {
+    searchText: string;
+    seasonList: string;
+    category: string;
+    popular: boolean;
+    image: any;
+  };
+}
+
+export const SearchScreen = ({route}: {route: SearchRequest}) => {
   const navigator = useNavigation();
   const [chooseNumber, setChooseNumber] = useState(0);
   const [chooseList, setChooseList] = useState([]);
   const search = route?.params?.searchText || '';
   const [searchText, setSearchText] = useState();
-  const [productList, setProductList] = useState();
+  const [pageNumber, setPageNumber] = useState(0);
+  //const [productList, setProductList] = useState();
   const [loading, setLoading] = useState(false);
 
   const [isPopular, setIsPopular] = useState(false);
   const [season, setSeason] = useState('');
 
   const req: FilterProductRequest = {
-    no: 0,
+    no: pageNumber,
     popular: route?.params?.popular,
-    limit: 30,
+    limit: 10,
     seasonList: route?.params?.seasonList || '',
     name: searchText || search,
   };
@@ -130,7 +146,7 @@ export const SearchScreen = ({route}) => {
       selection.isSelect = true;
       setChooseNumber(chooseNumber + 1);
       let newChooseList = chooseList;
-      newChooseList.push(selection.name);
+      newChooseList.push(selection?.name);
       setChooseList(newChooseList);
     }
   };
@@ -151,16 +167,47 @@ export const SearchScreen = ({route}) => {
   };
 
   const getData = async req => {
-    console.log(req);
     setLoading(true);
     const response = await filterProduct(req);
     const {contents} = response?.data;
     setLoading(false);
-    setProductList(contents);
+    //setProductList(contents);
+  };
+
+  const getDataWithoutLoading = async req => {
+    const response = await filterProduct(req);
+    const {contents} = response?.data;
+
+    //setProductList(contents);
+  };
+
+  const [refresh, setRefresh] = useState(false);
+
+  const productList = useRootSelector(ProductListSelectors.productListSelector);
+  const isLoading = useRootSelector(ProductListSelectors.isLoadingSelector);
+  const totalItems = useRootSelector(ProductListSelectors.totalItemsSelector);
+
+  const productService = new ProductService();
+
+  const onRefresh = () => {
+    setRefresh(true);
+    setTimeout(() => {
+      setRefresh(false);
+      setPageNumber(0);
+      productService.resetSearchProductList({...req, no: 0});
+      getDataWithoutLoading(req);
+    }, 1000);
   };
 
   useEffect(() => {
     getData(req);
+    if (route?.params?.image) {
+      console.log('my image', route?.params?.image);
+      productService.productDetect(route?.params?.image);
+    } else {
+      console.log('No image');
+      productService.resetSearchProductList(req);
+    }
   }, []);
 
   return (
@@ -272,7 +319,7 @@ export const SearchScreen = ({route}) => {
               placeholder={`${I18n.explore}...`}
               onChangeText={e => setSearchText(e)}
             />
-            <TouchableOpacity onPress={() => getData(req)}>
+            <TouchableOpacity onPress={() => onRefresh()}>
               <Image
                 source={searchIcon}
                 style={{
@@ -311,9 +358,29 @@ export const SearchScreen = ({route}) => {
         {!loading ? (
           <>
             <Text style={styles.resultNumber}>
-              {I18n.nResultsFound.replace('{n}', productList?.length)}
+              {I18n.nResultsFound.replace('{n}', totalItems?.toString())}
             </Text>
-            <ScrollView>
+            <ScrollView
+              refreshControl={
+                <RefreshControl
+                  refreshing={refresh || isLoading}
+                  onRefresh={() => onRefresh()}
+                />
+              }
+              onScroll={({nativeEvent}) => {
+                // Nếu cuộn đến cuối và đang không tải dữ liệu mới
+                if (
+                  nativeEvent.contentOffset.y >=
+                    nativeEvent.contentSize.height - DEVICE.HEIGHT + 50 &&
+                  !isLoading
+                ) {
+                  setPageNumber(pageNumber + 1);
+                  productService.searchProductList({
+                    ...req,
+                    no: pageNumber + 1,
+                  });
+                }
+              }}>
               <View style={styles.allResultContainer}>
                 {productList?.map(item => (
                   // <ProductCard

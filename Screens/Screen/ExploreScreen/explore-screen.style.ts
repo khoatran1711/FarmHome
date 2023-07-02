@@ -94,12 +94,13 @@ export const styles = StyleSheet.create({
     borderRadius: 12,
   },
   searchInput: {
-    width: '80%',
+    width: '75%',
     fontSize: FontSize.MediumSmall,
   },
   icon: {
     height: 25,
     width: 25,
+    marginRight: 5,
   },
   numberTypeChosen: {
     width: '40%',
@@ -228,5 +229,19 @@ export const styles = StyleSheet.create({
   categoryCardContainer: {
     width: '100%',
     marginBottom: 15,
+  },
+  optionImageContainer: {
+    paddingHorizontal: '5%',
+    alignItems: 'center',
+  },
+  optionImageTitle: {
+    color: Colors.Solitaire,
+    fontSize: FontSize.MediumSmall,
+    paddingVertical: 10,
+  },
+  optionImageLine: {
+    width: '100%',
+    height: 1,
+    backgroundColor: Colors.Solitaire,
   },
 });

@@ -4,4 +4,5 @@ export interface AuthenticationState {
   id?: number | null;
   token: string | null;
   isLoading: boolean;
+  deviceToken?: string | null;
 }

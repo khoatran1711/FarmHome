@@ -9,16 +9,17 @@ export const styles = StyleSheet.create({
     marginVertical: 10,
   },
   imageProduct: {
-    width: 80,
-    height: 80,
+    width: 90,
+    height: 90,
     resizeMode: 'stretch',
-    marginTop: 20,
+    marginLeft: 10,
     alignSelf: 'center',
   },
   imageBackground: {
     width: '100%',
     height: '100%',
-    marginTop: -100,
+    marginTop: -102,
+    zIndex: 10,
   },
   content: {
     marginTop: 120,

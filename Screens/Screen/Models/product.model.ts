@@ -18,6 +18,9 @@ export interface Product {
   farmer: Farmer;
   popular: boolean;
   season: string;
+  suggestPrice: string;
+  description: string;
+  category: string;
 }
 
 export interface Image {
@@ -27,6 +30,12 @@ export interface Image {
 
 export interface ProductResponse {
   contents: Product[];
+  totalPages?: number;
+  totalItems?: number;
+  sizeCurrentItems?: number;
+  numberOfCurrentPage?: number;
+  first?: boolean;
+  last?: boolean;
 }
 
 export interface OrderRequest {

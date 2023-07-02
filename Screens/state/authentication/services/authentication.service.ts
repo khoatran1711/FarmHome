@@ -12,6 +12,7 @@ import {
 } from '../../../Screen/Login-Screen/login.model';
 import {I18n} from '../../../translation';
 import {handleBackendError} from '../../../utilities/handdle-error';
+import {ErrorHandle, PopupShow} from '../../../utilities/help-utilities';
 import {globalNavigate} from '../../../utilities/navigator-utilities';
 import {AuthenticationSelectors} from '../authentication.selector';
 import {AuthenticationActions} from '../authentication.state';
@@ -23,11 +24,13 @@ export class AuthenticationService {
     this.httpService = new HttpService();
   }
 
-  LogIn(username: string, password: string) {
+  LogIn(username: string, password: string, deviceId?: string | null) {
     const urlRequest = URL_BASE + URL_SIGN_IN;
+
     const loginRequest = {
       username: username,
       password: password,
+      deviceId: deviceId,
     };
 
     this.store.dispatch(AuthenticationActions.setLoading(true));
@@ -43,27 +46,26 @@ export class AuthenticationService {
         const status = httpResult.status;
 
         if (status === HttpStatusCode.Unauthorized) {
-          ToastAndroid.show(
-            I18n.checkAgainYourAccountAndPassword,
-            ToastAndroid.SHORT,
-          );
+          ErrorHandle(I18n.fail, I18n.checkAgainYourAccountAndPassword);
         }
 
         if (status === HttpStatusCode.Created) {
-          this.store.dispatch(
-            AuthenticationActions.setId(httpResult.data.idUser),
-          );
+          httpResult?.data?.idUser &&
+            this.store.dispatch(
+              AuthenticationActions.setId(httpResult?.data?.idUser),
+            );
           ToastAndroid.show(I18n.loggedInSuccessfully, ToastAndroid.SHORT);
           globalNavigate('HomeScreen');
         }
 
         if (status === HttpStatusCode.NetWorkFail) {
-          ToastAndroid.show(I18n.checkYourNetwork, ToastAndroid.SHORT);
+          ErrorHandle(I18n.fail, I18n.checkYourNetwork);
         }
 
         return {status};
       });
   }
+
   LogOut() {
     this.store.dispatch(AuthenticationActions.logOut());
   }

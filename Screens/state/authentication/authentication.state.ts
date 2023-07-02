@@ -9,6 +9,7 @@ const initialState: AuthenticationState = {
   token: '',
   isLoading: false,
   id: 0,
+  deviceToken: '',
 };
 
 export const AuthenticationSlice = createSlice({
@@ -22,12 +23,17 @@ export const AuthenticationSlice = createSlice({
     // End loading
     logOut: state => {
       state.token = null;
+      state.id = null;
+      state.deviceToken = null;
     },
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload;
     },
     setId: (state, action: PayloadAction<number>) => {
       state.id = action.payload;
+    },
+    setDeviceToken: (state, action: PayloadAction<string>) => {
+      state.deviceToken = action.payload;
     },
   },
 });

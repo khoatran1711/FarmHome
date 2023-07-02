@@ -11,7 +11,7 @@ export const styles = StyleSheet.create({
     marginTop: 15,
     marginLeft: 10,
     fontSize: FontSize.Normal,
-    color: Colors.White,
+    color: Colors.Solitaire,
     marginBottom: 4,
     fontWeight: 'bold',
   },

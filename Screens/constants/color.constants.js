@@ -29,4 +29,5 @@ export const Colors = {
   Sidecar: '#F6E7CA',
   Solitaire90: '#FEF4E390',
   Cranberry: '#D65470',
+  GrayAsparagus: '#455547',
 };

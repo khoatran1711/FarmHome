@@ -25,6 +25,8 @@ import {
   UserUpdateInfoRequest,
 } from '../Screen/Models/user.model';
 import {AuthenticationSelectors} from '../state/authentication/authentication.selector';
+import {I18n} from '../translation';
+import {ErrorHandle} from '../utilities/help-utilities';
 import {globalGoBack} from '../utilities/navigator-utilities';
 
 export class UserService {
@@ -94,11 +96,7 @@ export class UserService {
       response?.isSuccess
         ? (ToastAndroid.show('Cập nhật thành công', ToastAndroid.SHORT),
           globalGoBack())
-        : (ToastAndroid.show(
-            'Đã xảy ra lỗi, vui lòng kiểm tra lại',
-            ToastAndroid.SHORT,
-          ),
-          console.log(response));
+        : ErrorHandle(I18n.fail, I18n.somethingWentWrongPleaseTryAgain);
     });
   }
 

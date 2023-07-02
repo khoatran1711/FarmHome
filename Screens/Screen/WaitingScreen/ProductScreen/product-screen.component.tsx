@@ -28,14 +28,21 @@ import {Colors} from '../../../constants/color.constants';
 import {DEVICE} from '../../../constants/devices.constant';
 import {FontSize} from '../../../constants/fontsize.constants';
 import {ScreenName} from '../../../constants/screen-name.constant';
+import {useRootSelector} from '../../../domain/hooks';
 import {
   acceptOrder,
   deleteOrder,
   getOrderDetail,
+  OrderService,
 } from '../../../services/orders.service';
+import {WaitingListSelectors} from '../../../state/waiting-list/waiting-list.selector';
 import {I18n} from '../../../translation';
 import {getImage} from '../../../utilities/format-utilities';
-import {callNumber, getImageFarmer} from '../../../utilities/help-utilities';
+import {
+  callNumber,
+  ErrorHandle,
+  getImageFarmer,
+} from '../../../utilities/help-utilities';
 import {
   globalGoBack,
   globalNavigate,
@@ -52,8 +59,11 @@ import {styles} from './product-screen.style';
 export const ProductWaitingDetail = ({route}: any) => {
   const params = route?.params;
   const orderId = params?.orderId;
-  const [order, setOrder] = useState<Order>();
+  //const [order, setOrder] = useState<Order>();
   const [loading, setLoading] = useState(false);
+  const orderService = new OrderService();
+  const isLoading = useRootSelector(WaitingListSelectors.isLoadingSelector);
+  const order = useRootSelector(WaitingListSelectors.currentOrderSelector);
 
   const onDeleteOrder = idOrder => {
     Alert.alert(I18n.doYouWantToDeleteThisOrder, I18n.youCanNotRecover, [
@@ -69,12 +79,9 @@ export const ProductWaitingDetail = ({route}: any) => {
 
           if (response?.isSuccess) {
             ToastAndroid.show(I18n.deleteSuccessfully, ToastAndroid.SHORT);
-            globalNavigate('WaitingScreen', {isLoading: 'loading'});
+            globalNavigate(ScreenName.WaitingScreen, {isLoading: 'loading'});
           } else {
-            ToastAndroid.show(
-              I18n.somethingWentWrongPleaseTryAgain,
-              ToastAndroid.SHORT,
-            );
+            ErrorHandle(I18n.fail, I18n.somethingWentWrongPleaseTryAgain);
           }
         },
       },
@@ -91,11 +98,24 @@ export const ProductWaitingDetail = ({route}: any) => {
     const response = await getOrderDetail(orderId);
     const data = response?.data;
     setLoading(false);
-    setOrder(data);
+    //setOrder(data);
+  };
+
+  const acceptOr = async orderId => {
+    setLoading(true);
+    const response = await acceptOrder(orderId);
+    if (response?.isSuccess) {
+      ToastAndroid.show(I18n.updateSuccessfully, ToastAndroid.SHORT);
+      globalNavigate(ScreenName.WaitingScreen, {isLoading: 'loading'});
+    } else {
+      ErrorHandle(I18n.fail, I18n.somethingWentWrongPleaseTryAgain);
+    }
+    setLoading(false);
   };
 
   useEffect(() => {
-    getData(orderId);
+    //getData(orderId);
+    orderService.getCurrentOrder(orderId);
   }, [orderId]);
 
   return (
@@ -116,9 +136,9 @@ export const ProductWaitingDetail = ({route}: any) => {
             source={orderDetailBackground}
             resizeMode={'stretch'}
             style={styles.imageBackground}>
-            {!loading && (
+            {!loading && !isLoading && (
               <>
-                <ProductInformation order={order} />
+                {order && <ProductInformation order={order} />}
                 <FarmerContact farmer={order?.farmer} />
                 {order?.status?.name === STATUS_CODE_ORDER.DEALING && (
                   <DealingCard
@@ -126,6 +146,8 @@ export const ProductWaitingDetail = ({route}: any) => {
                     newPrice={order?.dealPrice}
                     unit={order?.fruit?.unit}
                     farmer={order?.farmer}
+                    onAccept={() => acceptOr(order?.id)}
+                    onDeny={() => onDeleteOrder(order?.id)}
                   />
                 )}
               </>
@@ -133,7 +155,7 @@ export const ProductWaitingDetail = ({route}: any) => {
           </ImageBackground>
         </ScrollView>
       </View>
-      {loading && <WaitingComponent />}
+      {(loading || isLoading) && <WaitingComponent />}
     </>
   );
 };
@@ -197,6 +219,8 @@ interface DealingCardProps {
   newAmount?: number | null;
   unit?: string;
   farmer?: User;
+  onAccept?: () => void;
+  onDeny?: () => void;
 }
 
 const DealingCard = (props?: DealingCardProps) => {
@@ -242,14 +266,16 @@ const DealingCard = (props?: DealingCardProps) => {
 
         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity style={styles.button} onPress={props?.onAccept}>
               <View style={styles.agree} />
             </TouchableOpacity>
             <Text style={styles.smallTitleCenter}>{I18n.agreeOrderChange}</Text>
           </View>
 
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={[styles.button, styles.disagreeButton]}>
+            <TouchableOpacity
+              style={[styles.button, styles.disagreeButton]}
+              onPress={props?.onDeny}>
               <Text style={styles.disagree}>✕</Text>
             </TouchableOpacity>
             <Text style={styles.smallTitleCenter}>

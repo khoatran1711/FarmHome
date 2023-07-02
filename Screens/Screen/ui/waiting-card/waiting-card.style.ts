@@ -104,4 +104,22 @@ export const styles = StyleSheet.create({
     marginLeft: 5,
     marginTop: 5,
   },
+  button: {
+    width: 20,
+    height: 20,
+    borderRadius: 30,
+    backgroundColor: Colors.TimberGreen,
+    padding: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  disagree: {
+    color: Colors.Solitaire,
+    fontSize: FontSize.Small,
+    marginTop: -4,
+  },
+  disagreeButton: {
+    backgroundColor: Colors.Cranberry,
+  },
 });

@@ -12,6 +12,7 @@ export interface CustomBottomSheetProps {
   onClose: () => void;
   // snapPoint: string;
   children: React.ReactNode;
+  height?: string;
 }
 
 export const CustomBottomSheet = (props: CustomBottomSheetProps) => {
@@ -38,7 +39,7 @@ export const CustomBottomSheet = (props: CustomBottomSheetProps) => {
       onClose={() => props.onClose()}
       enableOverDrag
       backgroundStyle={{backgroundColor: Colors.TimberGreen}}
-      snapPoints={['80%']}>
+      snapPoints={[props?.height ? props?.height : '80%']}>
       <View style={styles.container}>{props.children}</View>
     </BottomSheet>
   ) : (

@@ -22,9 +22,9 @@ import {UserService} from '../../services/user.service';
 import {User} from '../Models/user.model';
 import {WaitingComponent} from '../ui/waiting-component/waiting.component';
 import {GoBackButton} from '../ui/goBack-button-component/goback-button.component';
-
-// const testUserId = 2;
-// const testStoreId = 5;
+import {styles} from './message-detail-screen.style';
+import {I18n} from '../../translation';
+import {convertDateToTime} from '../../utilities/help-utilities';
 
 interface ChatMessage {
   _id: number;
@@ -121,7 +121,7 @@ export const MessageDetailScreen = ({route}: {route: any}) => {
       .database('https://farmhomemessage-default-rtdb.firebaseio.com/')
       .ref(`/messages/${userId}/${farmerId}`)
       .on('value', snapshot => {
-        const val: any[] = snapshot.val() || [];
+        const val: any[] = snapshot?.val() || [];
         let list: any[] = Object.values(val);
 
         const test = [...list]?.sort((a: any, b: any) =>
@@ -136,7 +136,7 @@ export const MessageDetailScreen = ({route}: {route: any}) => {
 
   return (
     <>
-      <View style={{flex: 1, backgroundColor: Colors.TimberGreen}}>
+      <View style={styles.container}>
         {waiting ? (
           <WaitingComponent />
         ) : (
@@ -147,42 +147,25 @@ export const MessageDetailScreen = ({route}: {route: any}) => {
               onContentSizeChange={() =>
                 scrollViewRef?.current?.scrollToEnd({animated: true})
               }>
-              <ChatBox data={data} userId={userId} />
+              {userId && <ChatBox data={data} userId={userId} />}
             </ScrollView>
 
-            <View
-              style={{
-                backgroundColor: '#495B4A',
-                minHeight: 40,
-                flexDirection: 'row',
-                justifyContent: 'space-evenly',
-                alignItems: 'center',
-                maxHeight: 80,
-              }}>
+            <View style={styles.inputContainer}>
               <TextInput
-                style={{width: '80%', height: '100%', color: Colors.Solitaire}}
+                style={styles.input}
                 cursorColor={Colors.Solitaire}
                 multiline={true}
                 value={chat}
                 onChangeText={e => setChat(e)}
               />
               <TouchableOpacity
-                style={{
-                  width: '12%',
-                  backgroundColor: Colors.Solitaire,
-                  height: 25,
-                  alignSelf: 'center',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  borderRadius: 3,
-                }}
+                style={styles.sendMessageButton}
                 onPress={() => {
-                  //console.log(farmerInfo);
                   farmerInfo && onSend(chat, farmerInfo);
                 }}>
                 <Text
                   style={{color: Colors.TimberGreen, fontSize: FontSize.Small}}>
-                  Send
+                  {I18n.send}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -202,18 +185,10 @@ const ChatBox = ({data, userId}: {data: ChatMessage[]; userId: number}) => {
 
   return (
     <>
-      <View style={{marginVertical: 3}}>
+      <View style={styles.chatMessageContainer}>
         {dateList?.map(date => (
           <>
-            <Text
-              style={{
-                color: Colors.Solitaire,
-                fontSize: FontSize.Small,
-                textAlign: 'center',
-                marginVertical: 8,
-              }}>
-              {date}
-            </Text>
+            <Text style={styles.messageDate}>{date}</Text>
             {data
               ?.filter(
                 mess => new Date(mess.createdAt)?.toDateString() === date,
@@ -233,66 +208,30 @@ const ChatBox = ({data, userId}: {data: ChatMessage[]; userId: number}) => {
 };
 
 const UserChat = ({message}: {message: ChatMessage}) => {
+  const [showTime, setShowTime] = useState(false);
+
   return (
-    <View
-      style={{
-        paddingHorizontal: 15,
-        paddingVertical: 5,
-        marginVertical: 1,
-        borderTopLeftRadius: 15,
-        borderBottomLeftRadius: 15,
-        backgroundColor: Colors.Finlandia,
-        maxWidth: '50%',
-        alignSelf: 'flex-end',
-      }}>
-      <Text
-        style={{
-          color: Colors.Solitaire,
-          fontSize: FontSize.MediumSmall,
-        }}>
-        {message?.text}
-      </Text>
-      <Text
-        style={{
-          color: Colors.Solitaire,
-          fontSize: FontSize.SemiSmall,
-          textAlign: 'right',
-        }}>
-        {new Date(message?.createdAt)?.toLocaleTimeString()}
-      </Text>
-    </View>
+    <TouchableOpacity
+      style={styles.userChatContainer}
+      onPress={() => setShowTime(!showTime)}>
+      <Text style={styles.userChatContent}>{message?.text}</Text>
+      {showTime && (
+        <Text style={styles.userChatDate}>
+          {convertDateToTime(new Date(message?.createdAt))}
+        </Text>
+      )}
+    </TouchableOpacity>
   );
 };
 
 const FarmerChat = ({message}: {message: ChatMessage}) => {
   return (
-    <View
-      style={{
-        paddingHorizontal: 15,
-        paddingVertical: 5,
-        marginVertical: 1,
-        borderTopRightRadius: 15,
-        borderBottomRightRadius: 15,
-        backgroundColor: Colors.Solitaire,
-        maxWidth: '50%',
-        alignSelf: 'flex-start',
-      }}>
-      <Text
-        style={{
-          color: Colors.TimberGreen,
-          fontSize: FontSize.MediumSmall,
-        }}>
-        {message?.text}
+    <TouchableOpacity style={styles.farmerChatContainer}>
+      <Text style={styles.farmerChatContent}>{message?.text}</Text>
+      <Text style={styles.farmerChatDate}>
+        {convertDateToTime(new Date(message?.createdAt))}
       </Text>
-      <Text
-        style={{
-          color: Colors.TimberGreen,
-          fontSize: FontSize.SemiSmall,
-          textAlign: 'left',
-        }}>
-        {new Date(message?.createdAt)?.toLocaleTimeString()}
-      </Text>
-    </View>
+    </TouchableOpacity>
   );
 };
 

@@ -3,6 +3,8 @@ import {AuthenticationActions} from './authentication.state';
 import {Action, ThunkAction, ThunkDispatch} from '@reduxjs/toolkit';
 import {RootState} from '../../domain/store';
 import {JwtService} from '../../../Services/jwt.service';
+import {resetNavigation} from '../../utilities/navigator-utilities';
+import {ScreenName} from '../../constants/screen-name.constant';
 
 const CHECK_TOKEN_INTERVAL = 30000;
 
@@ -32,6 +34,7 @@ export const checkToken =
           dispatch(checkToken());
         } else {
           dispatch(AuthenticationActions.logOut);
+          resetNavigation(ScreenName.LoginScreen);
         }
       }
     }, interval);

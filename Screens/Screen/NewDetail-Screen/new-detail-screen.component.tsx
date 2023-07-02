@@ -1,4 +1,3 @@
-import {BlurView} from '@react-native-community/blur';
 import React from 'react';
 import {ImageBackground} from 'react-native';
 import {Image, ScrollView, Text, View} from 'react-native';
@@ -36,26 +35,23 @@ export const NewDetailScreen = ({route}: any) => {
 
           <ImageBackground
             style={styles.imageBanner}
-            resizeMode={'stretch'}
+            resizeMode={'contain'}
             source={getImage(newDetail?.imageBanner)}>
             <View style={styles.authorContainer}>
-              <BlurView
-                style={styles.absoluteContainer}
-                blurType="light"
-                blurAmount={20}
-              />
               <Text style={styles.mediumSmallTitle}>{I18n.author}</Text>
               <Text style={styles.normalBoldTitle}>{newDetail?.author}</Text>
             </View>
           </ImageBackground>
 
           <View style={styles.authorTitleContainer}>
-            <Text style={styles.smallTitle}>{newDetail?.content}</Text>
+            <Text style={styles.smallTitle}>
+              {newDetail?.content?.replace('/n', '\n')}
+            </Text>
           </View>
 
           <Image
             style={styles.imageContent}
-            resizeMode={'stretch'}
+            resizeMode={'cover'}
             source={getImage(newDetail?.imageContent)}
           />
         </ScrollView>

@@ -16,25 +16,21 @@ import './Screens/constants/IMLocalize';
 
 import {
   Button,
+  Image,
+  ImageBackground,
   SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
   Text,
+  TouchableOpacity,
   useColorScheme,
   View,
 } from 'react-native';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
 import {PersistGate} from 'redux-persist/integration/react';
 import {RootPersistor, RootStore} from './Screens/domain/store';
-import {Provider} from 'react-redux';
+import {Provider, useDispatch} from 'react-redux';
 import {WithSplashScreen} from './Screens/Screen/SplashScreen/splash-screen.component';
 import {ProductCard} from './Screens/Screen/ui/product-card/product-card.component';
 import {ProductCardHorizontal} from './Screens/Screen/ui/product-card-horizontal/product-card-horizontal.component';
@@ -47,6 +43,28 @@ import {firebase} from '@react-native-firebase/database';
 import database from '@react-native-firebase/database';
 import {useMemo} from 'react';
 import axios from 'axios';
+import Toast, {BaseToast, ErrorToast} from 'react-native-toast-message';
+import {checkToken} from './Screens/state/authentication/authentication.thunk';
+import {globalNavigate} from './Screens/utilities/navigator-utilities';
+import {ScreenName} from './Screens/constants/screen-name.constant';
+import {
+  banner,
+  notificationBackground,
+} from './Screens/constants/assets.constants';
+import {FontSize} from './Screens/constants/fontsize.constants';
+import {Colors} from './Screens/constants/color.constants';
+import {toastConfig} from './Screens/Screen/NotificationScreen/notification-screen.component';
+import Dialog, {
+  SlideAnimation,
+  DialogContent,
+  DialogTitle,
+  DialogFooter,
+  DialogButton,
+} from 'react-native-popup-dialog';
+import {I18n} from './Screens/translation';
+import {useRootSelector} from './Screens/domain/hooks';
+import {PopupSelectors} from './Screens/state/popup-dialog/popup-dialog.selector';
+import {PopupActions} from './Screens/state/popup-dialog/popup-dialog.state';
 
 async function initialize() {}
 
@@ -58,7 +76,7 @@ const App: () => Node = () => {
   useEffect(() => {
     initialize().then(context => {
       store.current = RootStore;
-      console.log('hello');
+
       setIsAppReady(true);
     });
   }, []);
@@ -67,14 +85,12 @@ const App: () => Node = () => {
     <>
       <WithSplashScreen isAppReady={isAppReady}>
         <Provider store={store.current}>
-          <PersistGate persistor={RootPersistor}>
-            <StackNavigator />
-          </PersistGate>
+          <Main />
         </Provider>
-        <PushController />
-
-        {/* <Button title="test" onPress={() => TestChatGPT()} /> */}
       </WithSplashScreen>
+      <PushController />
+      <Toast config={toastConfig} />
+
       {/* <GiftedChat
         textInputProps={{color: 'black'}}
         messages={data}
@@ -88,4 +104,76 @@ const App: () => Node = () => {
   );
 };
 
+const Main = () => {
+  const popupProps = useRootSelector(PopupSelectors.popupSelector);
+  const dispatch = useDispatch();
+
+  return (
+    <PersistGate persistor={RootPersistor}>
+      <StackNavigator />
+      <Dialog
+        dialogStyle={{backgroundColor: Colors.Finlandia}}
+        dialogAnimation={
+          new SlideAnimation({
+            toValue: 0, // optional
+            slideFrom: 'bottom', // optional
+            useNativeDriver: true, // optional
+          })
+        }
+        visible={popupProps.isShow}
+        dialogTitle={
+          <DialogTitle
+            textStyle={{color: Colors.Solitaire}}
+            style={{
+              backgroundColor: Colors.TimberGreen,
+            }}
+            title={popupProps.header}
+          />
+        }
+        footer={
+          popupProps?.isConfirm && (
+            <DialogFooter>
+              <DialogButton
+                textStyle={styles.dialogButtonStyle}
+                text={I18n.confirm}
+                onPress={() => {
+                  popupProps?.onClick();
+                }}
+              />
+              <DialogButton
+                textStyle={styles.dialogButtonStyle}
+                text={I18n.cancel}
+                onPress={() => {
+                  dispatch(
+                    PopupActions.setPopup({...popupProps, isShow: false}),
+                  );
+                }}
+              />
+            </DialogFooter>
+          )
+        }
+        onTouchOutside={() =>
+          dispatch(PopupActions.setPopup({...popupProps, isShow: false}))
+        }>
+        <DialogContent>
+          <Text style={styles.dialogStyle}>{popupProps.content}</Text>
+        </DialogContent>
+      </Dialog>
+    </PersistGate>
+  );
+};
+
 export default App;
+
+const styles = StyleSheet.create({
+  dialogStyle: {
+    color: Colors.Solitaire,
+    paddingVertical: '3%',
+    minWidth: '80%',
+    textAlign: 'center',
+  },
+  dialogButtonStyle: {
+    color: Colors.Solitaire,
+    fontSize: FontSize.MediumSmall,
+  },
+});

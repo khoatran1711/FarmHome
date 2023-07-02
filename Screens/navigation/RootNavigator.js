@@ -14,7 +14,7 @@ const Stack = createNativeStackNavigator();
 
 import {HomeScreen} from '../Screen/Home-Screen/HomeScreen';
 import {SettingsLanguageScreen} from '../Screen/Home-Screen/SettingLanguageScreen';
-import {SettingScreen} from '../Screen/Setting-Screen/setting-screen';
+import {SettingScreen} from '../Screen/Setting-Screen/setting-screen.component';
 import {useTranslation} from 'react-i18next';
 import {LoginScreen} from '../Screen/Login-Screen/login-screen';
 //import {SignupScreen} from '../Screen/Signup-Screen/signup-screen';
@@ -37,6 +37,8 @@ import {
   meTabIconSelected,
   newTabIcon,
   newTabIconSelected,
+  notifyIcon,
+  notifyIconSelected,
 } from '../constants/assets.constants';
 import {styles} from './root-style';
 import {NewDetailScreen} from '../Screen/NewDetail-Screen/new-detail-screen.component';
@@ -54,15 +56,25 @@ import {SignUpScreenComponent} from '../Screen/SignupScreen/signup-screen.compon
 import {I18n} from '../translation';
 import {ScreenName} from '../constants/screen-name.constant';
 import {CategoryScreen} from '../Screen/CategoryScreen';
-import {MessageList} from '../Screen/MessageList/message-lisf.component';
+import {MessageList} from '../Screen/MessageList/message-list.component';
+import {useDispatch} from 'react-redux';
+import {checkToken} from '../state/authentication/authentication.thunk';
+import {NotificationScreen} from '../Screen/NotificationScreen/notification-screen.component';
+import {LanguageScreen} from '../Screen/LanguageScreen/language-screen.component';
 
 const Tab = createBottomTabNavigator();
 export const navigationRef = createNavigationContainerRef();
 
 export const StackNavigator = ({navigation, route}) => {
+  // Check Token
+  // const dispatch = useDispatch();
+
+  // useEffect(() => {
+  //   dispatch(checkToken());
+  // }, []);
   return (
     <NavigationContainer ref={navigationRef}>
-      <Stack.Navigator initialRouteName={'LoginScreen'}>
+      <Stack.Navigator initialRouteName={ScreenName.LoginScreen}>
         <Stack.Screen
           name={ScreenName.LoginScreen}
           component={LoginScreen}
@@ -85,37 +97,37 @@ export const StackNavigator = ({navigation, route}) => {
           options={{headerShown: false}}
         />
         <Stack.Screen
-          name="WaitingScreen"
+          name={ScreenName.WaitingScreen}
           component={WaitingScreen}
           options={{headerShown: false}}
         />
         <Stack.Screen
-          name="HistoryScreen"
+          name={ScreenName.HistoryScreen}
           component={HistoryScreen}
           options={{headerShown: false}}
         />
         <Stack.Screen
-          name="ProductHistoryScreen"
+          name={ScreenName.ProductHistoryScreen}
           component={ProductHistoryDetail}
           options={{headerShown: false}}
         />
         <Stack.Screen
-          name="ProductWaitingScreen"
+          name={ScreenName.ProductWaitingScreen}
           component={ProductWaitingDetail}
           options={{headerShown: false}}
         />
         <Stack.Screen
-          name="ChangePasswordScreen"
+          name={ScreenName.ChangePasswordScreen}
           component={ChangePasswordScreen}
           options={{headerShown: false}}
         />
         <Stack.Screen
-          name="UserProfileScreen"
+          name={ScreenName.UserProfileScreen}
           component={UserProfileScreen}
           options={{headerShown: false}}
         />
         <Stack.Screen
-          name="NewDetailScreen"
+          name={ScreenName.NewDetailScreen}
           component={NewDetailScreen}
           options={{headerShown: false}}
         />
@@ -125,7 +137,7 @@ export const StackNavigator = ({navigation, route}) => {
           options={{headerShown: false}}
         />
         <Stack.Screen
-          name="StoreDetailScreen"
+          name={ScreenName.StoreDetailScreen}
           component={StoreDetailScreen}
           options={{headerShown: false}}
         />
@@ -134,7 +146,11 @@ export const StackNavigator = ({navigation, route}) => {
           component={CategoryScreen}
           options={{headerShown: false}}
         />
-        <Stack.Screen name="Language" component={SettingsLanguageScreen} />
+        <Stack.Screen
+          name={ScreenName.LanguageScreen}
+          component={LanguageScreen}
+          options={{headerShown: false}}
+        />
         <Stack.Screen
           name={ScreenName.MessageDetailScreen}
           component={MessageDetailScreen}
@@ -235,6 +251,24 @@ export const TabNavigator = () => {
                 <Image
                   style={styles.tabIcon}
                   source={focused ? newTabIconSelected : newTabIcon}
+                />
+              </View>
+            );
+          },
+        }}
+      />
+      <Tab.Screen
+        name="Notifications"
+        component={NotificationScreen}
+        options={{
+          tabBarLabel: I18n.notification,
+          headerShown: false,
+          tabBarIcon: ({focused}) => {
+            return (
+              <View>
+                <Image
+                  style={styles.notificationIcon}
+                  source={focused ? notifyIconSelected : notifyIcon}
                 />
               </View>
             );

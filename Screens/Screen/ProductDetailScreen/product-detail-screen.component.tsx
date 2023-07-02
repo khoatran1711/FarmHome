@@ -39,7 +39,9 @@ import {OrderRequest, Product} from '../Models/product.model';
 import {
   callNumber,
   convertDateToString,
+  ErrorHandle,
   getFarmerLocation,
+  getImageBackground,
 } from '../../utilities/help-utilities';
 import {getImage} from '../../utilities/format-utilities';
 import {WaitingComponent} from '../ui/waiting-component/waiting.component';
@@ -214,10 +216,7 @@ export const ProductDetailScreen = ({route}) => {
       if (response?.isSuccess) {
         ToastAndroid.show(I18n.updateSuccessfully, ToastAndroid.SHORT);
       } else {
-        ToastAndroid.show(
-          I18n.somethingWentWrongPleaseTryAgain,
-          ToastAndroid.SHORT,
-        );
+        ErrorHandle(I18n.fail, I18n.somethingWentWrongPleaseTryAgain);
       }
     };
     let errorInput: ErrorHandler;
@@ -478,7 +477,7 @@ export const ProductDetailScreen = ({route}) => {
           <GestureHandlerRootView>
             <ScrollView>
               <ImageBackground
-                source={fruitProductDetail}
+                source={getImageBackground(productInformation?.category)}
                 resizeMode={'stretch'}
                 style={styles.imageBackground}>
                 <GoBackButton />
@@ -511,7 +510,10 @@ export const ProductDetailScreen = ({route}) => {
                   label={`${productInformation?.remainingWeight} ${productInformation?.unit}`}
                 />
 
-                <IconWithLabel icon={suggestPriceIcon} label={`30.000 vnd`} />
+                <IconWithLabel
+                  icon={suggestPriceIcon}
+                  label={productInformation?.suggestPrice + ' đ'}
+                />
               </View>
 
               <View style={styles.longLine} />
@@ -524,11 +526,7 @@ export const ProductDetailScreen = ({route}) => {
               <Text style={styles.descriptionTitle}>{I18n.description}</Text>
 
               <Text style={styles.description}>
-                What is a fruit? In a botanical sense, a fruit is the fleshy or
-                dry ripened ovary of a flowering plant, enclosing the seed or
-                seeds. Apricots, bananas, and grapes, as well as bean pods, corn
-                grains, tomatoes, cucumbers, and (in their shells) acorns and
-                almonds, are all technically fruits.
+                {productInformation?.description || '---'}
               </Text>
 
               <View style={styles.shortLine} />

@@ -1,17 +1,28 @@
 import React, {useEffect, useState} from 'react';
-import {Image, ScrollView, Text, TouchableOpacity, View} from 'react-native';
+import {
+  Alert,
+  Image,
+  RefreshControl,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {banner1, exploreBanner2} from '../../constants/assets.constants';
 import {Colors} from '../../constants/color.constants';
+import {DEVICE} from '../../constants/devices.constant';
 import {FontSize} from '../../constants/fontsize.constants';
 import {ScreenName} from '../../constants/screen-name.constant';
 import {useRootSelector} from '../../domain/hooks';
-import {getOrdersHistory} from '../../services/orders.service';
+import {getOrdersHistory, OrderService} from '../../services/orders.service';
 import {AuthenticationSelectors} from '../../state/authentication/authentication.selector';
+import {HistorySelectors} from '../../state/history/history.selector';
 import {I18n} from '../../translation';
 import {getImage} from '../../utilities/format-utilities';
 import {
   convertDateJsonToDate,
   getImageFarmer,
+  PopupShow,
 } from '../../utilities/help-utilities';
 import {globalNavigate} from '../../utilities/navigator-utilities';
 import {OrderHistory} from '../Models/order.model';
@@ -25,44 +36,34 @@ export const HistoryScreen = () => {
   const userId = useRootSelector(AuthenticationSelectors.idSelector);
 
   const [loading, setLoading] = useState(false);
-  const [historyOrders, setHistoryOrders] = useState<OrderHistory[]>();
-  const [currentTime, setCurrentTime] = useState<string | undefined>(
-    new Date().toLocaleTimeString(),
-  );
-  const [currentDate, setCurrentDate] = useState<Date | undefined>(new Date());
-  setInterval(() => {
-    setCurrentTime(new Date().toLocaleTimeString());
-  }, 1000);
+  //const [historyOrders, setHistoryOrders] = useState<OrderHistory[]>();
+  const orderService = new OrderService();
+  const historyOrders = useRootSelector(HistorySelectors.historyListSelector);
+  const pageNumber = useRootSelector(HistorySelectors.pageNumberSelector);
+  const waitingLoading = useRootSelector(HistorySelectors.isLoadingSelector);
 
-  const getTime = () => {
-    if (!currentDate) return '';
+  const [refresh, setRefresh] = useState(false);
 
-    const date = currentDate?.getDate();
-    const month = currentDate?.getMonth() + 1;
-    const year = currentDate?.getFullYear();
-
-    return date + '/' + month + '/' + year;
-  };
-
-  const getWish = () => {
-    if (!currentDate) return 'Hello';
-    if (currentDate?.getHours() > 5 && currentDate?.getHours() < 12)
-      return 'Good Morning';
-    if (currentDate?.getHours() >= 12 && currentDate?.getHours() < 18)
-      return 'Good Afternoon';
-    return 'Good Evening';
+  const onRefresh = () => {
+    setRefresh(true);
+    setTimeout(() => {
+      setRefresh(false);
+      orderService.resetHistoryList();
+    }, 2000);
   };
 
   const getData = async Id => {
     setLoading(true);
-    const response = await getOrdersHistory(Id);
-    const data = response?.data;
-    setHistoryOrders(data?.contents);
+
+    //const response = await getOrdersHistory(Id);
+    //const data = response?.data;
+    //setHistoryOrders(data?.contents);
     setLoading(false);
   };
 
   useEffect(() => {
     getData(userId);
+    orderService.resetHistoryList();
   }, [userId]);
 
   return (
@@ -100,7 +101,23 @@ export const HistoryScreen = () => {
     // </View>
     <>
       <View style={styles.container}>
-        <ScrollView>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={refresh || waitingLoading}
+              onRefresh={() => onRefresh()}
+            />
+          }
+          onScroll={({nativeEvent}) => {
+            // Nếu cuộn đến cuối và đang không tải dữ liệu mới
+            if (
+              nativeEvent.contentOffset.y >=
+              nativeEvent.contentSize.height - DEVICE.HEIGHT + 10
+            ) {
+              pageNumber !== undefined && orderService.getAllHistory();
+            }
+          }}
+          scrollEventThrottle={400}>
           <GoBackButton />
           <HeaderTitle title={I18n.history.toUpperCase()} />
           {historyOrders?.map(item => (

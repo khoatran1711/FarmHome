@@ -37,6 +37,16 @@ export interface GetAllOrderResponse {
   last: boolean;
 }
 
+export interface GetAllHistoryResponse {
+  contents: OrderHistory[];
+  totalPages: number;
+  totalItems: number;
+  sizeCurrentItems: number;
+  numberOfCurrentPage: number;
+  first: boolean;
+  last: boolean;
+}
+
 export interface OrderHistory {
   id: number;
   fruit: Product;

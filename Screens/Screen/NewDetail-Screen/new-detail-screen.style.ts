@@ -166,7 +166,7 @@ export const styles = StyleSheet.create({
     marginRight: -(DEVICE.WIDTH * 0.1),
     marginBottom: 20,
     overflow: 'hidden',
-    backgroundColor: Colors.Finlandia10,
+    backgroundColor: Colors.Finlandia,
   },
   absoluteContainer: {
     position: 'absolute',

@@ -12,6 +12,10 @@ const tokenSelector = createSelector(authenticateStateSelector, state => {
   return state?.token;
 });
 
+const deviceTokenSelector = createSelector(authenticateStateSelector, state => {
+  return state?.deviceToken;
+});
+
 const isLoadingSelector = createSelector(
   authenticateStateSelector,
   state => state.isLoading,
@@ -23,4 +27,5 @@ export const AuthenticationSelectors = {
   tokenSelector,
   isLoadingSelector,
   idSelector,
+  deviceTokenSelector,
 };

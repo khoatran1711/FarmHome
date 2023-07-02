@@ -7,6 +7,7 @@ import {
   Image,
   ScrollView,
   Button,
+  useWindowDimensions,
 } from 'react-native';
 import {useTranslation} from 'react-i18next';
 import {
@@ -26,6 +27,7 @@ import {styles} from './home-screen.style';
 import {globalNavigate} from '../../utilities/navigator-utilities';
 import {SEASON_ENUM} from '../Models/product.model';
 import {I18n} from '../../translation';
+import RenderHTML from 'react-native-render-html';
 
 const HomeBanner = props => {
   return (
@@ -45,9 +47,45 @@ const HomeBanner = props => {
   );
 };
 
+const source = {
+  html: `
+  <h2>Welcome to My Website</h2>
+
+  <p>This is a sample page demonstrating the use of HTML content within WordPress.</p>
+  
+ 
+  <h3>Watch this YouTube Video</h3>
+  
+  <iframe width="560" height="315" src="https://www.youtube.com/embed/triY1jfyDzU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+  
+  <h3>Check out this Table</h3>
+  
+  <table>
+    <tr>
+      <th>Header 1</th>
+      <th>Header 2</th>
+      <th>Header 3</th>
+    </tr>
+    <tr>
+      <td>Data 1</td>
+      <td>Data 2</td>
+      <td>Data 3</td>
+    </tr>
+    <tr>
+      <td>Data 4</td>
+      <td>Data 5</td>
+      <td>Data 6</td>
+    </tr>
+  </table>
+  
+  <p>Feel free to <a href="https://www.example.com">visit my website</a> for more information.</p>`,
+};
+
 export const HomeScreen = ({navigation}) => {
+  const {width} = useWindowDimensions();
   return (
     <View style={styles.container}>
+      {/* <RenderHTML contentWidth={width} source={source} /> */}
       <ScrollView>
         <HomeBanner bannerImage={banner1} />
         <View style={styles.sloganContainer}>

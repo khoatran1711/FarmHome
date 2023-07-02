@@ -1,4 +1,4 @@
-export const URL_BASE = 'https://backendfarmhome-production.up.railway.app/';
+export const URL_BASE = 'https://farmhomebackend-production.up.railway.app/';
 
 export const AUTHORIZATION_HEADER = 'Authorization';
 export const AUTHORIZATION_BEARER = 'Bearer';

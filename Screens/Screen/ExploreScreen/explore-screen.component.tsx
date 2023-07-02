@@ -7,6 +7,7 @@ import {
   Dimensions,
   Image,
   ImageBackground,
+  RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
@@ -19,6 +20,7 @@ import {
   backButtonIcon,
   banner,
   banner1,
+  cameraIcon,
   defaultFruit,
 } from '../../constants/assets.constants';
 import {
@@ -36,10 +38,12 @@ import {Colors} from '../../constants/color.constants';
 import {DEVICE} from '../../constants/devices.constant';
 import {FontSize} from '../../constants/fontsize.constants';
 import {ScreenName} from '../../constants/screen-name.constant';
-import {getAllProduct} from '../../services/product.service';
+import {useRootSelector} from '../../domain/hooks';
+import {getAllProduct, ProductService} from '../../services/product.service';
+import {ExploreSelectors} from '../../state/explore/explore.selector';
 import {I18n} from '../../translation';
 import {getImage} from '../../utilities/format-utilities';
-import {getFarmerLocation} from '../../utilities/help-utilities';
+import {ErrorHandle, getFarmerLocation} from '../../utilities/help-utilities';
 import {globalNavigate} from '../../utilities/navigator-utilities';
 import {Product} from '../Models/product.model';
 import {CategoryHorizontalCard} from '../ui/category-card-horizontal';
@@ -47,6 +51,10 @@ import {ProductCardHorizontal} from '../ui/product-card-horizontal/product-card-
 import {ProductCardMini} from '../ui/product-card-mini/product-card-mini.component';
 import {ProductCard} from '../ui/product-card/product-card.component';
 import {styles} from './explore-screen.style';
+import * as ImagePicker from 'react-native-image-picker';
+import {PermissionsAndroid} from 'react-native';
+import {CustomBottomSheet} from '../ui/bottom-sheet-component/bottom-sheet.component';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 const filterList = [
   {
@@ -74,23 +82,149 @@ const filterList = [
 export const ExploreScreen = () => {
   const navigator = useNavigation();
   const [selectList, setSelectList] = useState(filterList[0].id);
-  const [productList, setProductList] = useState<Product[]>();
+  //const [productList, setProductList] = useState<Product[]>();
   const [searchText, setSearchText] = useState('');
+  const [showOptionImage, setOptionImage] = useState(false);
 
   const getData = async () => {
     const response = await getAllProduct();
     const {contents} = response?.data;
 
-    setProductList(contents);
+    //setProductList(contents);
+  };
+
+  const productList = useRootSelector(ExploreSelectors.productListSelector);
+  const pageNumber = useRootSelector(ExploreSelectors.pageNumberSelector);
+  const isLoading = useRootSelector(ExploreSelectors.isLoadingSelector);
+
+  const productService = new ProductService();
+
+  const [refresh, setRefresh] = useState(false);
+
+  const requestCameraPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+        {
+          title: 'App Camera Permission',
+          message: 'App needs access to your camera ',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log('Camera permission given');
+        openCamera();
+      } else {
+        console.log('Camera permission denied');
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  };
+
+  const openLibrary = () => {
+    let options = {
+      title: 'Select Image',
+      customButtons: [
+        {
+          name: 'customOptionKey',
+          title: 'Choose Photo from Custom Option',
+        },
+      ],
+      maxWidth: 500,
+      maxHeight: 500,
+      storageOptions: {
+        skipBackup: true,
+        path: 'images',
+      },
+    };
+
+    ImagePicker.launchImageLibrary(options as any, response => {
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else {
+        //let source = response;
+        // You can also display the  image using data:
+
+        if (response && response?.assets && response?.assets[0]) {
+          globalNavigate(ScreenName.SearchScreen, {
+            image: response?.assets[0],
+          });
+          //productService.productDetect(response?.assets[0]);
+        }
+      }
+    });
+  };
+
+  const openCamera = () => {
+    let options = {
+      title: 'Select Image',
+      customButtons: [
+        {
+          name: 'customOptionKey',
+          title: 'Choose Photo from Custom Option',
+        },
+      ],
+
+      storageOptions: {
+        skipBackup: true,
+        path: 'images',
+      },
+    };
+
+    ImagePicker.launchCamera(options as any, response => {
+      console.log('Response = ', response);
+
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else {
+        //let source = response;
+        // You can also display the  image using data:
+
+        if (response && response?.assets && response?.assets[0]) {
+          globalNavigate(ScreenName.SearchScreen, {
+            image: response?.assets[0],
+          });
+        }
+      }
+    });
+  };
+
+  const onRefresh = () => {
+    setRefresh(true);
+    setTimeout(() => {
+      setRefresh(false);
+      productService.resetProductList();
+    }, 2000);
   };
 
   useEffect(() => {
     getData();
+    productService.getExploreProduct();
   }, []);
 
   return (
-    <View style={styles.container}>
-      <ScrollView>
+    <GestureHandlerRootView style={styles.container}>
+      <ScrollView
+        refreshControl={
+          <RefreshControl
+            refreshing={refresh || isLoading}
+            onRefresh={() => onRefresh()}
+          />
+        }
+        onScroll={({nativeEvent}) => {
+          // Nếu cuộn đến cuối và đang không tải dữ liệu mới
+          if (
+            nativeEvent.contentOffset.y >=
+              nativeEvent.contentSize.height - DEVICE.HEIGHT + 50 &&
+            !isLoading
+          ) {
+            pageNumber && productService.getExploreProduct();
+          }
+        }}
+        scrollEventThrottle={400}>
         <ImageBackground
           borderBottomRightRadius={80}
           style={styles.bannerBackground}
@@ -109,6 +243,12 @@ export const ExploreScreen = () => {
                   })
                 }>
                 <Image source={searchIcon} style={styles.icon} />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => setOptionImage(true)}>
+                <Image
+                  source={cameraIcon}
+                  style={[styles.icon, {opacity: 0.5, width: 20, height: 20}]}
+                />
               </TouchableOpacity>
             </View>
             {/* <TouchableOpacity>
@@ -156,6 +296,34 @@ export const ExploreScreen = () => {
           />
         ))}
       </ScrollView>
-    </View>
+      <CustomBottomSheet
+        height="17%"
+        visible={showOptionImage}
+        children={
+          <View style={styles.optionImageContainer}>
+            <TouchableOpacity
+              onPress={() => {
+                setOptionImage(false);
+                requestCameraPermission();
+              }}>
+              <Text style={styles.optionImageTitle}>{I18n.openCamera}</Text>
+            </TouchableOpacity>
+
+            <View style={styles.optionImageLine} />
+
+            <TouchableOpacity
+              onPress={() => {
+                setOptionImage(false);
+                openLibrary();
+              }}>
+              <Text style={styles.optionImageTitle}>{I18n.openLibrary}</Text>
+            </TouchableOpacity>
+          </View>
+        }
+        onClose={() => {
+          setOptionImage(false);
+        }}
+      />
+    </GestureHandlerRootView>
   );
 };

@@ -9,4 +9,9 @@ export const ScreenName = {
   ProductHistoryScreen: 'ProductHistoryScreen',
   NewDetailScreen: 'NewDetailScreen',
   MessageDetailScreen: 'MessageDetailScreen',
+  WaitingScreen: 'WaitingScreen',
+  HistoryScreen: 'HistoryScreen',
+  ChangePasswordScreen: 'ChangePasswordScreen',
+  UserProfileScreen: 'UserProfileScreen',
+  LanguageScreen: 'LanguageScreen',
 };

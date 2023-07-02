@@ -1,16 +1,15 @@
 import {firebase} from '@react-native-firebase/database';
 import React, {useState} from 'react';
 import {useMemo} from 'react';
-import {Button, Image, Text, TouchableOpacity, View} from 'react-native';
-import {Colors} from '../../constants/color.constants';
-import {DEVICE} from '../../constants/devices.constant';
-import {FontSize} from '../../constants/fontsize.constants';
+import {Image, Text, TouchableOpacity, View} from 'react-native';
 import {ScreenName} from '../../constants/screen-name.constant';
 import {useRootSelector} from '../../domain/hooks';
 import {AuthenticationSelectors} from '../../state/authentication/authentication.selector';
 import {I18n} from '../../translation';
+import {getImageFarmer} from '../../utilities/help-utilities';
 import {globalNavigate} from '../../utilities/navigator-utilities';
 import {HeaderTitle} from '../ui/header-title';
+import {styles} from './messgae-list.style';
 
 interface ChatMessage {
   _id: number;
@@ -38,14 +37,23 @@ export const MessageList = () => {
       .database('https://farmhomemessage-default-rtdb.firebaseio.com/')
       .ref(`/messages/${userId}`)
       .on('value', snapshot => {
-        const val: any[] = snapshot.val() || [];
-        let list: any[] = Object.values(val);
+        const val: any[] = snapshot?.val() || [];
 
-        const items = [];
-        snapshot?.forEach(childSnapshot => {
-          items.push(
-            childSnapshot?.val()[Object.keys(childSnapshot?.val())[0]],
-          );
+        const items: any[] = [];
+        snapshot?.forEach((childSnapshot: any) => {
+          try {
+            if (
+              childSnapshot &&
+              childSnapshot?.val() &&
+              Object.keys(childSnapshot?.val())[0]
+            ) {
+              const sortList = [...Object.values(childSnapshot?.val())]?.sort(
+                (a: any, b: any) => b?.createdAt - a?.createdAt,
+              );
+
+              items.push(sortList[0]);
+            }
+          } catch (error) {}
         });
         setChatList(items);
       });
@@ -53,13 +61,7 @@ export const MessageList = () => {
 
   return (
     <>
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: Colors.TimberGreen,
-          paddingHorizontal: '3%',
-          paddingTop: 20,
-        }}>
+      <View style={styles.container}>
         <HeaderTitle title={I18n.chat.toUpperCase()} />
         {chatList?.map(e => (
           <ChatBox message={e} />
@@ -79,49 +81,22 @@ const ChatBox = ({message}: {message: ChatMessage}) => {
             farmerId: message?.farmer?.id,
           })
         }>
-        <View
-          style={{
-            flexDirection: 'row',
-            paddingHorizontal: 10,
-            paddingVertical: 5,
-          }}>
-          <View
-            style={{
-              width: DEVICE.WIDTH * 0.16,
-              height: DEVICE.WIDTH * 0.16,
-              borderRadius: 60,
-              overflow: 'hidden',
-            }}>
+        <View style={styles.chatBoxContainer}>
+          <View style={styles.userImageContainer}>
             <Image
-              source={message?.farmer?.image}
-              style={{width: '100%', height: '100%', resizeMode: 'stretch'}}
+              source={getImageFarmer(message?.farmer?.image)}
+              style={styles.image}
             />
           </View>
-          <View
-            style={{
-              width: '84%',
-              paddingHorizontal: '5%',
-            }}>
-            <Text style={{color: Colors.Solitaire, fontSize: FontSize.Normal}}>
-              {message?.farmer?.name}
-            </Text>
-            <Text
-              numberOfLines={2}
-              style={{color: Colors.Solitaire90, fontSize: FontSize.Small}}>
+          <View style={styles.userChatContainer}>
+            <Text style={styles.userChat}>{message?.farmer?.name}</Text>
+            <Text numberOfLines={2} style={styles.userChatContent}>
               {message?.text}
             </Text>
           </View>
         </View>
 
-        <View
-          style={{
-            width: '74%',
-            alignSelf: 'flex-end',
-            height: 1,
-            marginTop: 4,
-            backgroundColor: Colors.Solitaire90,
-          }}
-        />
+        <View style={styles.line} />
       </TouchableOpacity>
     </>
   );

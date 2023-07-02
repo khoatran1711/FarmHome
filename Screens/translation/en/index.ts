@@ -9,7 +9,7 @@ export const EN = {
   languageSelector: 'Select Your Language',
   setting: 'Settings',
   account: 'Account',
-  and: 'and',
+  and: ' and ',
   security: 'Security',
   english: 'English',
   vietnam: 'Vietnamese',
@@ -145,6 +145,12 @@ export const EN = {
   day: 'Day',
   author: 'Author',
   chat: 'Chat',
+  notification: 'Notification',
+  updating: 'Updating',
+  fail: 'Error',
+  openCamera: 'Open Camera',
+  openLibrary: 'Open Library',
+  yourOrderHasBeenCanceled: 'Your order has been canceled',
 };
 
 export type I18nDictionary = typeof EN;

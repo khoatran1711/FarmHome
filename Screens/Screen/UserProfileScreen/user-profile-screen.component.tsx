@@ -28,7 +28,6 @@ import DatePicker from 'react-native-date-picker';
 import {getImage} from '../../utilities/format-utilities';
 import {globalGoBack} from '../../utilities/navigator-utilities';
 import {WaitingComponent} from '../ui/waiting-component/waiting.component';
-import {ToastAndroid} from 'react-native';
 import {AuthenticationSelectors} from '../../state/authentication/authentication.selector';
 import {useRootSelector} from '../../domain/hooks';
 import {I18n} from '../../translation';
@@ -190,327 +189,193 @@ export const UserProfileScreen = () => {
   }, []);
 
   return (
-    <View style={styles.container}>
-      {user && !loading ? (
-        <ScrollView>
-          {/* <ImageBackground
-            source={filePath || defaultFarmer}
-            style={styles.userBackground}>
-            <View style={styles.background}>
+    <>
+      <View style={styles.container}>
+        {user && !loading ? (
+          <>
+            <ScrollView>
               <GoBackButton />
-              <View style={styles.headerContainer}>
-                <View style={styles.titleContainer}>
-                  <Text style={styles.welcomeTitle}>{I18n.welcome},</Text>
-                  <Text style={styles.welcomeName}>
-                    {user?.firstName + ' ' + user?.lastName}
-                  </Text>
-                </View>
-                <View style={styles.userImageContainer}>
-                  <View style={styles.userImage}>
-                    <Image
-                      source={filePath || defaultFarmer}
-                      style={styles.cameraIcon}
-                    />
-                  </View>
-                  <TouchableOpacity
-                    onPress={() => chooseFile()}
-                    style={styles.changeImageBtn}></TouchableOpacity>
-                </View>
-              </View>
-            </View>
-          </ImageBackground>
-          <View style={styles.infoContainer}>
-            <View style={styles.infoInputContainer}>
-              <Text style={styles.inputTitle}>{I18n.firstName}</Text>
-              <TextInput
-                defaultValue={user?.firstName}
-                style={styles.inputText}
-                onChangeText={e => {
-                  setFirstName(e);
+              <View
+                style={{
+                  width: 200,
+                  height: 200,
+                  borderColor: Colors.Solitaire,
+                  borderWidth: 1,
+                  borderRadius: 200,
+                  alignSelf: 'center',
                 }}
               />
-            </View>
+              <ImageBackground
+                source={filePath || defaultFarmer}
+                resizeMode={'stretch'}
+                borderRadius={220}
+                style={{
+                  width: 200,
+                  height: 200,
+                  marginTop: -190,
+                  marginLeft: 30,
+                  justifyContent: 'flex-end',
+                  alignSelf: 'center',
+                }}>
+                <TouchableOpacity
+                  style={{
+                    width: 60,
+                    height: 35,
+                    borderRadius: 5,
+                    backgroundColor: Colors.Finlandia,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                  onPress={() => chooseFile()}>
+                  <Image
+                    source={cameraIcon}
+                    style={{width: 20, height: 20, resizeMode: 'stretch'}}
+                  />
+                </TouchableOpacity>
+              </ImageBackground>
 
-            <View style={styles.infoInputContainer}>
-              <Text style={styles.inputTitle}>{I18n.lastName}</Text>
-              <TextInput
-                defaultValue={user?.lastName}
-                style={styles.inputText}
-                onChangeText={e => setLastName(e)}
+              <Text
+                style={{
+                  color: Colors.Solitaire,
+                  fontSize: FontSize.MediumLarge,
+                  fontWeight: '400',
+                  textAlign: 'center',
+                  marginTop: 10,
+                }}>
+                {I18n.welcome}, {user?.firstName + ' ' + user?.lastName}
+              </Text>
+
+              <InputWrapper
+                label={I18n.firstName}
+                wrapperStyle={styles.wrapperContainer}
+                onTextChange={e => setFirstName(e)}
+                value={firstName}
               />
-            </View>
-
-            <View style={styles.infoInputContainer}>
-              <Text style={styles.inputTitle}>{I18n.phoneNumber}</Text>
-              <TextInput
-                defaultValue={user?.phone}
-                style={styles.inputText}
-                onChangeText={e => setPhone(e)}
+              <InputWrapper
+                label={I18n.lastName}
+                wrapperStyle={styles.wrapperContainer}
+                onTextChange={e => setLastName(e)}
+                value={lastName}
               />
-            </View>
-
-            <View style={styles.infoInputContainer}>
-              <Text style={styles.inputTitle}>{I18n.email}</Text>
-              <TextInput
-                defaultValue={user?.email}
-                style={styles.inputText}
-                onChangeText={e => setEmail(e)}
+              <InputWrapper
+                label={I18n.email}
+                wrapperStyle={styles.wrapperContainer}
+                onTextChange={e => setEmail(e)}
+                value={email}
               />
-            </View>
-
-            <View style={styles.infoInputContainer}>
-              <Text style={styles.inputTitle}>{I18n.birthdate}</Text>
-              <TouchableOpacity
-                style={styles.addressInput}
-                onPress={() => setOpenDate(true)}>
-                <Text style={styles.inputTitle}>
-                  {birthDate?.toDateString() || user?.birthDay || ''}
-                </Text>
-              </TouchableOpacity>
-            </View>
-
-            <View style={styles.infoInputContainer}>
-              <Text style={styles.inputTitle}>{I18n.city}</Text>
-              <TouchableOpacity
-                style={styles.addressInput}
-                onPress={() => openCitySelect()}>
-                <Text style={styles.inputTitle}>
-                  {city ||
-                    user?.location?.ward?.district?.province?.name ||
-                    I18n.city}
-                </Text>
-              </TouchableOpacity>
-            </View>
-
-            <View style={styles.infoInputContainer}>
-              <Text style={styles.inputTitle}>{I18n.district}</Text>
-              <TouchableOpacity
-                style={styles.addressInput}
-                onPress={() => openProvinceSelect()}>
-                <Text style={styles.inputTitle}>
-                  {province ||
-                    user?.location?.ward?.district?.name ||
-                    I18n.district}
-                </Text>
-              </TouchableOpacity>
-            </View>
-
-            <View style={styles.infoInputContainer}>
-              <Text style={styles.inputTitle}>{I18n.ward}</Text>
-              <TouchableOpacity
-                style={styles.addressInput}
-                onPress={() => openWardSelect()}>
-                <Text style={styles.inputTitle}>
-                  {wards || user?.location?.ward?.name || I18n.ward}
-                </Text>
-              </TouchableOpacity>
-            </View>
-
-            <View style={styles.infoInputContainer}>
-              <Text style={styles.inputTitle}>{I18n.address}</Text>
-              <TextInput
-                style={styles.inputText}
-                defaultValue={user?.location?.address}
-                onChangeText={e => setAddress(e)}
+              <InputWrapper
+                label={I18n.phoneNumber}
+                wrapperStyle={styles.wrapperContainer}
+                onTextChange={e => setPhone(e)}
+                numberOnly={true}
+                value={phone}
               />
-            </View>
+              <InputButtonWrapper
+                label={I18n.birthdate}
+                wrapperStyle={styles.wrapperContainer}
+                content={birthDate.toDateString()}
+                onPress={() => setOpenDate(true)}
+              />
+              <InputButtonWrapper
+                label={I18n.city}
+                wrapperStyle={styles.wrapperContainer}
+                content={city}
+                onPress={() => openCitySelect()}
+              />
+              <InputButtonWrapper
+                label={I18n.district}
+                wrapperStyle={styles.wrapperContainer}
+                content={province}
+                onPress={() => openProvinceSelect()}
+              />
+              <InputButtonWrapper
+                label={I18n.ward}
+                wrapperStyle={styles.wrapperContainer}
+                content={wards}
+                onPress={() => openWardSelect()}
+              />
+              <InputWrapper
+                label={I18n.address}
+                wrapperStyle={styles.wrapperContainer}
+                onTextChange={e => setAddress(e)}
+                value={address}
+              />
 
-            <View
-              style={{flexDirection: 'row', justifyContent: 'space-evenly'}}>
-              <TouchableOpacity
-                style={styles.confirmBtn}
-                onPress={() => globalGoBack()}>
-                <Text style={styles.confirmTitle}>{I18n.cancel}</Text>
-              </TouchableOpacity>
+              <View
+                style={{
+                  width: '90%',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignSelf: 'center',
+                  marginBottom: 20,
+                }}>
+                <Button
+                  buttonStyle={styles.cancelButton}
+                  titleStyle={{color: Colors.Solitaire}}
+                  title={I18n.cancel}
+                  onPress={() => globalGoBack()}
+                />
 
-              <TouchableOpacity
-                style={styles.confirmBtn}
-                onPress={() => submitChange()}>
-                <Text style={styles.confirmTitle}>{I18n.confirm}</Text>
-              </TouchableOpacity>
-            </View>
-          </View> */}
-          <GoBackButton />
-          <View
-            style={{
-              width: 200,
-              height: 200,
-              borderColor: Colors.Solitaire,
-              borderWidth: 1,
-              borderRadius: 200,
-              alignSelf: 'center',
-            }}
-          />
-          <ImageBackground
-            source={filePath || defaultFarmer}
-            resizeMode={'stretch'}
-            borderRadius={220}
-            style={{
-              width: 200,
-              height: 200,
-              marginTop: -190,
-              marginLeft: 30,
-              justifyContent: 'flex-end',
-              alignSelf: 'center',
-            }}>
-            <TouchableOpacity
-              style={{
-                width: 60,
-                height: 35,
-                borderRadius: 5,
-                backgroundColor: Colors.Finlandia,
-                justifyContent: 'center',
-                alignItems: 'center',
+                <Button
+                  buttonStyle={styles.confirmButton}
+                  titleStyle={{color: Colors.TimberGreen}}
+                  title={I18n.confirm}
+                  onPress={() => submitChange()}
+                />
+              </View>
+            </ScrollView>
+            <DatePicker
+              modal
+              mode={'date'}
+              open={openDate}
+              date={new Date()}
+              onConfirm={date => {
+                setOpenDate(false);
+                setBirthDate(date);
               }}
-              onPress={() => chooseFile()}>
-              <Image
-                source={cameraIcon}
-                style={{width: 20, height: 20, resizeMode: 'stretch'}}
-              />
-            </TouchableOpacity>
-          </ImageBackground>
-
-          <Text
-            style={{
-              color: Colors.Solitaire,
-              fontSize: FontSize.MediumLarge,
-              fontWeight: '400',
-              textAlign: 'center',
-              marginTop: 10,
-            }}>
-            {I18n.welcome}, {user?.firstName + ' ' + user?.lastName}
-          </Text>
-
-          <InputWrapper
-            label={I18n.firstName}
-            wrapperStyle={styles.wrapperContainer}
-            onTextChange={e => setFirstName(e)}
-            value={firstName}
-          />
-          <InputWrapper
-            label={I18n.lastName}
-            wrapperStyle={styles.wrapperContainer}
-            onTextChange={e => setLastName(e)}
-            value={lastName}
-          />
-          <InputWrapper
-            label={I18n.email}
-            wrapperStyle={styles.wrapperContainer}
-            onTextChange={e => setEmail(e)}
-            value={email}
-          />
-          <InputWrapper
-            label={I18n.phoneNumber}
-            wrapperStyle={styles.wrapperContainer}
-            onTextChange={e => setPhone(e)}
-            numberOnly={true}
-            value={phone}
-          />
-          <InputButtonWrapper
-            label={I18n.birthdate}
-            wrapperStyle={styles.wrapperContainer}
-            content={birthDate.toDateString()}
-            onPress={() => setOpenDate(true)}
-          />
-          <InputButtonWrapper
-            label={I18n.city}
-            wrapperStyle={styles.wrapperContainer}
-            content={city}
-            onPress={() => openCitySelect()}
-          />
-          <InputButtonWrapper
-            label={I18n.district}
-            wrapperStyle={styles.wrapperContainer}
-            content={province}
-            onPress={() => openProvinceSelect()}
-          />
-          <InputButtonWrapper
-            label={I18n.ward}
-            wrapperStyle={styles.wrapperContainer}
-            content={wards}
-            onPress={() => openWardSelect()}
-          />
-          <InputWrapper
-            label={I18n.address}
-            wrapperStyle={styles.wrapperContainer}
-            onTextChange={e => setAddress(e)}
-            value={address}
-          />
-
-          <View
-            style={{
-              width: '90%',
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignSelf: 'center',
-              marginBottom: 20,
-            }}>
-            <Button
-              buttonStyle={styles.cancelButton}
-              titleStyle={{color: Colors.Solitaire}}
-              title={I18n.cancel}
-              onPress={() => globalGoBack()}
+              onCancel={() => {
+                setOpenDate(false);
+              }}
             />
-
-            <Button
-              buttonStyle={styles.confirmButton}
-              titleStyle={{color: Colors.TimberGreen}}
-              title={I18n.confirm}
-              onPress={() => submitChange()}
+            <SelectingScreenComponent
+              isShow={isOpen}
+              data={data}
+              onSelect={e => {
+                if (opening === 'city') {
+                  setCity(e?.name);
+                  setData([]);
+                  setOpening('');
+                  setIsOpen(false);
+                  setProvince('');
+                  setWard('');
+                  setWardCode(0);
+                }
+                if (opening === 'districts') {
+                  setProvince(e?.name);
+                  setData([]);
+                  setOpening('');
+                  setIsOpen(false);
+                  setWard('');
+                  setWardCode(0);
+                }
+                if (opening === 'wards') {
+                  setWard(e?.name);
+                  setWardCode(e?.value);
+                  setData([]);
+                  setOpening('');
+                  setIsOpen(false);
+                }
+              }}
+              title=""
+              onClose={() => {
+                setIsOpen(false);
+              }}
             />
-          </View>
-        </ScrollView>
-      ) : (
-        <WaitingComponent />
-      )}
-
-      <DatePicker
-        modal
-        mode={'date'}
-        open={openDate}
-        date={new Date()}
-        onConfirm={date => {
-          setOpenDate(false);
-          setBirthDate(date);
-        }}
-        onCancel={() => {
-          setOpenDate(false);
-        }}
-      />
-      <SelectingScreenComponent
-        isShow={isOpen}
-        data={data}
-        onSelect={e => {
-          if (opening === 'city') {
-            setCity(e?.name);
-            setData([]);
-            setOpening('');
-            setIsOpen(false);
-            setProvince('');
-            setWard('');
-            setWardCode(0);
-          }
-          if (opening === 'districts') {
-            setProvince(e?.name);
-            setData([]);
-            setOpening('');
-            setIsOpen(false);
-            setWard('');
-            setWardCode(0);
-          }
-          if (opening === 'wards') {
-            setWard(e?.name);
-            setWardCode(e?.value);
-            setData([]);
-            setOpening('');
-            setIsOpen(false);
-          }
-        }}
-        title=""
-        onClose={() => {
-          setIsOpen(false);
-        }}
-      />
-    </View>
+          </>
+        ) : (
+          <WaitingComponent />
+        )}
+      </View>
+    </>
   );
 };

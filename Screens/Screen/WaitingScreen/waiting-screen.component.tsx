@@ -1,9 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {ScrollView, Text, View} from 'react-native';
+import {RefreshControl, ScrollView, Text, View} from 'react-native';
+import {DEVICE} from '../../constants/devices.constant';
 import {ScreenName} from '../../constants/screen-name.constant';
 import {useRootSelector} from '../../domain/hooks';
-import {getAllOrders} from '../../services/orders.service';
+import {getAllOrders, OrderService} from '../../services/orders.service';
 import {AuthenticationSelectors} from '../../state/authentication/authentication.selector';
+import {WaitingListSelectors} from '../../state/waiting-list/waiting-list.selector';
 import {I18n} from '../../translation';
 import {getImage} from '../../utilities/format-utilities';
 import {getImageFarmer} from '../../utilities/help-utilities';
@@ -17,58 +19,68 @@ import {styles} from './waiting-screen.style';
 
 export const WaitingScreen = (props?: any) => {
   const userId = useRootSelector(AuthenticationSelectors.idSelector);
-  const [orders, setOrders] = useState<Order[]>();
+  //const [orders, setOrders] = useState<Order[]>();
   const [loading, setLoading] = useState(false);
-
-  const [currentTime, setCurrentTime] = useState<string | undefined>(
-    new Date().toLocaleTimeString(),
+  const orders = useRootSelector(WaitingListSelectors.waitingListSelector);
+  const pageNumber = useRootSelector(WaitingListSelectors.pageNumberSelector);
+  const waitingLoading = useRootSelector(
+    WaitingListSelectors.isLoadingSelector,
   );
-  const [currentDate, setCurrentDate] = useState<Date | undefined>(new Date());
-  setInterval(() => {
-    setCurrentTime(new Date().toLocaleTimeString());
-  }, 1000 * 60);
+  const waitingService = new OrderService();
 
-  const getTime = () => {
-    if (!currentDate) return '';
+  const [refresh, setRefresh] = useState(false);
 
-    const date = currentDate?.getDate();
-    const month = currentDate?.getMonth() + 1;
-    const year = currentDate?.getFullYear();
-
-    return date + '/' + month + '/' + year;
-  };
-
-  const getWish = () => {
-    if (!currentDate) return 'Hello';
-    if (currentDate?.getHours() > 5 && currentDate?.getHours() < 12)
-      return I18n.goodMorning;
-    if (currentDate?.getHours() >= 12 && currentDate?.getHours() < 18)
-      return I18n.goodAfternoon;
-    return I18n.goodEvening;
+  const onRefresh = () => {
+    setRefresh(true);
+    setTimeout(() => {
+      setRefresh(false);
+      waitingService.resetWaitingList();
+    }, 2000);
   };
 
   const getData = async Id => {
     setLoading(true);
     const response = await getAllOrders(Id);
     const data = response?.data;
-    setOrders(data?.contents);
+    //setOrders(data?.contents);
     setLoading(false);
   };
+
   let isLoading = props?.route?.params;
   useEffect(() => {
     getData(userId);
+    waitingService.resetWaitingList();
     isLoading = false;
   }, [userId, isLoading]);
 
   return (
     <>
       <View style={styles.container}>
-        <ScrollView>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={refresh || waitingLoading}
+              onRefresh={() => onRefresh()}
+            />
+          }
+          onScroll={({nativeEvent}) => {
+            // Nếu cuộn đến cuối và đang không tải dữ liệu mới
+            if (
+              nativeEvent.contentOffset.y >=
+                nativeEvent.contentSize.height - DEVICE.HEIGHT + 50 &&
+              !isLoading
+            ) {
+              pageNumber && waitingService.getAllOrders();
+            }
+          }}
+          scrollEventThrottle={400}>
           <GoBackButton />
           <HeaderTitle title={I18n.paymentWaitingList.toUpperCase()} />
           {orders?.map(item => (
             <>
-              <Text style={styles.dateTitle}>{item?.date}</Text>
+              <Text style={styles.dateTitle}>
+                {item?.date} {item?.id}
+              </Text>
               <WaitingCard
                 farmerName={
                   item?.farmer?.firstName + ' ' + item?.farmer?.lastName
@@ -80,6 +92,7 @@ export const WaitingScreen = (props?: any) => {
                 productPrice={item?.price}
                 isTransport={item?.transport}
                 unit={item?.fruit?.unit}
+                status={item?.status?.name}
                 onPress={() =>
                   globalNavigate(ScreenName.ProductWaitingScreen, {
                     orderId: item?.id,

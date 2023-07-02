@@ -1,5 +1,4 @@
 import FormData from 'form-data';
-import {ToastAndroid} from 'react-native';
 import {HttpResult, HttpService} from '../../Services/http.services';
 import {
   ACCEPT,

@@ -9,7 +9,7 @@ export const VI = {
   languageSelector: 'Chọn ngôn ngữ của bạn',
   setting: 'Cài đặt',
   account: 'Tài khoản',
-  and: 'và',
+  and: ' và ',
   security: 'Bảo mật',
   english: 'Tiếng Anh',
   vietnam: 'Tiếng Việt',
@@ -144,6 +144,12 @@ export const VI = {
   day: 'Ngày',
   author: 'Tác giả',
   chat: 'Trò chuyện',
+  notification: 'Thông báo',
+  updating: 'Đang cập nhật',
+  fail: 'Thất bại',
+  openCamera: 'Mở Camera',
+  openLibrary: 'Mở thư viện',
+  yourOrderHasBeenCanceled: 'Đơn hàng của bạn đã bị hủy',
 };
 
 export type I18nDictionary = typeof VI;

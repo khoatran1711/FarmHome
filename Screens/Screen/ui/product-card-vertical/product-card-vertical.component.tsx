@@ -14,7 +14,10 @@ import {
 import {Colors} from '../../../constants/color.constants';
 import {FontSize} from '../../../constants/fontsize.constants';
 import {getImage} from '../../../utilities/format-utilities';
-import {getFarmerShortLocation} from '../../../utilities/help-utilities';
+import {
+  getFarmerShortLocation,
+  getImageVerticalCard,
+} from '../../../utilities/help-utilities';
 import {Product} from '../../Models/product.model';
 import {styles} from './product-card-vertical.style';
 
@@ -31,8 +34,9 @@ export const ProductCardVertical = (props?: ProductCardVerticalProp) => {
           source={getImage(props?.product?.images[0]?.url)}
           style={styles.imageProduct}
         />
+
         <ImageBackground
-          source={productVerticalCardFruit}
+          source={getImageVerticalCard(props?.product?.category)}
           style={styles.imageBackground}
           resizeMode={'stretch'}>
           <View style={styles.content}>
