@@ -7,6 +7,9 @@ export const URL_GET_ORDERS = 'order/';
 export const URL_ORDERS_ACCEPT = 'order/resend';
 export const URL_GET_ALL_ORDERS_HISTORY = 'history/user/';
 export const URL_GET_ALL_ORDER_DETAIL = 'history/';
+export const URL_COMPLETE_DELIVERY = 'history/complete/';
+export const URL_REPORT_DELIVERY = 'history/report/';
+export const URL_GET_ALL_ORDERS_DELIVERY = 'history/userDelivering/';
 export const URL_DELETE_ORDER_DETAIL = 'order/cancel/';
 
 export interface Order {
@@ -25,6 +28,7 @@ export interface Order {
     name: string;
   };
   deliveryLocation?: Location;
+  deliveryDate?: string;
 }
 
 export interface GetAllOrderResponse {
@@ -59,6 +63,11 @@ export interface OrderHistory {
   dealPrice?: number | null;
   amount: number;
   deliveryLocation?: Location;
+  status?: {
+    id: number;
+    name: string;
+  };
+  failReason?: string;
 }
 
 export enum STATUS_CODE_ORDER {

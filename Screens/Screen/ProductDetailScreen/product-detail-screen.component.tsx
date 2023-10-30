@@ -475,7 +475,7 @@ export const ProductDetailScreen = ({route}) => {
       <View style={styles.container}>
         {!isLoading ? (
           <GestureHandlerRootView>
-            <ScrollView>
+            <ScrollView style={{minHeight: DEVICE.HEIGHT}}>
               <ImageBackground
                 source={getImageBackground(productInformation?.category)}
                 resizeMode={'stretch'}

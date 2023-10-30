@@ -11,6 +11,7 @@ import {I18n} from '../../translation';
 import {LongHorizontalButtonIcon} from '../ui/long-horizontal-button-icon';
 import {
   billIcon,
+  deliveryIcon,
   exitIcon,
   hourglassIcon,
   languageIcon,
@@ -29,6 +30,11 @@ export const SettingScreen = ({navigation, route}) => {
             icon={hourglassIcon}
             title={I18n.paymentWaitingList}
             onPress={() => globalNavigate(ScreenName.WaitingScreen)}
+          />
+          <LongHorizontalButtonIcon
+            icon={deliveryIcon}
+            title={I18n.orderDeliveryList}
+            onPress={() => globalNavigate(ScreenName.DeliveryScreen)}
           />
           <LongHorizontalButtonIcon
             icon={billIcon}

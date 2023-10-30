@@ -28,6 +28,7 @@ import {Colors} from '../../../constants/color.constants';
 import {DEVICE} from '../../../constants/devices.constant';
 import {FontSize} from '../../../constants/fontsize.constants';
 import {ScreenName} from '../../../constants/screen-name.constant';
+import {OrderStatus} from '../../../constants/status.constant';
 import {useRootSelector} from '../../../domain/hooks';
 import {
   acceptOrder,
@@ -139,7 +140,10 @@ export const ProductWaitingDetail = ({route}: any) => {
             {!loading && !isLoading && (
               <>
                 {order && <ProductInformation order={order} />}
-                <FarmerContact farmer={order?.farmer} />
+                <FarmerContact
+                  farmer={order?.farmer}
+                  status={order?.status?.name}
+                />
                 {order?.status?.name === STATUS_CODE_ORDER.DEALING && (
                   <DealingCard
                     newAmount={order?.dealAmount}
@@ -160,13 +164,23 @@ export const ProductWaitingDetail = ({route}: any) => {
   );
 };
 
-const FarmerContact = ({farmer}: {farmer?: User}) => {
+const FarmerContact = ({farmer, status}: {farmer?: User; status?: string}) => {
   return (
     <View style={styles.farmerContactContainer}>
       <View style={styles.horizontalLine} />
 
       <View style={styles.farmerContact}>
-        <Text style={styles.smallTitle}>{I18n.waitingForAccept}</Text>
+        {status !== OrderStatus.Cancel ? (
+          <>
+            <Text style={styles.smallTitle}>{I18n.waitingForAccept}</Text>
+          </>
+        ) : (
+          <>
+            <Text style={styles.smallTitle}>
+              {I18n.yourOrderHasBeenCanceled}
+            </Text>
+          </>
+        )}
         <Text style={styles.smallTitle}>{I18n.orContactToFarmer}</Text>
 
         <View style={styles.farmerInfo}>

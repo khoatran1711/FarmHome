@@ -137,6 +137,7 @@ export const HistoryScreen = () => {
                   globalNavigate(ScreenName.ProductHistoryScreen, item?.id)
                 }
                 date={convertDateJsonToDate(item?.date)}
+                status={item?.status?.name}
               />
             </>
           ))}

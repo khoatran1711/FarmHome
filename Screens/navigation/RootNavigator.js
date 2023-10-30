@@ -61,6 +61,8 @@ import {useDispatch} from 'react-redux';
 import {checkToken} from '../state/authentication/authentication.thunk';
 import {NotificationScreen} from '../Screen/NotificationScreen/notification-screen.component';
 import {LanguageScreen} from '../Screen/LanguageScreen/language-screen.component';
+import {DeliveringScreen} from '../Screen/DeliveringScreen/delivering-screen.component';
+import {ProductDeliveryDetail} from '../Screen/DeliveringScreen/ProductScreen/product-screen.component';
 
 const Tab = createBottomTabNavigator();
 export const navigationRef = createNavigationContainerRef();
@@ -154,6 +156,16 @@ export const StackNavigator = ({navigation, route}) => {
         <Stack.Screen
           name={ScreenName.MessageDetailScreen}
           component={MessageDetailScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name={ScreenName.DeliveryScreen}
+          component={DeliveringScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name={ScreenName.ProductDeliveryScreen}
+          component={ProductDeliveryDetail}
           options={{headerShown: false}}
         />
       </Stack.Navigator>

@@ -102,7 +102,7 @@ export const styles = StyleSheet.create({
   },
   sortContainer: {
     flex: 1,
-    backgroundColor: Colors.YellowGreen,
+    backgroundColor: Colors.Finlandia,
     marginTop: 30,
     borderTopLeftRadius: 40,
   },
@@ -140,5 +140,9 @@ export const styles = StyleSheet.create({
   typeContainer: {
     flexBasis: '28%',
     marginHorizontal: 5,
+  },
+  wrapperContainer: {
+    marginTop: 10,
+    marginHorizontal: 0,
   },
 });

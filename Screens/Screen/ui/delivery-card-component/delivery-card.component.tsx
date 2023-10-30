@@ -1,19 +1,21 @@
 import React from 'react';
 import {ImageSourcePropType, Text, View} from 'react-native';
 import {Image, TouchableOpacity} from 'react-native';
-import {hourglassIcon} from '../../../constants/assets.constants';
+import {deliveryIcon, hourglassIcon} from '../../../constants/assets.constants';
 import {Colors} from '../../../constants/color.constants';
 import {OrderStatus} from '../../../constants/status.constant';
 import {I18n} from '../../../translation';
-import {styles} from './waiting-card.style';
+import {convertDateJsonToDate} from '../../../utilities/help-utilities';
+import {styles} from './delivery-card.style';
 
-interface WaitingCardProps {
+interface DeliveryCardProps {
   farmerName: string;
   farmerImage: ImageSourcePropType;
   productName: string;
   productImage: ImageSourcePropType;
   productPrice: number;
   productAmount: number;
+  expectDeliveryDate?: string;
   status?: string;
   isTransport: boolean;
   date?: string;
@@ -22,7 +24,7 @@ interface WaitingCardProps {
   isNoticed?: boolean;
 }
 
-export const WaitingCard = (props?: WaitingCardProps) => {
+export const DeliveryCard = (props?: DeliveryCardProps) => {
   return (
     <>
       <TouchableOpacity style={styles.container} onPress={props?.onPress}>
@@ -61,40 +63,44 @@ export const WaitingCard = (props?: WaitingCardProps) => {
                   : I18n.notTransportSupport}
               </Text>
 
-              {props?.date &&
-                (props?.status === OrderStatus.Fail ? (
-                  <Text style={[styles.infoTitle, {color: Colors.RumRed}]}>
-                    {I18n.orderBeingReport}
-                  </Text>
-                ) : (
-                  <Text style={styles.infoTitle}>
-                    {I18n.createAt}
-                    {props?.date}
-                  </Text>
-                ))}
+              {props?.date && (
+                <Text style={styles.infoTitle}>
+                  {I18n.createAt}
+                  {props?.date}
+                </Text>
+              )}
             </View>
             {!props?.date && (
-              <View style={styles.waitingContainer}>
-                {props?.status !== OrderStatus.Cancel ? (
-                  <View style={styles.hourglassImage}>
-                    <Image source={hourglassIcon} style={styles.image} />
-                  </View>
-                ) : (
-                  <TouchableOpacity
-                    style={[styles.button, styles.disagreeButton]}>
-                    <Text style={styles.disagree}>✕</Text>
-                  </TouchableOpacity>
-                )}
-                {props?.status !== OrderStatus.Cancel ? (
-                  <Text style={styles.waitingTitle}>
-                    {I18n.waitingForAccept}
-                  </Text>
-                ) : (
-                  <Text style={styles.waitingTitle}>
-                    {I18n.yourOrderHasBeenCanceled}
-                  </Text>
-                )}
-              </View>
+              <>
+                <View style={styles.waitingContainer}>
+                  {props?.status !== OrderStatus.Cancel ? (
+                    <View style={styles.hourglassImage}>
+                      <Image source={deliveryIcon} style={styles.image} />
+                    </View>
+                  ) : (
+                    <TouchableOpacity
+                      style={[styles.button, styles.disagreeButton]}>
+                      <Text style={styles.disagree}>✕</Text>
+                    </TouchableOpacity>
+                  )}
+                  {props?.status !== OrderStatus.Cancel ? (
+                    <>
+                      <Text style={styles.waitingTitle}>
+                        {I18n.waitingForDelivery}
+                        {'\n'}
+                        <Text style={styles.waitingTitle}>
+                          {I18n.expectDeliveryDate}
+                          {convertDateJsonToDate(props?.expectDeliveryDate)}
+                        </Text>
+                      </Text>
+                    </>
+                  ) : (
+                    <Text style={styles.waitingTitle}>
+                      {I18n.yourOrderHasBeenCanceled}
+                    </Text>
+                  )}
+                </View>
+              </>
             )}
           </View>
 

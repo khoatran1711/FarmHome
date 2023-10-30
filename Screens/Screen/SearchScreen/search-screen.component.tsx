@@ -18,10 +18,12 @@ import {
   filterIcon,
   searchIcon,
 } from '../../constants/assets.constants';
+import {CategoryList} from '../../constants/category.constant';
 import {Colors} from '../../constants/color.constants';
 import {DEVICE} from '../../constants/devices.constant';
 import {FontSize} from '../../constants/fontsize.constants';
 import {ScreenName} from '../../constants/screen-name.constant';
+import {Season} from '../../constants/seasons.constant';
 import {useRootSelector} from '../../domain/hooks';
 import {
   filterProduct,
@@ -30,6 +32,7 @@ import {
 } from '../../services/product.service';
 import {ProductListSelectors} from '../../state/product-list/product-list.selector';
 import {I18n} from '../../translation';
+import {places} from '../../utilities/constant-utilities';
 
 import {globalNavigate} from '../../utilities/navigator-utilities';
 import {
@@ -37,8 +40,10 @@ import {
   Product,
   SEASON_ENUM,
 } from '../Models/product.model';
+import {InputButtonWrapper} from '../ui/input-button-wrapper';
 import {ProductCardVertical} from '../ui/product-card-vertical';
 import {ProductCard} from '../ui/product-card/product-card.component';
+import {SelectingScreenComponent} from '../ui/selecting-screen-component/selecting-screen.component';
 import {WaitingComponent} from '../ui/waiting-component/waiting.component';
 import {styles} from './search-screen.style';
 
@@ -46,110 +51,72 @@ const width = Dimensions.get('window').width;
 const bigger = new Animated.Value((width * 120) / 100);
 let isChooseFilter = true;
 
-const SORT_LIST = [
-  {
-    name: 'SORT BY',
-    type_list: [
-      {
-        id: 1,
-        name: 'Popular',
-        isSelect: false,
-      },
-      // {
-      //   id: 2,
-      //   name: 'Hot',
-      //   isSelect: false,
-      // },
-      // {
-      //   id: 3,
-      //   name: 'New',
-      //   isSelect: false,
-      // },
-      // {
-      //   id: 4,
-      //   name: 'Amount',
-      //   isSelect: false,
-      // },
-    ],
-  },
-  {
-    name: 'THIS SEASON FRUITS',
-    type_list: [
-      {
-        id: 1,
-        name: SEASON_ENUM.Spring,
-        isSelect: false,
-      },
-      {
-        id: 2,
-        name: SEASON_ENUM.Summer,
-        isSelect: false,
-      },
-      {
-        id: 3,
-        name: SEASON_ENUM.Autumn,
-        isSelect: false,
-      },
-      {
-        id: 4,
-        name: SEASON_ENUM.Winter,
-        isSelect: false,
-      },
-    ],
-  },
-];
-
 export interface SearchRequest {
   params: {
     searchText: string;
-    seasonList: string;
-    category: string;
-    popular: boolean;
-    image: any;
+    seasonList?: string;
+    categoryList?: string;
+    provinceId?: number;
+    districtId?: number;
+    image?: any;
   };
 }
 
 export const SearchScreen = ({route}: {route: SearchRequest}) => {
   const navigator = useNavigation();
-  const [chooseNumber, setChooseNumber] = useState(0);
-  const [chooseList, setChooseList] = useState([]);
   const search = route?.params?.searchText || '';
-  const [searchText, setSearchText] = useState();
+  const [searchText, setSearchText] = useState<string>('');
   const [pageNumber, setPageNumber] = useState(0);
   //const [productList, setProductList] = useState();
   const [loading, setLoading] = useState(false);
 
-  const [isPopular, setIsPopular] = useState(false);
-  const [season, setSeason] = useState('');
+  const [opening, setOpening] = useState('');
+  const [data, setData] = useState<any[]>();
+  const [city, setCity] = useState('');
+  const [province, setProvince] = useState('');
+  const [isOpen, setIsOpen] = useState(false);
 
-  const req: FilterProductRequest = {
+  const openCitySelect = () => {
+    const cities = places?.map(item => {
+      return {
+        value: item?.province_code,
+        name: item?.province,
+      };
+    });
+    setData(cities);
+    setOpening('city');
+    setIsOpen(true);
+  };
+
+  const openProvinceSelect = () => {
+    const cities = places?.find(item => item?.province === city)?.districts;
+    const districts = cities?.map(item => {
+      return {
+        value: item?.district_code,
+        name: item?.district,
+      };
+    });
+    setData(districts);
+    setOpening('districts');
+    setIsOpen(true);
+  };
+
+  const [filterReq, setFilterReq] = useState({
     no: pageNumber,
-    popular: route?.params?.popular,
     limit: 10,
-    seasonList: route?.params?.seasonList || '',
+    seasonList:
+      route?.params?.seasonList ||
+      `${Season.Spring.value},${Season.Summer.value},${Season.Autumn.value},${Season.Winter.value}`,
     name: searchText || search,
-  };
+    categoryList:
+      route?.params?.categoryList ||
+      `${CategoryList.Fruit.label},${CategoryList.Green.label},${CategoryList.Pea.label},${CategoryList.Spice.label},${CategoryList.Tuber.label}`,
+    provinceId: null,
+    districtId: null,
+  });
 
-  const addToFilter = selection => {
-    if (selection.isSelect) {
-      selection.isSelect = false;
-      setChooseNumber(chooseNumber - 1);
-      let newChooseList = chooseList;
-      newChooseList.forEach((element, index) => {
-        if (element === selection.name) {
-          newChooseList.splice(index, 1);
-          index--;
-        }
-      });
-      setChooseList(newChooseList.filter(item => item !== selection.name));
-    } else {
-      selection.isSelect = true;
-      setChooseNumber(chooseNumber + 1);
-      let newChooseList = chooseList;
-      newChooseList.push(selection?.name);
-      setChooseList(newChooseList);
-    }
-  };
+  const [req, setReg] = useState<FilterProductRequest>(filterReq);
+  console.log(req);
 
   const click = () => {
     isChooseFilter = !isChooseFilter;
@@ -200,7 +167,7 @@ export const SearchScreen = ({route}: {route: SearchRequest}) => {
   };
 
   useEffect(() => {
-    getData(req);
+    //getData(req);
     if (route?.params?.image) {
       console.log('my image', route?.params?.image);
       productService.productDetect(route?.params?.image);
@@ -208,7 +175,7 @@ export const SearchScreen = ({route}: {route: SearchRequest}) => {
       console.log('No image');
       productService.resetSearchProductList(req);
     }
-  }, []);
+  }, [req]);
 
   return (
     <View style={styles.container}>
@@ -228,60 +195,144 @@ export const SearchScreen = ({route}: {route: SearchRequest}) => {
         </View>
 
         <View style={styles.sortContainer}>
-          {SORT_LIST.map(sorttype => (
-            <View style={styles.sortContentContainer}>
-              <Text style={styles.sortByTitle}>{sorttype.name}</Text>
-              <View style={styles.sortTypesContainer}>
-                {sorttype.type_list.map(type => (
-                  <TouchableOpacity
-                    style={styles.typeContainer}
-                    onPress={() =>
-                      type?.name === 'Popular'
-                        ? setIsPopular(!isPopular)
-                        : setSeason(type?.name)
-                    }>
-                    {/*onPress={() => addToFilter(type)}>*/}
-                    <Text
-                      style={[
-                        styles.typeName,
-                        type.name === season && styles.typeNameSelected,
-                        type.name === 'Popular' && isPopular
-                          ? styles.typeNameSelected
-                          : null,
-                      ]}>
-                      {type.name}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-              <View style={styles.line} />
+          <View style={styles.sortContentContainer}>
+            <Text style={styles.sortByTitle}>{I18n.seasonfruits}</Text>
+            <View style={styles.sortTypesContainer}>
+              {Object.values(Season)?.map(e => (
+                <TouchableOpacity
+                  style={styles.typeContainer}
+                  onPress={() => {
+                    if (filterReq?.seasonList?.includes(e?.value)) {
+                      setFilterReq({
+                        ...filterReq,
+                        seasonList: filterReq?.seasonList?.replace(
+                          e?.value,
+                          '',
+                        ),
+                      });
+                    } else {
+                      setFilterReq({
+                        ...filterReq,
+                        seasonList: filterReq?.seasonList + ',' + e?.value,
+                      });
+                    }
+                  }}>
+                  <Text
+                    style={[
+                      styles.typeName,
+                      filterReq?.seasonList?.includes(e?.value) &&
+                        styles.typeNameSelected,
+                    ]}>
+                    {e?.label}
+                  </Text>
+                </TouchableOpacity>
+              ))}
             </View>
-          ))}
-          <TouchableOpacity
+            <View style={styles.line} />
+
+            <Text style={styles.sortByTitle}>{I18n.category}</Text>
+            <View style={styles.sortTypesContainer}>
+              {Object.values(CategoryList)?.map(e => (
+                <TouchableOpacity
+                  style={styles.typeContainer}
+                  onPress={() => {
+                    if (filterReq?.categoryList?.includes(e?.label)) {
+                      setFilterReq({
+                        ...filterReq,
+                        categoryList: filterReq?.categoryList?.replace(
+                          e?.label,
+                          '',
+                        ),
+                      });
+                    } else {
+                      setFilterReq({
+                        ...filterReq,
+                        categoryList: filterReq?.categoryList + ',' + e?.label,
+                      });
+                    }
+                  }}>
+                  <Text
+                    style={[
+                      styles.typeName,
+                      filterReq?.categoryList?.includes(e?.label) &&
+                        styles.typeNameSelected,
+                    ]}>
+                    {e?.label}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+            <View style={styles.line} />
+
+            <Text style={styles.sortByTitle}>{I18n.address}</Text>
+
+            <InputButtonWrapper
+              label={I18n.city}
+              wrapperStyle={styles.wrapperContainer}
+              content={city}
+              inputBackgroundColor={Colors.TimberGreen}
+              onPress={() => openCitySelect()}
+            />
+            <InputButtonWrapper
+              label={I18n.district}
+              wrapperStyle={styles.wrapperContainer}
+              inputBackgroundColor={Colors.TimberGreen}
+              content={province}
+              onPress={() => openProvinceSelect()}
+            />
+            {/* <View style={styles.sortTypesContainer}></View> */}
+            <View style={styles.line} />
+          </View>
+
+          <View
             style={{
-              alignSelf: 'center',
-              position: 'absolute',
-              bottom: 50,
-              width: 100,
-              height: 40,
-              backgroundColor: Colors.DarkGreen,
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderRadius: 20,
-            }}
-            onPress={() => {
-              click();
-              const filReq = {
-                no: 0,
-                popular: isPopular ? true : '',
-                limit: 30,
-                seasonList: season,
-                name: searchText,
-              };
-              getData(filReq);
+              flexDirection: 'row',
+              position: 'relative',
+              marginTop: 10,
+              justifyContent: 'space-evenly',
             }}>
-            <Text>{I18n.apply}</Text>
-          </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                alignSelf: 'center',
+                width: 100,
+                height: 40,
+                backgroundColor: Colors.DarkGreen,
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderRadius: 20,
+              }}
+              onPress={() => {
+                setFilterReq({
+                  no: 0,
+                  limit: 10,
+                  seasonList: `${Season.Spring.value},${Season.Summer.value},${Season.Autumn.value},${Season.Winter.value}`,
+                  name: searchText || search,
+                  categoryList: `${CategoryList.Fruit.label},${CategoryList.Green.label},${CategoryList.Pea.label},${CategoryList.Spice.label},${CategoryList.Tuber.label}`,
+                  provinceId: null,
+                  districtId: null,
+                });
+                setCity('');
+                setProvince('');
+              }}>
+              <Text>{I18n.refresh}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                alignSelf: 'center',
+                width: 100,
+                height: 40,
+                backgroundColor: Colors.DarkGreen,
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderRadius: 20,
+              }}
+              onPress={() => {
+                click();
+                setReg(filterReq);
+              }}>
+              <Text>{I18n.apply}</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </Animated.View>
 
@@ -304,53 +355,49 @@ export const SearchScreen = ({route}: {route: SearchRequest}) => {
               }}
             />
           </TouchableOpacity>
-          <View
-            style={{
-              width: '70%',
-              backgroundColor: 'black',
-              flexDirection: 'row',
-              justifyContent: 'center',
-              alignItems: 'center',
-              height: 36,
-              borderRadius: 12,
-            }}>
-            <TextInput
-              style={{width: '80%', fontSize: FontSize.MediumSmall}}
-              placeholder={`${I18n.explore}...`}
-              onChangeText={e => setSearchText(e)}
-            />
-            <TouchableOpacity onPress={() => onRefresh()}>
-              <Image
-                source={searchIcon}
+
+          {!route?.params?.image && (
+            <>
+              <View
                 style={{
-                  height: 25,
-                  width: 25,
-                }}
-              />
-            </TouchableOpacity>
-          </View>
-          <TouchableOpacity onPress={() => click()}>
-            <ImageBackground
-              source={filterIcon}
-              style={{
-                height: 25,
-                width: 25,
-                zIndex: 500,
-                alignItems: 'flex-end',
-              }}>
-              <Text
-                style={{
-                  width: '40%',
-                  borderRadius: 20,
-                  textAlign: 'center',
-                  fontWeight: 'bold',
-                  backgroundColor: Colors.FilterGreen,
-                  fontSize: FontSize.ExtraSmall,
+                  width: '70%',
+                  backgroundColor: 'black',
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  height: 36,
+                  borderRadius: 12,
                 }}>
-                {chooseNumber}
-              </Text>
-            </ImageBackground>
-          </TouchableOpacity>
+                <TextInput
+                  style={{width: '80%', fontSize: FontSize.MediumSmall}}
+                  placeholder={`${I18n.explore}...`}
+                  onChangeText={e => setSearchText(e)}
+                />
+                <TouchableOpacity
+                  onPress={() => {
+                    setReg({...req, name: searchText || ''});
+                  }}>
+                  <Image
+                    source={searchIcon}
+                    style={{
+                      height: 25,
+                      width: 25,
+                    }}
+                  />
+                </TouchableOpacity>
+              </View>
+              <TouchableOpacity onPress={() => click()}>
+                <ImageBackground
+                  source={filterIcon}
+                  style={{
+                    height: 25,
+                    width: 25,
+                    zIndex: 500,
+                    alignItems: 'flex-end',
+                  }}></ImageBackground>
+              </TouchableOpacity>
+            </>
+          )}
         </View>
       </View>
 
@@ -414,11 +461,36 @@ export const SearchScreen = ({route}: {route: SearchRequest}) => {
           <WaitingComponent />
         )}
       </View>
+
+      <SelectingScreenComponent
+        isShow={isOpen}
+        data={data}
+        onSelect={e => {
+          if (opening === 'city') {
+            setCity(e?.name);
+            setFilterReq({...filterReq, provinceId: e?.value});
+            setData([]);
+            setOpening('');
+            setIsOpen(false);
+            setProvince('');
+          }
+          if (opening === 'districts') {
+            setProvince(e?.name);
+            setFilterReq({...filterReq, districtId: e?.value});
+            setData([]);
+            setOpening('');
+            setIsOpen(false);
+          }
+        }}
+        title={opening === 'city' ? I18n.city : I18n.district}
+        onClose={() => {
+          setIsOpen(false);
+        }}
+      />
     </View>
   );
 };
 
-// const ProductCard = ({product}: {product: Product}) => {
 //   return (
 //     <TouchableOpacity
 //       style={styles.productCardContainer}

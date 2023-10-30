@@ -16,6 +16,7 @@ import {
 } from '../../../constants/assets.constants';
 import {Colors} from '../../../constants/color.constants';
 import {FontSize} from '../../../constants/fontsize.constants';
+import {OrderStatus} from '../../../constants/status.constant';
 import {getOrderHistoryDetail} from '../../../services/orders.service';
 import {I18n} from '../../../translation';
 import {getImage} from '../../../utilities/format-utilities';
@@ -37,12 +38,11 @@ export const ProductHistoryDetail = ({route}: {route: any}) => {
   const orderHistoryId = route?.params;
   const [loading, setLoading] = useState(false);
   const [orderHistoryDetail, setOrderHistoryDetail] = useState<OrderHistory>();
-  console.log(orderHistoryId);
+
   const getData = async () => {
     setLoading(true);
     const response = await getOrderHistoryDetail(orderHistoryId);
     const data = response?.data;
-    console.log(response);
     setOrderHistoryDetail(data);
     setLoading(false);
   };
@@ -67,6 +67,26 @@ export const ProductHistoryDetail = ({route}: {route: any}) => {
               <>
                 <ProductInformation order={orderHistoryDetail} />
                 <FarmerContact farmer={orderHistoryDetail?.farmer} />
+
+                {orderHistoryDetail?.status?.name === OrderStatus.Fail && (
+                  <View style={styles.contentContainer}>
+                    <Text style={[styles.titleSmall, {color: Colors.RumRed}]}>
+                      {I18n.orderBeingReport}, {I18n.reason}:
+                    </Text>
+
+                    <Text
+                      style={[
+                        styles.titleSmall,
+                        {
+                          color: Colors.RumRed,
+                          fontSize: FontSize.Normal,
+                          fontWeight: '500',
+                        },
+                      ]}>
+                      {orderHistoryDetail?.failReason}
+                    </Text>
+                  </View>
+                )}
                 <View style={styles.contentContainer}>
                   <View style={styles.horizontalLine} />
 
@@ -83,10 +103,12 @@ export const ProductHistoryDetail = ({route}: {route: any}) => {
                   <View style={styles.horizontalLine} />
                 </View>
 
-                <Text style={styles.titleSmall}>
-                  {I18n.createAt +
-                    convertDateJsonToDate(orderHistoryDetail?.date)}
-                </Text>
+                {orderHistoryDetail?.status?.name !== OrderStatus.Fail && (
+                  <Text style={styles.titleSmall}>
+                    {I18n.createAt +
+                      convertDateJsonToDate(orderHistoryDetail?.date)}
+                  </Text>
+                )}
               </>
             )}
           </ImageBackground>

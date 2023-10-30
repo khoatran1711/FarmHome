@@ -46,9 +46,7 @@ export const ProductCardVertical = (props?: ProductCardVerticalProp) => {
               </Text>
 
               <Text numberOfLines={2} style={styles.productDescription}>
-                Cam sành là trái cây chứa nhiều chất dinh dưỡng như vitamin C,
-                các vitamin chống oxy hóa, các khoáng chất như canxi, natri,
-                phốt pho
+                {props?.product?.description}
               </Text>
 
               <View style={styles.priceContainer}>

@@ -26,6 +26,7 @@ export const VI = {
   news: 'Tin mới',
   payment: 'Thanh toán',
   paymentWaitingList: 'Danh sách chờ xác nhận',
+  orderDeliveryList: 'Danh sách đang vận chuyển',
   successfulOrderList: 'Đơn hàng đã đặt',
   personalInformation: 'Thông tin cá nhân',
   logOut: 'Đăng xuất',
@@ -138,6 +139,8 @@ export const VI = {
   changePasswordNote:
     '• Sau khi đổi mật khẩu mới, bạn cần đăng nhập lại tài khoản. \n• Hãy đảm bảo rằng mật khẩu của bạn đủ mạnh để tăng cường bảo mật.',
   waitingForAccept: 'Đơn hàng của bạn đang chờ được xác nhận',
+  waitingForDelivery: 'Đơn hàng của bạn đang được giao',
+  expectDeliveryDate: 'Ngày nhận hàng dự kiến: ',
   orContactToFarmer: 'Hoặc bạn có thể trực tiếp liên hệ đến nông trại',
   history: 'Lịch sử mua hàng',
   createAt: 'Xuất đơn ngày ',
@@ -150,6 +153,19 @@ export const VI = {
   openCamera: 'Mở Camera',
   openLibrary: 'Mở thư viện',
   yourOrderHasBeenCanceled: 'Đơn hàng của bạn đã bị hủy',
+  youHaveReceiveOrder:
+    'Đơn hàng của bạn đã hoàn thành, cảm ơn bạn đã giao dịch',
+  ifYouHaveNotReceivedReport:
+    '* Nếu bạn vẫn không nhận được hàng bạn có thể báo cáo với chúng tôi',
+  yourOrderWillBeDeliveryBefore: 'Đơn hàng của bạn sẽ được giao trước ngày: ',
+  iHaveReceived: 'Tôi đã nhận được hàng',
+  iStillNotHaveReceived:
+    'Chưa nhận được hàng? Bạn có thể liên hệ với chúng tôi',
+  reportReason: 'Lý do báo cáo',
+  reportContent: 'Chi tiết về vấn đề',
+  orderBeingReport: 'Đơn hàng đang bị khiếu nại',
+  reason: 'chi tiết khiếu nại',
+  refresh: 'Làm mới',
 };
 
 export type I18nDictionary = typeof VI;

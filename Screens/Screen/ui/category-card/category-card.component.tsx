@@ -16,11 +16,12 @@ interface CategoryCardProps {
   id?: number;
   name?: string;
   image?: ImageSourcePropType;
+  onClick?: () => void;
 }
 
 export const CategoryCard = (props?: CategoryCardProps) => {
   return (
-    <TouchableOpacity>
+    <TouchableOpacity onPress={props?.onClick}>
       <ImageBackground
         source={categoryCard}
         resizeMode={'stretch'}

@@ -18,6 +18,7 @@ interface InputButtonWrapperProps {
   label?: string;
   content?: string;
   textInputStyle?: TextStyle;
+  inputBackgroundColor?: string;
   onPress?: (e?: any) => void;
   icon?: any;
 }
@@ -29,7 +30,13 @@ export const InputButtonWrapper = (props?: InputButtonWrapperProps) => {
         <Text style={[styles.label, props?.labelStyle]}>{props?.label}</Text>
       )}
       <TouchableOpacity onPress={props?.onPress}>
-        <View style={styles.inputContainer}>
+        <View
+          style={[
+            styles.inputContainer,
+            {
+              backgroundColor: props?.inputBackgroundColor,
+            },
+          ]}>
           <Text style={[styles.input, props?.textInputStyle]}>
             {props?.content}
           </Text>

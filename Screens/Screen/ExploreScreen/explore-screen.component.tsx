@@ -56,32 +56,9 @@ import {PermissionsAndroid} from 'react-native';
 import {CustomBottomSheet} from '../ui/bottom-sheet-component/bottom-sheet.component';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
-const filterList = [
-  {
-    id: 1,
-    name: 'Trái cây 1',
-  },
-  {
-    id: 2,
-    name: 'Trái cây 2',
-  },
-  {
-    id: 3,
-    name: 'Trái cây 3',
-  },
-  {
-    id: 4,
-    name: 'Trái cây 4',
-  },
-  {
-    id: 5,
-    name: 'Trái cây 5',
-  },
-];
-
 export const ExploreScreen = () => {
   const navigator = useNavigation();
-  const [selectList, setSelectList] = useState(filterList[0].id);
+
   //const [productList, setProductList] = useState<Product[]>();
   const [searchText, setSearchText] = useState('');
   const [showOptionImage, setOptionImage] = useState(false);
@@ -274,6 +251,11 @@ export const ExploreScreen = () => {
                     id={item?.id}
                     name={item?.name}
                     image={item?.image}
+                    onClick={() =>
+                      globalNavigate(ScreenName.SearchScreen, {
+                        categoryList: item?.label,
+                      })
+                    }
                   />
                 ),
             )}

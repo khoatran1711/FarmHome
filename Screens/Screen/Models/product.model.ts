@@ -74,8 +74,11 @@ export const SEASON_ENUM = {
 
 export interface FilterProductRequest {
   no: number;
-  popular: boolean;
+  popular?: boolean;
   limit: number;
   seasonList: string;
   name: string;
+  categoryList?: string;
+  provinceId?: number | null;
+  districtId?: number | null;
 }

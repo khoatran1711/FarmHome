@@ -39,7 +39,18 @@ export const ProductCardMini = (props: ProductCardProps) => {
           <Text numberOfLines={1} style={styles.title}>
             {props?.name}
           </Text>
-          <Text numberOfLines={1} style={styles.title}>
+          <Text
+            numberOfLines={1}
+            style={[
+              styles.title,
+              {
+                backgroundColor: Colors.Finlandia,
+                borderRadius: 7,
+                marginTop: 3,
+                color: Colors.Solitaire,
+                paddingVertical: 2,
+              },
+            ]}>
             {props?.weight} {props?.unit}
           </Text>
         </View>

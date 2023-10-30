@@ -26,6 +26,7 @@ export const EN = {
   seasonFruits: 'Season Fruits',
   payment: 'Payment',
   paymentWaitingList: 'Payment Waiting List',
+  orderDeliveryList: 'Order On Delivery List',
   successfulOrderList: 'Successful Order List',
   personalInformation: 'Personal Information',
   logOut: 'Log Out',
@@ -139,6 +140,8 @@ export const EN = {
     • Your password should be strong enough to make it more secured.
   `,
   waitingForAccept: 'Your order is waiting for the farmer’s accept.',
+  waitingForDelivery: 'Your order is on the way.',
+  expectDeliveryDate: 'Expected delivery date: ',
   orContactToFarmer: 'Or you can directly contact to the farmer',
   history: 'History',
   createAt: 'Create at ',
@@ -151,6 +154,19 @@ export const EN = {
   openCamera: 'Open Camera',
   openLibrary: 'Open Library',
   yourOrderHasBeenCanceled: 'Your order has been canceled',
+  youHaveReceiveOrder:
+    'Your order has been completed, thank you for your transaction',
+  ifYouHaveNotReceivedReport:
+    '* If you still have not received order, you can report with us',
+  yourOrderWillBeDeliveryBefore: 'Your order will be there before: ',
+  iHaveReceived: 'I have received my order',
+  iStillNotHaveReceived:
+    'Have not received your order yet? You can contact with us',
+  reportReason: 'Report Reason',
+  reportContent: 'Report Description',
+  orderBeingReport: 'This order has been reported',
+  reason: 'Reason',
+  refresh: 'Refresh',
 };
 
 export type I18nDictionary = typeof EN;

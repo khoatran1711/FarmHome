@@ -78,7 +78,9 @@ export const orderProduct = (req: OrderRequest) => {
 export const filterProduct = (req: FilterProductRequest) => {
   const url = URL_BASE + URL_GET_FILTER_PRODUCT;
 
-  return httpService.get<any>(url, {params: req});
+  return httpService.get<any>(url, {
+    params: req,
+  });
 };
 
 export class ProductService {
@@ -146,6 +148,11 @@ export class ProductService {
           );
         }
 
+        httpResult?.data?.totalItems &&
+          this.store.dispatch(
+            ProductListActions.setTotalItems(httpResult?.data?.totalItems),
+          );
+
         this.store.dispatch(ExploreActions.setIsLoading(false));
       });
   }
@@ -194,20 +201,25 @@ export class ProductService {
     this.store.dispatch(ProductListActions.setIsLoading(true));
 
     return this.httpService
-      .get<ProductResponse>(url, {params: req})
+      .get<ProductResponse>(url, {
+        params: req,
+      })
       .then(httpResult => {
         if (httpResult?.data?.contents) {
           this.store.dispatch(
             ProductListActions.setProductList(httpResult?.data?.contents),
           );
 
-          if (httpResult?.data?.last !== undefined)
+          if (httpResult?.data?.last !== undefined) {
             this.store.dispatch(
               ProductListActions.setIsLast(httpResult?.data?.last),
             );
+          }
 
-          httpResult?.data?.totalItems &&
-            ProductListActions.setTotalItems(httpResult?.data?.totalItems);
+          httpResult?.data?.totalItems !== undefined &&
+            this.store.dispatch(
+              ProductListActions.setTotalItems(httpResult?.data?.totalItems),
+            );
         }
 
         this.store.dispatch(ProductListActions.setIsLoading(false));
@@ -218,8 +230,6 @@ export class ProductService {
     const url =
       'https://fruit-vegetable-detect-production.up.railway.app/image_search';
 
-    const urlTest =
-      'https://fruit-vegetable-detect-production.up.railway.app/detect';
     var bodyFormData = new FormData();
 
     image &&
@@ -248,8 +258,14 @@ export class ProductService {
             ProductListActions.setIsLast(httpResult?.data?.last),
           );
 
-        httpResult?.data?.totalItems &&
-          ProductListActions.setTotalItems(httpResult?.data?.totalItems);
+        httpResult?.data?.totalItems !== undefined &&
+          this.store.dispatch(
+            ProductListActions.setTotalItems(httpResult?.data?.totalItems),
+          );
+      } else {
+        this.store.dispatch(ProductListActions.setProductList([]));
+        this.store.dispatch(ProductListActions.setIsLast(true));
+        this.store.dispatch(ProductListActions.setTotalItems(0));
       }
 
       this.store.dispatch(ProductListActions.setIsLoading(false));

@@ -12,12 +12,13 @@ interface CategoryHorizontalCardProps {
   id?: number;
   name?: string;
   image?: ImageSourcePropType;
+  onClick?: () => void;
 }
 
 export const CategoryHorizontalCard = (props?: CategoryHorizontalCardProps) => {
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.containerButton}>
+      <TouchableOpacity style={styles.containerButton} onPress={props?.onClick}>
         <View style={styles.imageContainer}>
           <Image source={props?.image} style={styles.image} />
         </View>

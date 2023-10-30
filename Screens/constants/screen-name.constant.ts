@@ -6,6 +6,7 @@ export const ScreenName = {
   CategoryScreen: 'CategoryScreen',
   StoreDetailScreen: 'StoreDetailScreen',
   ProductWaitingScreen: 'ProductWaitingScreen',
+  ProductDeliveryScreen: 'ProductDeliveryScreen',
   ProductHistoryScreen: 'ProductHistoryScreen',
   NewDetailScreen: 'NewDetailScreen',
   MessageDetailScreen: 'MessageDetailScreen',
@@ -14,4 +15,5 @@ export const ScreenName = {
   ChangePasswordScreen: 'ChangePasswordScreen',
   UserProfileScreen: 'UserProfileScreen',
   LanguageScreen: 'LanguageScreen',
+  DeliveryScreen: 'DeliveryScreen',
 };

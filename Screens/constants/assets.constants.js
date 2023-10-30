@@ -100,3 +100,4 @@ export const userIcon = require('../assets/icons/user-icon.png');
 export const exitIcon = require('../assets/icons/exit-icon.png');
 export const notifyIcon = require('../assets/icons/icon-notify.png');
 export const notifyIconSelected = require('../assets/icons/icon-notify-selected.png');
+export const deliveryIcon = require('../assets/icons/delivery-icon.png');

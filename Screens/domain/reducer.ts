@@ -1,5 +1,7 @@
 import {AUTHENTICATION_STATE_NAME} from '../state/authentication/authentication.constant';
 import {AuthenticationReducer} from '../state/authentication/authentication.state';
+import {DELIVERY_LIST_STATE_NAME} from '../state/delivering-list/delivering-list.constant';
+import {DeliveryListReducer} from '../state/delivering-list/delivering-list.state';
 import {EXPLORE_STATE_NAME} from '../state/explore/explore.constant';
 import {ExploreReducer} from '../state/explore/explore.state';
 import {HISTORY_STATE_NAME} from '../state/history/history.constant';
@@ -18,4 +20,5 @@ export const RootReducer = {
   [WAITING_LIST_STATE_NAME]: WaitingListReducer,
   [POPUP_DIALOG_STATE_NAME]: PopupReducer,
   [HISTORY_STATE_NAME]: HistoryReducer,
+  [DELIVERY_LIST_STATE_NAME]: DeliveryListReducer,
 };

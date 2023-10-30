@@ -69,20 +69,26 @@ export default class PushController extends Component {
           if (notification?.data?.type === NotificationType.OrderAccept) {
             const orderService = new OrderService();
             orderService.resetWaitingList();
-
-            !notification?.userInteraction
-              ? Toast.show({
-                  type: 'orderToast',
-                  text1: notification?.title,
-                  text2: notification?.message?.toString(),
-                  props: {
-                    id: notification?.data?.id,
-                    image: notification?.bigPictureUrl,
-                    onClick: () => navigateOrder(notification?.data?.id),
-                  },
-                })
-              : navigateOrder(notification?.data?.id);
+            orderService.resetHistoryList();
           }
+
+          if (notification?.data?.type === NotificationType.OrderChange) {
+            const orderService = new OrderService();
+            orderService.resetWaitingList();
+          }
+
+          !notification?.userInteraction
+            ? Toast.show({
+                type: 'orderToast',
+                text1: notification?.title,
+                text2: notification?.message?.toString(),
+                props: {
+                  id: notification?.data?.id,
+                  image: notification?.bigPictureUrl,
+                  onClick: () => navigateOrder(notification?.data?.id),
+                },
+              })
+            : navigateOrder(notification?.data?.id);
         } else {
           navigateOrder(notification?.data?.id);
         }
